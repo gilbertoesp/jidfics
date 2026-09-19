@@ -1,322 +1,1651 @@
-[
-  {
-    "id": "event-001",
-    "date": "2026-09-23",
-    "startTime": "09:00",
-    "endTime": "09:30",
-    "title": "Inauguration and Opening Ceremony of the VII JIDFICS",
-    "venueId": "hall-1",
-    "venueLabel": "Hall 1 · Convention Center",
-    "activityType": "Masters Keynote",
-    "thematicAxis": "Education",
-    "speakers": [
-      { "name": "Dra. María Fernanda Ríos", "institution": "Universidad de Sonora", "role": "moderator" },
-      { "name": "Dr. Alejandro Cárdenas", "institution": "Universidad de Sonora, Campus Caborca", "role": "speaker" }
-    ],
-    "authors": [
-      { "name": "Dra. María Fernanda Ríos", "institution": "Universidad de Sonora" }
-    ],
-    "abstract": "Ceremony marking the official start of the VII International Conference on Social Sciences and Legal Sciences, with a welcome from the academic authorities of Universidad de Sonora and an overview of the conference program, scientific objectives, and expected contributions to regional research."
+{
+  "evento": "VII JIDFICS - Jornadas Internacionales de Docencia e Investigación en Ciencias Sociales",
+  "edicion": "VII",
+  "fecha_inicio": "2026-09-23",
+  "fecha_fin": "2026-09-24",
+  "sede": {
+    "institucion": "Universidad de Sonora",
+    "campus": "Caborca",
+    "lugar": "Caborca, Sonora, México"
   },
-  {
-    "id": "event-002",
-    "date": "2026-09-23",
-    "startTime": "09:45",
-    "endTime": "11:00",
-    "title": "Keynote: Sociological Perspectives in the Fight Against Gender Violence in Higher Education",
-    "venueId": "hall-1",
-    "venueLabel": "Hall 1 · Convention Center",
-    "activityType": "Masters Keynote",
-    "thematicAxis": "Gender",
-    "speakers": [
-      { "name": "Dra. Elena Vásquez Ornelas", "institution": "Universidad Nacional Autónoma de México", "role": "speaker" }
-    ],
-    "authors": [
-      { "name": "Dra. Elena Vásquez Ornelas", "institution": "Universidad Nacional Autónoma de México" }
-    ],
-    "abstract": "Master conference addressing institutional strategies to prevent and eradicate gender-based violence within university settings, based on a decade of applied research in Mexican higher education institutions and the implementation of gender equality protocols."
-  },
-  {
-    "id": "event-003",
-    "date": "2026-09-23",
-    "startTime": "09:45",
-    "endTime": "11:00",
-    "title": "Symposium: Public Policy and the Prevention of Violence in the Northern Border Region",
-    "venueId": "hall-2",
-    "venueLabel": "Hall 2 · Audiovisual",
-    "activityType": "Symposium",
-    "thematicAxis": "Violence",
-    "speakers": [
-      { "name": "Mtro. Roberto Alemán Soto", "institution": "El Colegio de Sonora", "role": "speaker" },
-      { "name": "Dra. Lucía Herrera Paz", "institution": "Universidad Autónoma de Baja California", "role": "speaker" },
-      { "name": "Dr. José Manuel Quintero", "institution": "Universidad de Sonora", "role": "moderator" }
-    ],
-    "authors": [
-      { "name": "Mtro. Roberto Alemán Soto", "institution": "El Colegio de Sonora" },
-      { "name": "Dra. Lucía Herrera Paz", "institution": "Universidad Autónoma de Baja California" }
-    ],
-    "abstract": "Comparative analysis of public safety policies implemented across the northern border corridor. The symposium discusses evidence-based prevention programs, community participation, and the articulation between municipal, state, and federal institutions in violence reduction."
-  },
-  {
-    "id": "event-004",
-    "date": "2026-09-23",
-    "startTime": "11:15",
-    "endTime": "12:30",
-    "title": "Free Papers: Migration, Border Dynamics, and Regional Integration",
-    "venueId": "hall-3",
-    "venueLabel": "Hall 3 · Multipurpose",
-    "activityType": "Free Papers",
-    "thematicAxis": "Migration",
-    "speakers": [
-      { "name": "Dra. Ana Belén Figueroa", "institution": "Universidad de Sonora", "role": "chair" },
-      { "name": "Mtro. Luis Ernesto Camacho", "institution": "Colegio de la Frontera Norte", "role": "speaker" }
-    ],
-    "authors": [
-      { "name": "Mtro. Luis Ernesto Camacho", "institution": "Colegio de la Frontera Norte" },
-      { "name": "Dra. Ana Belén Figueroa", "institution": "Universidad de Sonora" },
-      { "name": "Lic. Sara Jiménez Ruelas", "institution": "Universidad de Sonora, Campus Caborca" }
-    ],
-    "abstract": "Presentation of recent findings on migratory flows through the Sonora-Arizona corridor: social networks of migrants, labor insertion processes, and the impact of migration policies on family dynamics in border communities."
-  },
-  {
-    "id": "event-005",
-    "date": "2026-09-23",
-    "startTime": "11:15",
-    "endTime": "12:30",
-    "title": "Panel Discussion: Access to Justice and Indigenous Communities",
-    "venueId": "hall-4",
-    "venueLabel": "Hall 4 · Master's Room",
-    "activityType": "Panel Discussion",
-    "thematicAxis": "Law",
-    "speakers": [
-      { "name": "Dra. Nora Emilia Rivera", "institution": "Tribunal Superior de Justicia de Sonora", "role": "speaker" },
-      { "name": "Mtro. Pablo Cota Escalante", "institution": "Comisión Estatal de Derechos Humanos de Sonora", "role": "speaker" },
-      { "name": "Dra. Patricia Solano Vega", "institution": "Universidad de Sonora", "role": "moderator" }
-    ],
-    "authors": [
-      { "name": "Dra. Nora Emilia Rivera", "institution": "Tribunal Superior de Justicia de Sonora" },
-      { "name": "Mtro. Pablo Cota Escalante", "institution": "Comisión Estatal de Derechos Humanos de Sonora" }
-    ],
-    "abstract": "Round table on the challenges of guaranteeing effective access to justice for indigenous peoples in the state of Sonora: linguistic interpretation, customary law recognition, and the institutional reforms required to close the legal gap."
-  },
-  {
-    "id": "event-006",
-    "date": "2026-09-23",
-    "startTime": "12:45",
-    "endTime": "14:00",
-    "title": "Free Papers: Public Health and Psychosocial Care in the Rural Context",
-    "venueId": "hall-3",
-    "venueLabel": "Hall 3 · Multipurpose",
-    "activityType": "Free Papers",
-    "thematicAxis": "Health",
-    "speakers": [
-      { "name": "Dra. Mónica Alfaro Gastélum", "institution": "Universidad de Sonora", "role": "chair" }
-    ],
-    "authors": [
-      { "name": "Dra. Mónica Alfaro Gastélum", "institution": "Universidad de Sonora" },
-      { "name": "Dr. Omar Ruelas Jiménez", "institution": "Hospital General de Caborca" },
-      { "name": "Lic. Denisse Parra Ibarra", "institution": "Centro de Salud Caborca" }
-    ],
-    "abstract": "Set of presentations on mental health services availability, chronic disease prevention programs, and community health promotion strategies implemented in rural municipalities of the Caborca region."
-  },
-  {
-    "id": "event-007",
-    "date": "2026-09-23",
-    "startTime": "15:00",
-    "endTime": "16:30",
-    "title": "Keynote: Educational Innovation and Teacher Training for the XXI Century",
-    "venueId": "hall-1",
-    "venueLabel": "Hall 1 · Convention Center",
-    "activityType": "Masters Keynote",
-    "thematicAxis": "Education",
-    "speakers": [
-      { "name": "Dr. Héctor Manuel Grijalva", "institution": "Instituto Tecnológico de Sonora", "role": "speaker" }
-    ],
-    "authors": [
-      { "name": "Dr. Héctor Manuel Grijalva", "institution": "Instituto Tecnológico de Sonora" }
-    ],
-    "abstract": "Master lecture on disruptive pedagogical models, the integration of digital technologies in the classroom, and competency-based teacher training as levers to transform educational quality in Northern Mexico."
-  },
-  {
-    "id": "event-008",
-    "date": "2026-09-23",
-    "startTime": "15:00",
-    "endTime": "16:30",
-    "title": "Symposium: Regional Development and Value Chains in the Altar Desert",
-    "venueId": "hall-2",
-    "venueLabel": "Hall 2 · Audiovisual",
-    "activityType": "Symposium",
-    "thematicAxis": "Regional Development",
-    "speakers": [
-      { "name": "Dra. Cristina Torrez Quiroz", "institution": "CIAD Hermosillo", "role": "speaker" },
-      { "name": "Mtro. Jorge Andrade Félix", "institution": "Universidad de Sonora", "role": "speaker" },
-      { "name": "Dr. Iván Rosas Madrid", "institution": "Consejo Económico de Caborca", "role": "chair" }
-    ],
-    "authors": [
-      { "name": "Dra. Cristina Torrez Quiroz", "institution": "CIAD Hermosillo" },
-      { "name": "Mtro. Jorge Andrade Félix", "institution": "Universidad de Sonora" }
-    ],
-    "abstract": "Analysis of agri-food value chains, cluster competitiveness, and territorial development strategies in the Altar Desert region, with an emphasis on grape production, livestock, and the emerging renewable energy sector."
-  },
-  {
-    "id": "event-009",
-    "date": "2026-09-24",
-    "startTime": "09:00",
-    "endTime": "10:30",
-    "title": "Keynote: Contemporary Perspectives on Gender Studies and Feminist Epistemologies",
-    "venueId": "hall-1",
-    "venueLabel": "Hall 1 · Convention Center",
-    "activityType": "Masters Keynote",
-    "thematicAxis": "Gender",
-    "speakers": [
-      { "name": "Dra. Renata Ibáñez Contreras", "institution": "Universidad de Guadalajara", "role": "speaker" }
-    ],
-    "authors": [
-      { "name": "Dra. Renata Ibáñez Contreras", "institution": "Universidad de Guadalajara" }
-    ],
-    "abstract": "Master conference on the evolution of feminist epistemologies and their contribution to the social sciences: from critique of positivist traditions to intersectional methodologies applied in gender studies research."
-  },
-  {
-    "id": "event-010",
-    "date": "2026-09-24",
-    "startTime": "09:00",
-    "endTime": "10:30",
-    "title": "Panel Discussion: Public Security Strategy and Social Cohesion in Sonora",
-    "venueId": "hall-2",
-    "venueLabel": "Hall 2 · Audiovisual",
-    "activityType": "Panel Discussion",
-    "thematicAxis": "Violence",
-    "speakers": [
-      { "name": "Comandante Rosa Mena Ochoa", "institution": "Secretaría de Seguridad Pública de Sonora", "role": "speaker" },
-      { "name": "Dr. Fabián Lara Montes", "institution": "El Colegio de Sonora", "role": "speaker" },
-      { "name": "Dra. Silvia Ceballos Anaya", "institution": "Universidad de Sonora", "role": "moderator" }
-    ],
-    "authors": [
-      { "name": "Comandante Rosa Mena Ochoa", "institution": "Secretaría de Seguridad Pública de Sonora" },
-      { "name": "Dr. Fabián Lara Montes", "institution": "El Colegio de Sonora" }
-    ],
-    "abstract": "Interdisciplinary dialogue between institutional actors and academia on public security strategy: the role of preventive policing, social cohesion programs, and citizen participation mechanisms in reducing violence indexes."
-  },
-  {
-    "id": "event-011",
-    "date": "2026-09-24",
-    "startTime": "10:45",
-    "endTime": "12:00",
-    "title": "Symposium: Legal Reforms and the Modernization of the Justice System",
-    "venueId": "hall-4",
-    "venueLabel": "Hall 4 · Master's Room",
-    "activityType": "Symposium",
-    "thematicAxis": "Law",
-    "speakers": [
-      { "name": "Dr. Ernesto Saldivar Peña", "institution": "Suprema Corte de Justicia de la Nación", "role": "speaker" },
-      { "name": "Dra. Karla Zuloaga Ríos", "institution": "Universidad Autónoma de Sinaloa", "role": "speaker" },
-      { "name": "Mtro. Adrián Camou Healy", "institution": "Universidad de Sonora", "role": "chair" }
-    ],
-    "authors": [
-      { "name": "Dr. Ernesto Saldivar Peña", "institution": "Suprema Corte de Justicia de la Nación" },
-      { "name": "Dra. Karla Zuloaga Ríos", "institution": "Universidad Autónoma de Sinaloa" }
-    ],
-    "abstract": "Symposium on the state of criminal justice reform, oral trials, alternative dispute resolution mechanisms, and the pending agenda in constitutional law regarding human rights standards in Mexico."
-  },
-  {
-    "id": "event-012",
-    "date": "2026-09-24",
-    "startTime": "10:45",
-    "endTime": "12:00",
-    "title": "Free Papers: Educational Trajectories and Rural Schooling",
-    "venueId": "hall-3",
-    "venueLabel": "Hall 3 · Multipurpose",
-    "activityType": "Free Papers",
-    "thematicAxis": "Education",
-    "speakers": [
-      { "name": "Mtro. Sergio Woolfolk López", "institution": "Universidad de Sonora", "role": "chair" },
-      { "name": "Dra. Isabel Casso Renteria", "institution": "Universidad Pedagógica Nacional", "role": "speaker" }
-    ],
-    "authors": [
-      { "name": "Dra. Isabel Casso Renteria", "institution": "Universidad Pedagógica Nacional" },
-      { "name": "Mtro. Sergio Woolfolk López", "institution": "Universidad de Sonora" },
-      { "name": "Lic. Nora Gastélum Romero", "institution": "Escuela Normal de Sonora" }
-    ],
-    "abstract": "Research presentations on dropout prevention, multigrade schooling, and the educational trajectories of first-generation university students coming from rural communities in the northwest of the country."
-  },
-  {
-    "id": "event-013",
-    "date": "2026-09-24",
-    "startTime": "12:15",
-    "endTime": "13:30",
-    "title": "Posters Session: Social Research in the Border Region",
-    "venueId": "hall-2",
-    "venueLabel": "Hall 2 · Audiovisual",
-    "activityType": "Posters",
-    "thematicAxis": "Regional Development",
-    "speakers": [
-      { "name": "Dra. Verónica Ocaña Vizcarra", "institution": "Universidad de Sonora", "role": "chair" }
-    ],
-    "authors": [
-      { "name": "Dra. Verónica Ocaña Vizcarra", "institution": "Universidad de Sonora" },
-      { "name": "Mtro. Erick Bracamontes Zavala", "institution": "Universidad de Sonora, Campus Caborca" },
-      { "name": "Lic. Dulce Cordero Molina", "institution": "Colegio de la Frontera Norte" }
-    ],
-    "abstract": "Guided tour of the poster exhibition featuring ongoing social research projects: local identity, youth entrepreneurship, water management, and cultural heritage preservation in border municipalities."
-  },
-  {
-    "id": "event-014",
-    "date": "2026-09-24",
-    "startTime": "12:15",
-    "endTime": "13:30",
-    "title": "Free Papers: Migration, Health, and Access to Social Services",
-    "venueId": "hall-3",
-    "venueLabel": "Hall 3 · Multipurpose",
-    "activityType": "Free Papers",
-    "thematicAxis": "Migration",
-    "speakers": [
-      { "name": "Dra. Tania Espinoza Noriega", "institution": "Colegio de la Frontera Norte", "role": "chair" }
-    ],
-    "authors": [
-      { "name": "Dra. Tania Espinoza Noriega", "institution": "Colegio de la Frontera Norte" },
-      { "name": "Dr. Rodolfo Castañeda Blanco", "institution": "Instituto Nacional de Salud Pública" },
-      { "name": "Lic. Alondra Domínguez Sierra", "institution": "Universidad de Sonora" }
-    ],
-    "abstract": "Evidence on the health situation of migrant populations in transit through Sonora: access barriers to public health services, mental health impacts of the migratory process, and recommendations for inclusive health policy."
-  },
-  {
-    "id": "event-015",
-    "date": "2026-09-24",
-    "startTime": "15:00",
-    "endTime": "16:00",
-    "title": "Panel Discussion: Gender Perspective in Research and Public Policy",
-    "venueId": "hall-2",
-    "venueLabel": "Hall 2 · Audiovisual",
-    "activityType": "Panel Discussion",
-    "thematicAxis": "Gender",
-    "speakers": [
-      { "name": "Dra. Marisol Luna Quintero", "institution": "INMUJERES Sonora", "role": "speaker" },
-      { "name": "Dra. Beatriz Ramos Villalobos", "institution": "Universidad de Sonora", "role": "speaker" },
-      { "name": "Mtro. Óscar Duarte Gaxiola", "institution": "Universidad de Sonora", "role": "moderator" }
-    ],
-    "authors": [
-      { "name": "Dra. Marisol Luna Quintero", "institution": "INMUJERES Sonora" },
-      { "name": "Dra. Beatriz Ramos Villalobos", "institution": "Universidad de Sonora" }
-    ],
-    "abstract": "Reflection on the mainstreaming of the gender perspective in academic research agendas and public policy design, including gender budgeting, indicator systems, and the evaluation of equality programs at the state level."
-  },
-  {
-    "id": "event-016",
-    "date": "2026-09-24",
-    "startTime": "16:15",
-    "endTime": "17:30",
-    "title": "Closing Ceremony, Awards, and Farewell Message of the VII JIDFICS",
-    "venueId": "hall-1",
-    "venueLabel": "Hall 1 · Convention Center",
-    "activityType": "Masters Keynote",
-    "thematicAxis": "Education",
-    "speakers": [
-      { "name": "Dra. María Fernanda Ríos", "institution": "Universidad de Sonora", "role": "moderator" },
-      { "name": "Dr. Alejandro Cárdenas", "institution": "Universidad de Sonora, Campus Caborca", "role": "speaker" }
-    ],
-    "authors": [
-      { "name": "Dr. Alejandro Cárdenas", "institution": "Universidad de Sonora, Campus Caborca" }
-    ],
-    "abstract": "Closing session with recognition of the best free papers and posters presented during the conference, synthesis of conclusions, and the announcement of the next edition of JIDFICS."
-  }
-]
+  "programa": [
+    {
+      "fecha": "2026-09-23",
+      "dia": "Miércoles",
+      "eventos": [
+        {
+          "id": "WED-001",
+          "hora_inicio": "08:00",
+          "hora_fin": "09:00",
+          "tipo_actividad": "Registro",
+          "titulo": "Registro de participantes",
+          "lugar": "Centro de Convenciones",
+          "sala": "Sala 1",
+          "edificio": "3B",
+          "ponentes": [],
+          "eje_tematico": "General"
+        },
+        {
+          "id": "WED-002",
+          "hora_inicio": "09:00",
+          "hora_fin": "09:30",
+          "tipo_actividad": "Inauguración",
+          "titulo": "Inauguración del VII JIDFICS",
+          "lugar": "Centro de Convenciones",
+          "sala": "Sala 1",
+          "edificio": "3B",
+          "ponentes": [],
+          "eje_tematico": "General"
+        },
+        {
+          "id": "WED-003",
+          "hora_inicio": "09:30",
+          "hora_fin": "10:30",
+          "tipo_actividad": "Conferencia Magistral",
+          "titulo": "La ansiedad, depresión y estrés en jóvenes y el método integral para prevenirlos a través del Yoga",
+          "lugar": "Centro de Convenciones",
+          "sala": "Sala 1",
+          "edificio": "3B",
+          "ponentes": [
+            {
+              "nombre": "Dr. Carlos Alejandro Hidalgo Rasmussen",
+              "institucion": "Universidad de Guadalajara"
+            }
+          ],
+          "eje_tematico": "Salud / Psicología"
+        },
+        {
+          "id": "WED-004",
+          "hora_inicio": "10:30",
+          "hora_fin": "11:30",
+          "tipo_actividad": "Conferencia Magistral",
+          "titulo": "Los ambientes positivos en la resiliencia o adaptabilidad",
+          "lugar": "Centro de Convenciones",
+          "sala": "Sala 1",
+          "edificio": "3B",
+          "ponentes": [
+            {
+              "nombre": "Dr. José Concepción Gaxiola Romero",
+              "institucion": "Universidad de Sonora"
+            }
+          ],
+          "eje_tematico": "Salud / Psicología"
+        },
+        {
+          "id": "WED-005",
+          "hora_inicio": "11:30",
+          "hora_fin": "12:30",
+          "tipo_actividad": "Conferencia Magistral",
+          "titulo": "Comunicación comunitaria para personas migrantes e indígenas de retorno: sociodemografía y memoria",
+          "lugar": "Centro de Convenciones",
+          "sala": "Sala 1",
+          "edificio": "3B",
+          "ponentes": [
+            {
+              "nombre": "Dra. María Dolores Aragón Robles Linares",
+              "institucion": "Universidad de Sonora"
+            }
+          ],
+          "eje_tematico": "Migración / Comunicación"
+        },
+        {
+          "id": "WED-MESA-1",
+          "hora_inicio": "10:30",
+          "hora_fin": "12:30",
+          "tipo_actividad": "Trabajos Libres",
+          "mesa_numero": 1,
+          "eje_tematico": "Violencia",
+          "lugar": "Sala Audiovisual",
+          "sala": "Sala 2",
+          "edificio": "1E",
+          "ponencias": [
+            {
+              "titulo": "Atrapados en la frontera: Análisis de la vulnerabilidad multidimensional de la población focal migrante internacional en Tijuana, Baja California (2025-2027)",
+              "autores": [
+                "Renato Pintor Sandoval",
+                "Nayeli Burgueño Angulo",
+                "David Rocha Romero"
+              ],
+              "institucion": "Universidad Autónoma de Sinaloa"
+            },
+            {
+              "titulo": "Percepción de las estudiantes de bachillerato sobre las violencias simbólicas en el noviazgo",
+              "autores": [
+                "Valeria Chávez Muñiz",
+                "Lorena Noemí Prieto Mendoza",
+                "Rita Elizabeth Soto Sánchez",
+                "Nansi Ysabel García García"
+              ],
+              "institucion": "Universidad de Guadalajara"
+            },
+            {
+              "titulo": "Mujeres sordas, comunicación y violencia obstétrica",
+              "autores": [
+                "Gabriel Tolentino Tapia"
+              ],
+              "institucion": "Instituto de Investigaciones y Estudios de la Comisión de Derechos Humanos del Estado de Puebla"
+            },
+            {
+              "titulo": "Reflexiones sobre la apología del delito en los corridos tumbados, bélicos y narcocorridos: ¿Libertad de expresión o legitimación de la violencia simbólica en México?",
+              "autores": [
+                "Alan Jair García Flores"
+              ],
+              "institucion": "Centro de Estudios sobre Derecho, Globalización y Seguridad de la Universidad Veracruzana"
+            },
+            {
+              "titulo": "Exposición a la violencia y síntomas de estrés postraumático (TEPT/TEPT-C) en la zona urbana de Culiacán Rosales durante el contexto de conflicto armado prolongado",
+              "autores": [
+                "Carlos Samuel Ríos Díaz",
+                "Violeta Rubí Castro López"
+              ],
+              "institucion": "Universidad Autónoma de Sinaloa"
+            },
+            {
+              "titulo": "Programa de prevención de violencias en adolescentes en el marco de la Nueva Escuela Mexicana",
+              "autores": [
+                "Claudia Cecilia Norzagaray Benítez",
+                "María del Rosario López Sauceda",
+                "Ma. Guadalupe González Lizárraga",
+                "Migdelina Andrea Espinoza Romero",
+                "Olimpia Salazar Serrano"
+              ],
+              "institucion": "Universidad de Sonora"
+            }
+          ]
+        },
+        {
+          "id": "WED-MESA-2",
+          "hora_inicio": "10:30",
+          "hora_fin": "12:30",
+          "tipo_actividad": "Trabajos Libres",
+          "mesa_numero": 2,
+          "eje_tematico": "Género",
+          "lugar": "Sala Polivalente",
+          "sala": "Sala 3",
+          "edificio": "1M",
+          "ponencias": [
+            {
+              "titulo": "Trabajadoras de la agroexportación: Desigualdades de género en las cadenas globales agrícolas",
+              "autores": [
+                "José Luis Saldaña Contreras"
+              ],
+              "institucion": "Universidad de Guadalajara"
+            },
+            {
+              "titulo": "Sobrecarga, redes de apoyo y permanencia académica de madres universitarias: una mirada desde el desarrollo social y la igualdad de género",
+              "autores": [
+                "Marcela Huerta Salomón",
+                "María de los Ángeles Fuentes Vega",
+                "Lucía Margarita González Barrón"
+              ],
+              "institucion": "Universidad de Sonora"
+            },
+            {
+              "titulo": "Análisis del clima organizacional desde una perspectiva de género: Estudio de caso empresa de servicios",
+              "autores": [
+                "Braulio René García Guerrero",
+                "Ricardo García Parada",
+                "Lucía Xiomara Silva Máynez",
+                "Carlos Alberto Martínez Vela",
+                "Carmen Angelina Gallegos Orozco"
+              ],
+              "institucion": "Instituto Tecnológico de Chihuahua II"
+            },
+            {
+              "titulo": "El cuerpo y el placer en las mujeres normalistas: abordaje teórico",
+              "autores": [
+                "Yocelin Citlalli Martínez Cámara"
+              ],
+              "institucion": "Universidad Autónoma de San Luis Potosí"
+            },
+            {
+              "titulo": "Análisis del Estrés Laboral con Enfoque de Género en una Institución de Educación Superior",
+              "autores": [
+                "Daniela María Reyes Ledezma",
+                "Anna Merary Jiménez Antúnez",
+                "María Del Socorro Corral",
+                "Mario Héctor Silva Martínez",
+                "Juan Pablo Sostres Flores"
+              ],
+              "institucion": "Instituto Tecnológico de Chihuahua II"
+            },
+            {
+              "titulo": "Repensar el género a partir de los procesos de significación. 'Un estudio sobre mujeres en el noroeste de México'",
+              "autores": [
+                "Daniel Rojas Méndez",
+                "Alicia Monzalvo Curiel"
+              ],
+              "institucion": "Universidad Estatal de Sonora"
+            },
+            {
+              "titulo": "Desmontando el techo de cristal en la ciencia mexicana: Un análisis Interseccional de las Mujeres Científicas, Maternidad y Economía del Cuidado en la Academia",
+              "autores": [
+                "Susana Herrera Guerra"
+              ],
+              "institucion": "Universidad de Sonora"
+            }
+          ]
+        },
+        {
+          "id": "WED-MESA-3",
+          "hora_inicio": "10:30",
+          "hora_fin": "12:30",
+          "tipo_actividad": "Trabajos Libres",
+          "mesa_numero": 3,
+          "eje_tematico": "Educación",
+          "lugar": "Sala de Maestría",
+          "sala": "Sala 4",
+          "edificio": "1G",
+          "ponencias": []
+        },
+        {
+          "id": "WED-MESA-4",
+          "hora_inicio": "12:30",
+          "hora_fin": "13:10",
+          "tipo_actividad": "Trabajos Libres",
+          "mesa_numero": 4,
+          "eje_tematico": "Derecho",
+          "lugar": "Centro de Convenciones",
+          "sala": "Sala 1",
+          "edificio": "3B",
+          "ponencias": []
+        },
+        {
+          "id": "WED-MESA-5",
+          "hora_inicio": "12:30",
+          "hora_fin": "15:00",
+          "tipo_actividad": "Trabajos Libres",
+          "mesa_numero": 5,
+          "eje_tematico": "Educación",
+          "lugar": "Sala Audiovisual",
+          "sala": "Sala 2",
+          "edificio": "1E",
+          "ponencias": [
+            {
+              "titulo": "Diseño Web educativo y fortalecimiento de la visión empresarial en bachillerato",
+              "autores": [
+                "Maria Soledad Aguirre Coronado",
+                "Claudia Berenice Olivares Robles",
+                "Tomasa Valdivia Briones",
+                "Graciela Isabet Jáuregui Gómez",
+                "Maria Guadalupe Jáuregui Gómez",
+                "Juan Martín Casillas González"
+              ],
+              "institucion": "Universidad de Guadalajara, ITESO"
+            },
+            {
+              "titulo": "Estrategias de mediación pedagógica con gamificación para una tutoría integral",
+              "autores": [
+                "Tomasa Valdivia Briones",
+                "Claudia Berenice Olivares Robles",
+                "Maria Soledad Aguirre Coronado",
+                "Graciela Isabet Jáuregui Gómez",
+                "Maria Guadalupe Jáuregui Gómez",
+                "Juan Martín Casillas González"
+              ],
+              "institucion": "Universidad de Guadalajara, ITESO"
+            },
+            {
+              "titulo": "El desarrollo de la competencia investigativa en la formación del psicólogo. Tendencias histórico-curriculares en Latinoamérica",
+              "autores": [
+                "Yanet Parra Herrera",
+                "Silvia Colunga Santos",
+                "Bárbara María Carvajal Hernández",
+                "Jorge Luis Tejeda Mir"
+              ],
+              "institucion": "Universidad de Sonora, Universidad de Ciencias Médicas Carlos J. Finlay, Universidad de Camagüey, Universidad Estatal de Sonora"
+            },
+            {
+              "titulo": "Propuesta de modelo teórico metodológico para el análisis del desarrollo profesional del profesorado de Educación Normal",
+              "autores": [
+                "Emilia Castillo Ochoa",
+                "Karen Lizeth López Herrera"
+              ],
+              "institucion": "Universidad de Sonora"
+            },
+            {
+              "titulo": "La formación en Metodología de la Investigación en los estudiantes de la Universidad del Golfo de California",
+              "autores": [
+                "Mayre Barceló Hidalgo"
+              ],
+              "institucion": "Universidad de Cienfuegos, Universidad del Golfo de California"
+            },
+            {
+              "titulo": "Uso de Kahoot como estrategia de innovación educativa en la enseñanza de la contabilidad universitaria",
+              "autores": [
+                "Sheila Yazmín Solis Vázquez",
+                "Josué Salgado Jurado",
+                "Jose Leonel Lopez Robles"
+              ],
+              "institucion": "Universidad Autónoma de Coahuila"
+            },
+            {
+              "titulo": "Evaluación de la satisfacción estudiantil para la mejora continua del EEE:IA",
+              "autores": [
+                "Elodia Guadalupe Ortega Escalante",
+                "Rodrigo Romero Matuz",
+                "María del Carmen Moreno Figueroa",
+                "Thailly Melissa Valenzuela Silvas"
+              ],
+              "institucion": "Universidad de Sonora"
+            },
+            {
+              "titulo": "Análisis relacional entre las variables bienestar psicológico, apoyo social, resiliencia y autoeficacia en estudiantes universitarios de Colombia y México",
+              "autores": [
+                "Laura Jessuly Contreras Angel",
+                "Guadalupe Refugio Flores Verduzco"
+              ],
+              "institucion": "Universidad de Sonora, UNAD"
+            }
+          ]
+        },
+        {
+          "id": "WED-MESA-7",
+          "hora_inicio": "15:00",
+          "hora_fin": "16:00",
+          "tipo_actividad": "Trabajos Libres",
+          "mesa_numero": 7,
+          "eje_tematico": "Desarrollo Regional / Migración",
+          "lugar": "Centro de Convenciones",
+          "sala": "Sala 1",
+          "edificio": "3B",
+          "ponencias": [
+            {
+              "titulo": "Gobernanza del Gobierno Municipal y la Asamblea General en la coordinación de las actividades ecoturísticas de los municipios de Santa María Yavesía y Santa Catarina Lachatao, Oaxaca",
+              "autores": [
+                "Gabriel Adán Durán Gálvez"
+              ],
+              "institucion": "Universidad de la Sierra Sur"
+            },
+            {
+              "titulo": "Política pública transversal sin evaluación territorial: el caso del Programa Transversal de Igualdad de Género 2016-2021 en Sonora",
+              "autores": [
+                "Ivan Eduardo Andrade Rembau"
+              ],
+              "institucion": "Universidad de Sonora"
+            }
+          ]
+        },
+        {
+          "id": "WED-MESA-8",
+          "hora_inicio": "15:00",
+          "hora_fin": "16:00",
+          "tipo_actividad": "Trabajos Libres",
+          "mesa_numero": 8,
+          "eje_tematico": "Violencia",
+          "lugar": "Sala Audiovisual",
+          "sala": "Sala 2",
+          "edificio": "1E",
+          "ponencias": [
+            {
+              "titulo": "Protocolos de prevención y atención de la violencia escolar: desafíos para la construcción de entornos educativos seguros e inclusivos",
+              "autores": [
+                "María Zulema Monteverde Murrieta",
+                "Edgar Issac Ortega Méndez",
+                "Susana Angélica Pastrana Corral"
+              ],
+              "institucion": "Universidad de Sonora"
+            },
+            {
+              "titulo": "Un estudio de caso cualitativo en una empresa de Hermosillo",
+              "autores": [
+                "María Natasha Lizarraga Duarte",
+                "Suleyka Guadalupe Jaime Puentes",
+                "Claudia Esthela Espinoza Cid",
+                "Valery Johanna Arreola Muñoz"
+              ],
+              "institucion": "Universidad de Sonora"
+            },
+            {
+              "titulo": "El impacto social que tiene la violencia familiar en el municipio de Caborca",
+              "autores": [
+                "Alva Irey Murrieta",
+                "Edgar Isaac Ortega Méndez"
+              ],
+              "institucion": "Universidad de Sonora"
+            }
+          ]
+        },
+        {
+          "id": "WED-MESA-9",
+          "hora_inicio": "15:00",
+          "hora_fin": "16:00",
+          "tipo_actividad": "Trabajos Libres",
+          "mesa_numero": 9,
+          "eje_tematico": "Género",
+          "lugar": "Sala Polivalente",
+          "sala": "Sala 3",
+          "edificio": "1M",
+          "ponencias": [
+            {
+              "titulo": "El rol de los géneros y las edades en los relatos históricos escolares post-ESI: Entre la norma legal y la tensión académica",
+              "autores": [
+                "María Inés Rivas"
+              ],
+              "institucion": "Universidad Nacional del Centro de la Provincia de Buenos Aires"
+            },
+            {
+              "titulo": "Deconstrucción de la masculinidad hegemónica y desarrollo de recursos socioemocionales desde el acompañamiento de las Tutorías",
+              "autores": [
+                "Valeria Chávez Muñiz",
+                "Verónica Patricia Fernández Serrano",
+                "Luis Rico Chávez"
+              ],
+              "institucion": "Universidad de Guadalajara"
+            },
+            {
+              "titulo": "Flexibilidad para cuidar, precariedad para trabajar: mujeres en plataformas digitales en la Ciudad de México",
+              "autores": [
+                "Aurora Rebeca de la Rosa Zapata"
+              ],
+              "institucion": "El Colegio de México"
+            }
+          ]
+        },
+        {
+          "id": "WED-CONV-1",
+          "hora_inicio": "15:00",
+          "hora_fin": "16:00",
+          "tipo_actividad": "Conversatorio",
+          "titulo": "Ser docente hoy: ¿qué necesita realmente un educador para transformar su grupo?",
+          "lugar": "Sala de Maestría",
+          "sala": "Sala 4",
+          "edificio": "1G",
+          "ponentes": [
+            {
+              "nombre": "Dr. Julio Cruz",
+              "institucion": "Centro Regional de Formación Profesional Docente de Sonora (CRESON)"
+            }
+          ],
+          "eje_tematico": "Educación"
+        },
+        {
+          "id": "WED-006",
+          "hora_inicio": "16:00",
+          "hora_fin": "17:00",
+          "tipo_actividad": "Conferencia Magistral",
+          "titulo": "Reestructuración geoeconómica y control biopolítico estadounidense: Siete tesis para comprender la agenda trumpista",
+          "lugar": "Centro de Convenciones",
+          "sala": "Sala 1",
+          "edificio": "3B",
+          "ponentes": [
+            {
+              "nombre": "Dr. José Guadalupe Rodríguez Gutiérrez",
+              "institucion": "Universidad de Sonora"
+            }
+          ],
+          "eje_tematico": "Desarrollo Regional / Política"
+        },
+        {
+          "id": "WED-MESA-10",
+          "hora_inicio": "16:00",
+          "hora_fin": "17:00",
+          "tipo_actividad": "Trabajos Libres",
+          "mesa_numero": 10,
+          "eje_tematico": "Educación",
+          "lugar": "Sala Audiovisual",
+          "sala": "Sala 2",
+          "edificio": "1E",
+          "ponencias": [
+            {
+              "titulo": "El acompañamiento académico como proceso clave para revertir el rezago de saberes matemáticos: el caso del PARM",
+              "autores": [
+                "José Candelario Osuna García",
+                "José Alfredo Toledo Hernández"
+              ],
+              "institucion": "Universidad Autónoma de Baja California"
+            },
+            {
+              "titulo": "Estrategias docentes para la inclusión de un estudiante con Trastorno del Espectro Autista en educación primaria: un estudio de caso",
+              "autores": [
+                "Nohemí Guadalupe Calderón González",
+                "Mayrim Yoena López Mesino",
+                "Coral Estrella Rosas Santos"
+              ],
+              "institucion": "Universidad de Sonora"
+            },
+            {
+              "titulo": "Visión de los escenarios de desempeño profesional futuro en la licenciatura en Educación en el municipio Caborca",
+              "autores": [
+                "Zulema de la Caridad Matos Columbié",
+                "María Zulema Monteverde Murrieta",
+                "Graciela Orozco Sosa"
+              ],
+              "institucion": "Universidad de Sonora"
+            }
+          ]
+        },
+        {
+          "id": "WED-MESA-11",
+          "hora_inicio": "16:00",
+          "hora_fin": "17:00",
+          "tipo_actividad": "Trabajos Libres",
+          "mesa_numero": 11,
+          "eje_tematico": "Derecho",
+          "lugar": "Sala Polivalente",
+          "sala": "Sala 3",
+          "edificio": "1M",
+          "ponencias": [
+            {
+              "titulo": "¿Escuchar o Co-crear? Rompiendo el adultocentrismo judicial a través de la mediación familiar inclusiva en México",
+              "autores": [
+                "Carlos Franco Castellanos"
+              ],
+              "institucion": "Universidad Autónoma de Nuevo León"
+            },
+            {
+              "titulo": "Políticas de seguridad pública y comportamiento de la incidencia delictiva en Sonora, 2020-2023: un análisis comparativo",
+              "autores": [
+                "Oscar Renee Miranda Contreras",
+                "Lucía Margarita González Barrón"
+              ],
+              "institucion": "Policía Estatal de Seguridad Pública"
+            },
+            {
+              "titulo": "¿Categorías Relevantes De La Prueba Ilícita: Aproximación Jurisprudencial Entre México Y Colombia",
+              "autores": [
+                "Oscar Eugenio Campaz Hernández",
+                "Luis Alonso Hagelsieb Dórame"
+              ],
+              "institucion": "UNAD, Universidad de Sonora"
+            }
+          ]
+        },
+        {
+          "id": "WED-MESA-12",
+          "hora_inicio": "16:00",
+          "hora_fin": "19:00",
+          "tipo_actividad": "Trabajos Libres",
+          "mesa_numero": 12,
+          "eje_tematico": "Salud",
+          "lugar": "Sala de Maestría",
+          "sala": "Sala 4",
+          "edificio": "1G",
+          "ponencias": [
+            {
+              "titulo": "Una propuesta neuropsicoanalítica para el tratamiento de las adicciones",
+              "autores": [
+                "Jesús Enrique Mercado Chan"
+              ],
+              "institucion": "Universidad de Sonora"
+            },
+            {
+              "titulo": "Ecuación del Impacto del Autismo en la Dinámica Familiar",
+              "autores": [
+                "María Renée Ortega Loroña",
+                "Arlette Arianna Muñoz Castro"
+              ],
+              "institucion": "Universidad de Sonora"
+            },
+            {
+              "titulo": "La indigencia en primera persona: resultado de la exclusión social",
+              "autores": [
+                "Omar Casillas Bejarano",
+                "Sheysa Camila Sotelo Bracamontes",
+                "Luz Alejandra López Macias",
+                "Dana Jaretsi Tapia Medina"
+              ],
+              "institucion": "Universidad de Sonora"
+            },
+            {
+              "titulo": "Salud emocional en niños de primaria",
+              "autores": [
+                "Oscar David Ramírez Benítez",
+                "Alejandro Palomares Hernández",
+                "Mariel Juliann Vázquez García"
+              ],
+              "institucion": "Universidad de Sonora"
+            },
+            {
+              "titulo": "Adicciones y problemáticas sociales. Estudio de caso entre adolescentes y jóvenes en Hermosillo, Sonora",
+              "autores": [
+                "Rocío Guadalupe Borbón López",
+                "José Guadalupe Rodríguez Gutiérrez"
+              ],
+              "institucion": "Universidad de Sonora"
+            },
+            {
+              "titulo": "Identidad cultural alimentaria en estudiantes universitarios",
+              "autores": [
+                "Jesús Alberto Méndez Morales"
+              ],
+              "institucion": "Universidad de Sonora"
+            },
+            {
+              "titulo": "Deporte y actividad física ante la ausencia de Educación Física en Punta Chueca, Sonora: una intervención sociodeportiva intercultural con niños, niñas y adolescentes (NNA) Comcaác",
+              "autores": [
+                "Arturo Rodríguez Atondo",
+                "José Guadalupe Rodríguez Gutiérrez"
+              ],
+              "institucion": "Universidad Santander, Universidad de Sonora"
+            },
+            {
+              "titulo": "Viabilidad social de un sistema de monitoreo en población jornalera agrícola para prevenir e identificar los efectos en la salud por exposición ante temperaturas extremas",
+              "autores": [
+                "José Eduardo Calvario Parra",
+                "Carlos Alberto Ramos Rivera"
+              ],
+              "institucion": "Universidad de Sonora"
+            },
+            {
+              "titulo": "Consumo cannábico en la Universidad de Sonora, Campus Hermosillo: Caso Ciencias de la Comunicación",
+              "autores": [
+                "Wilbert Eduardo Lara Peñaloza"
+              ],
+              "institucion": "Universidad de Sonora"
+            },
+            {
+              "titulo": "Avances clínicos, etiológicos y terapéuticos acerca del Trastorno Límite de la Personalidad",
+              "autores": [
+                "David Adrián Escalante Romero",
+                "Beatriz Martínez Ramírez",
+                "Nissa Yaing Torres Soto"
+              ],
+              "institucion": "Universidad de Sonora, Instituto Superior de Estudios de Occidente"
+            }
+          ]
+        },
+        {
+          "id": "WED-007",
+          "hora_inicio": "17:00",
+          "hora_fin": "18:00",
+          "tipo_actividad": "Conferencia Magistral",
+          "titulo": "Bienestar y desarrollo psicológico en México y España",
+          "lugar": "Centro de Convenciones",
+          "sala": "Sala 1",
+          "edificio": "3B",
+          "ponentes": [
+            {
+              "nombre": "Dra. Eunice Gaxiola",
+              "institucion": "Universidad de Sonora"
+            }
+          ],
+          "eje_tematico": "Salud / Psicología"
+        },
+        {
+          "id": "WED-MESA-13",
+          "hora_inicio": "17:00",
+          "hora_fin": "18:00",
+          "tipo_actividad": "Trabajos Libres",
+          "mesa_numero": 13,
+          "eje_tematico": "Derecho",
+          "lugar": "Sala Audiovisual",
+          "sala": "Sala 2",
+          "edificio": "1E",
+          "ponencias": [
+            {
+              "titulo": "La educación jurídica de los servidores públicos en el municipio Caborca, Sonora, México",
+              "autores": [
+                "Francisco Javier García Martínez",
+                "Edgar Isaac Ortega Méndez",
+                "María Zulema Monteverde Murrieta",
+                "Raúl Alejandro Núñez Vázquez"
+              ],
+              "institucion": "Universidad de Sonora"
+            },
+            {
+              "titulo": "El procedimiento de expropiación de bienes ejidales y comunales establecido en la legislación agraria",
+              "autores": [
+                "Rosario Adalberto Mondaca Corral"
+              ],
+              "institucion": "Universidad de Sonora"
+            },
+            {
+              "titulo": "Los jueces penales en México y su compromiso con la justicia",
+              "autores": [
+                "Noé Bustamante Zamora"
+              ],
+              "institucion": "Universidad de Sonora"
+            },
+            {
+              "titulo": "La pesca ilegal de la totoaba en el Alto Golfo de California",
+              "autores": [
+                "Francisco Javier García Martínez",
+                "Princesa Angelina Castañón González",
+                "Raúl Alejandro Núñez Vázquez"
+              ],
+              "institucion": "Universidad de Sonora"
+            }
+          ]
+        },
+        {
+          "id": "WED-SIMP-1",
+          "hora_inicio": "17:00",
+          "hora_fin": "18:00",
+          "tipo_actividad": "Simposio Invitado",
+          "titulo": "Vínculos que nos construyen y nos vulneran: apego, amor, familia y relaciones en la era digital",
+          "lugar": "Sala Polivalente",
+          "sala": "Sala 3",
+          "edificio": "1M",
+          "ponentes": [
+            {
+              "nombre": "Dr. César Acevedo Triana",
+              "institucion": "Universidad Pedagógica y Tecnológica de Colombia"
+            },
+            {
+              "nombre": "Dr. Juan Francisco Muñoz",
+              "institucion": "Universidad Pedagógica y Tecnológica de Colombia"
+            },
+            {
+              "nombre": "Yolima Bolívar Suárez",
+              "institucion": "Universidad Pedagógica y Tecnológica de Colombia"
+            },
+            {
+              "nombre": "Jorge Arturo Martínez Gómez",
+              "institucion": "Universidad Pedagógica y Tecnológica de Colombia"
+            }
+          ],
+          "eje_tematico": "Psicología / Sociedad"
+        },
+        {
+          "id": "WED-YOGA",
+          "hora_inicio": "17:00",
+          "hora_fin": "18:00",
+          "tipo_actividad": "Clase Magistral",
+          "titulo": "Yoga",
+          "lugar": "Sala de Danza",
+          "sala": "Sala de Danza",
+          "edificio": "1E",
+          "ponentes": [
+            {
+              "nombre": "Dr. Carlos Alejandro Hidalgo Rasmussen",
+              "institucion": "Universidad de Guadalajara"
+            }
+          ],
+          "eje_tematico": "Salud / Bienestar"
+        },
+        {
+          "id": "WED-PODCAST",
+          "hora_inicio": "18:00",
+          "hora_fin": "19:00",
+          "tipo_actividad": "Clase Magistral",
+          "titulo": "Comunicación científica transfronteriza: hacer un podcast de divulgación y vinculación social",
+          "lugar": "Aula 201D",
+          "sala": "Aula 201D",
+          "edificio": "201D",
+          "ponentes": [
+            {
+              "nombre": "Dra. María Dolores Aragón Robles Linares",
+              "institucion": "Universidad de Sonora"
+            }
+          ],
+          "eje_tematico": "Comunicación Científica"
+        },
+        {
+          "id": "WED-SIMP-ESP",
+          "hora_inicio": "18:00",
+          "hora_fin": "19:00",
+          "tipo_actividad": "Simposio Especial",
+          "titulo": "Impacto percibido en estudiantes jóvenes que han experimentado ruptura amorosa",
+          "lugar": "Centro de Convenciones",
+          "sala": "Sala 1",
+          "edificio": "3B",
+          "ponentes": [
+            {
+              "nombre": "Dra. Libia Y. Yánez Peñúñuri",
+              "institucion": "Universidad de Sonora"
+            },
+            {
+              "nombre": "M. P. Jesús A. Méndez Morales",
+              "institucion": "Universidad de Sonora"
+            },
+            {
+              "nombre": "Dra. Marcela Cáñez Navarrete",
+              "institucion": "Universidad de Sonora"
+            },
+            {
+              "nombre": "Dr. Federico H. Hagelsieb",
+              "institucion": "Universidad de Sonora"
+            },
+            {
+              "nombre": "Mtra. Cinthya L. Contreras Hernández",
+              "institucion": "Universidad de Sonora"
+            },
+            {
+              "nombre": "Mtra. Alejandra Madrid Gamboa",
+              "institucion": "Universidad de Sonora"
+            }
+          ],
+          "eje_tematico": "Psicología"
+        },
+        {
+          "id": "WED-MESA-14",
+          "hora_inicio": "18:00",
+          "hora_fin": "19:00",
+          "tipo_actividad": "Trabajos Libres",
+          "mesa_numero": 14,
+          "eje_tematico": "Educación",
+          "lugar": "Sala Audiovisual",
+          "sala": "Sala 2",
+          "edificio": "1E",
+          "ponencias": []
+        },
+        {
+          "id": "WED-MESA-15",
+          "hora_inicio": "18:00",
+          "hora_fin": "19:00",
+          "tipo_actividad": "Trabajos Libres",
+          "mesa_numero": 15,
+          "eje_tematico": "Desarrollo Regional",
+          "lugar": "Sala Polivalente",
+          "sala": "Sala 3",
+          "edificio": "1M",
+          "ponencias": [
+            {
+              "titulo": "De Aristóteles a Ostrom: genealogía filosófica de los comunes y economía para la vida",
+              "autores": [
+                "Ángel Ernesto Jiménez Bernardino",
+                "Jorge Alberto Álvarez Ascencio"
+              ],
+              "institucion": "Universidad de Guadalajara"
+            },
+            {
+              "titulo": "¿Todas las metodologías sirven para todos los proyectos? Un marco de decisión para la innovación y el emprendimiento social en contextos educativos",
+              "autores": [
+                "Ángel Ernesto Jiménez Bernardino",
+                "Bernardo Rangel Aldaz",
+                "Alicia Paola Partida Hernández"
+              ],
+              "institucion": "Universidad de Guadalajara"
+            },
+            {
+              "titulo": "Ecotecnias, economías alternas e implicaciones socioambientales: una lectura comparada de experiencias comunitarias en México y El Salvador",
+              "autores": [
+                "Christian Cancela Nava",
+                "Marcia Lizeth Barrera de Calderón",
+                "Danú Alberto Fabre Platas"
+              ],
+              "institucion": "Universidad Veracruzana"
+            }
+          ]
+        },
+        {
+          "id": "WED-CENA",
+          "hora_inicio": "19:00",
+          "hora_fin": "21:00",
+          "tipo_actividad": "Social",
+          "titulo": "Cena",
+          "lugar": "Sala de usos múltiples",
+          "sala": "Sala de usos múltiples",
+          "edificio": "1I",
+          "ponentes": [],
+          "eje_tematico": "General"
+        }
+      ]
+    },
+    {
+      "fecha": "2026-09-24",
+      "dia": "Jueves",
+      "eventos": [
+        {
+          "id": "THU-001",
+          "hora_inicio": "08:00",
+          "hora_fin": "09:00",
+          "tipo_actividad": "Conferencia Magistral",
+          "titulo": "Niñez y tecnología: patrones de uso de pantallas, perfiles conductuales y desarrollo cognitivo-socioemocional en escolares",
+          "lugar": "Centro de Convenciones",
+          "sala": "Sala 1",
+          "edificio": "3B",
+          "ponentes": [
+            {
+              "nombre": "Dra. Josiane Pawlowski",
+              "institucion": "Universidad Nacional de Costa Rica"
+            }
+          ],
+          "eje_tematico": "Educación / Tecnología"
+        },
+        {
+          "id": "THU-SIMP-1",
+          "hora_inicio": "09:00",
+          "hora_fin": "10:00",
+          "tipo_actividad": "Simposio Invitado",
+          "titulo": "Política migratoria, familias transnacionales y choque legal",
+          "lugar": "Centro de Convenciones",
+          "sala": "Sala 1",
+          "edificio": "3B",
+          "ponentes": [
+            {
+              "nombre": "Dr. José Guadalupe Rodríguez Gutiérrez",
+              "institucion": "Universidad de Sonora"
+            },
+            {
+              "nombre": "Dra. Gloria Ciria Valdéz Gardea",
+              "institucion": "El Colegio de Sonora"
+            },
+            {
+              "nombre": "Ramón Alfredo Sánchez Zepeda",
+              "institucion": "Universidad de Sonora"
+            }
+          ],
+          "eje_tematico": "Migración / Derecho"
+        },
+        {
+          "id": "THU-002",
+          "hora_inicio": "09:00",
+          "hora_fin": "10:00",
+          "tipo_actividad": "Conferencia Magistral",
+          "titulo": "Justicia escolar y sus efectos en el bienestar de los estudiantes",
+          "lugar": "Sala Audiovisual",
+          "sala": "Sala 2",
+          "edificio": "1E",
+          "ponentes": [
+            {
+              "nombre": "Dra. Martha Frías Armenta",
+              "institucion": "Universidad de Sonora"
+            }
+          ],
+          "eje_tematico": "Educación / Derecho"
+        },
+        {
+          "id": "THU-MESA-16",
+          "hora_inicio": "09:00",
+          "hora_fin": "13:00",
+          "tipo_actividad": "Trabajos Libres",
+          "mesa_numero": 16,
+          "eje_tematico": "Educación",
+          "lugar": "Sala Audiovisual",
+          "sala": "Sala 2",
+          "edificio": "1E",
+          "ponencias": [
+            {
+              "titulo": "Relación entre el uso de estrategias de afrontamiento y el ajuste universitario en estudiantes universitarios",
+              "autores": [
+                "Julia Irene López González",
+                "Claudia Cecilia Norzagaray Benítez",
+                "Karina Antonia Guevara Verdugo",
+                "Diego López Dórame"
+              ],
+              "institucion": "Universidad de Sonora"
+            },
+            {
+              "titulo": "De las notas a los datos, el nuevo seguimiento escolar con Google Workspace",
+              "autores": [
+                "Claudia Berenice Olivares Robles"
+              ],
+              "institucion": "Universidad de Guadalajara"
+            },
+            {
+              "titulo": "Representaciones Sociales de la Inteligencia Artificial Generativa en Educación Superior en Sonora",
+              "autores": [
+                "Juan Pablo Durand Villalobos",
+                "Ian Isay Santibáñez Martínez"
+              ],
+              "institucion": "Universidad de Sonora"
+            },
+            {
+              "titulo": "Diseño de Manual Ejecutivo para el desarrollo de las Estadías Empresariales en una Universidad Privada de Sonora",
+              "autores": [
+                "Juan Andrés Esteban Cárdenas",
+                "Daniel González Lomelí"
+              ],
+              "institucion": "Universidad de Sonora"
+            },
+            {
+              "titulo": "Ciudadanía infantil y apropiación del espacio público: Estudio de la percepción socioambiental de las infancias en el Centro Ecológico de Sonora",
+              "autores": [
+                "Saúl Enrique Rojas Beltrán"
+              ],
+              "institucion": "Universidad de Sonora"
+            },
+            {
+              "titulo": "De estudiantes para estudiantes",
+              "autores": [
+                "Reyna Yudith Lara Ontiveros",
+                "Brenda Carolina Luque Medina",
+                "Bratdd Irán Vizcarra Cossío"
+              ],
+              "institucion": "Universidad de Sonora"
+            },
+            {
+              "titulo": "Educación integral en el alumno universitario: del aula a la profesión",
+              "autores": [
+                "Daniel Guadalupe Mojica Barajas",
+                "María Zulema Monteverde Murrieta",
+                "Francisco Javier García Martínez",
+                "Jesús Iveth Valle Bustamante"
+              ],
+              "institucion": "Universidad de Sonora"
+            }
+          ]
+        },
+        {
+          "id": "THU-POSGRADOS",
+          "hora_inicio": "10:00",
+          "hora_fin": "12:30",
+          "tipo_actividad": "Posgrados Unison",
+          "titulo": "Presentaciones Posgrados Unison",
+          "lugar": "Centro de Convenciones",
+          "sala": "Sala 1",
+          "edificio": "3B",
+          "ponencias": [
+            {
+              "titulo": "Implementación de la tecnología en la educación superior: Análisis crítico sobre las plataformas educativas",
+              "autores": [
+                "María Fernanda Ortiz Acuña",
+                "Edgar Oswaldo González Bello"
+              ],
+              "institucion": "Universidad de Sonora"
+            },
+            {
+              "titulo": "Uso de la IA en estudiantes: Una reflexión crítica de la educación",
+              "autores": [
+                "Iraida Yamileth Bórquez Ureña",
+                "Edgar Oswaldo González Bello"
+              ],
+              "institucion": "Universidad de Sonora"
+            },
+            {
+              "titulo": "Inteligencia Artificial y Ética Académica: Desafíos del uso de IA en el trabajo escolar universitario",
+              "autores": [
+                "Sussan Yinnel González Morales",
+                "Edgar Oswaldo González Bello"
+              ],
+              "institucion": "Universidad de Sonora"
+            }
+          ]
+        },
+        {
+          "id": "THU-CARTELES-VIRTUALES",
+          "hora_inicio": "10:00",
+          "hora_fin": "13:30",
+          "tipo_actividad": "Carteles Virtuales",
+          "titulo": "Exposición de Carteles Virtuales",
+          "lugar": "Sala Audiovisual",
+          "sala": "Sala 2",
+          "edificio": "1E",
+          "ponencias": [
+            {
+              "titulo": "Análisis interdisciplinar de las experiencias y percepciones de la formación académica en un contexto de educación remota de emergencia en la Universidad de Sonora",
+              "autores": [
+                "María Fernanda Gálvez García",
+                "Emilia Castillo Ochoa"
+              ],
+              "institucion": "Universidad de Sonora"
+            },
+            {
+              "titulo": "Trayectorias de vida diversas en jóvenes con medidas no privativas del SRPA en Ibagué-Tolima",
+              "autores": [
+                "Lilian Ivette Gutiérrez Moreno",
+                "Villar Laguna Víctor",
+                "María Luisa Pereyra Hernández",
+                "Martha Susana Brauer Aguilar",
+                "Arturo González Torres"
+              ],
+              "institucion": "Universidad Insurgentes"
+            },
+            {
+              "titulo": "Aprendizaje e Interacción en TikTok: Oportunidades y Riesgos Digitales",
+              "autores": [
+                "Vannesa Mariana Pacheco Medina",
+                "Gustavo Adolfo León Duarte"
+              ],
+              "institucion": "Universidad de Sonora"
+            },
+            {
+              "titulo": "Impacto de las Pensiones no Contributivas en el Bienestar y la Exclusión Social de los Adultos Mayores de Hermosillo (2020-2026), desde una perspectiva interdisciplinar",
+              "autores": [
+                "Marco Antonio García Herrera"
+              ],
+              "institucion": "Universidad de Sonora"
+            },
+            {
+              "titulo": "El espejo algorítmico: perfiles digitales y aprendizaje mediado por inteligencia artificial generativa en la formación universitaria",
+              "autores": [
+                "Guillermina Cipriano Piñeiro",
+                "Paula Arroyo"
+              ],
+              "institucion": "Universidad Nacional Guillermo Brown, Universidad Abierta Interamericana"
+            },
+            {
+              "titulo": "Las series de ficción pueden impactar la identidad personal y construir interacciones sociales",
+              "autores": [
+                "David Alejandro Esqueda Villegas"
+              ],
+              "institucion": "Universidad de Sonora"
+            },
+            {
+              "titulo": "Proyectos de vida de las personas en situación de calle en Hermosillo, Sonora, México",
+              "autores": [
+                "Orlando Rafael Córdova Contreras"
+              ],
+              "institucion": "Universidad de Sonora"
+            },
+            {
+              "titulo": "Escala de medición de la percepción de estigma social hacia las familias de las víctimas de violencia criminal asociada al tráfico de drogas",
+              "autores": [
+                "Roberto López Espinoza",
+                "María de los Ángeles Fuentes Vega"
+              ],
+              "institucion": "Universidad de Sonora"
+            },
+            {
+              "titulo": "La resignificación de las redes de apoyo formales e informales en mujeres de la comunidad Café Combate en Hermosillo, Sonora, México",
+              "autores": [
+                "Stephanie Díaz Moreno",
+                "María de los Ángeles Fuentes Vega"
+              ],
+              "institucion": "Universidad de Sonora"
+            },
+            {
+              "titulo": "Formación normalista y prácticas inclusivas para la atención educativa de estudiantes con discapacidad",
+              "autores": [
+                "Ana Paula Prado Cabanillas",
+                "Claudia Cecilia Norzagaray Benítez",
+                "Ma. Guadalupe González Lizárraga",
+                "Ismael García Cedillo"
+              ],
+              "institucion": "Universidad de Sonora"
+            },
+            {
+              "titulo": "Migración, identidad y situación de calle: una aproximación desde el desarrollo social",
+              "autores": [
+                "Arely Libertad Vargas Lozano",
+                "Virginia Romero Plana"
+              ],
+              "institucion": "Universidad de Sonora"
+            },
+            {
+              "titulo": "Opiniones del profesorado sobre un programa de prevención de violencias en adolescentes en el contexto escolar",
+              "autores": [
+                "Claudia Cecilia Norzagaray Benítez",
+                "Grace Cosette Flores Jiménez",
+                "Kenya Alejandra Ramírez Montaño",
+                "Dulce Raquel López Esquer",
+                "Héctor Saúl Urquidez Ríos"
+              ],
+              "institucion": "Universidad de Sonora"
+            },
+            {
+              "titulo": "Tensiones Éticas y Reconfiguración de la Identidad Profesional ante la Inteligencia Artificial Generativa",
+              "autores": [
+                "Luis Ángel Gavotto Rojas"
+              ],
+              "institucion": "Universidad de Sonora"
+            }
+          ]
+        },
+        {
+          "id": "THU-MESA-17",
+          "hora_inicio": "10:00",
+          "hora_fin": "13:00",
+          "tipo_actividad": "Trabajos Libres",
+          "mesa_numero": 17,
+          "eje_tematico": "Educación",
+          "lugar": "Sala Polivalente",
+          "sala": "Sala 3",
+          "edificio": "1M",
+          "ponencias": [
+            {
+              "titulo": "Modelo de Bienestar Digital IIAA: una propuesta interdisciplinaria para la investigación, intervención, alfabetización y activismo digital",
+              "autores": [
+                "Mariel Michessedett Montes Castillo"
+              ],
+              "institucion": "Universidad de Sonora"
+            },
+            {
+              "titulo": "Estudio del envejecimiento activo laboral en la Comisión Federal de Electricidad, zona de Distribución, División Centro-Oriente, zona Puebla; visto el umbral de la vejez como una etapa de ociosidad laboral en los trabajadores eventuales, desde los años 2022 al 2025",
+              "autores": [
+                "Alejandro Herrera Rodríguez"
+              ],
+              "institucion": "Benemérita Universidad Autónoma de Puebla"
+            },
+            {
+              "titulo": "Aprender en la era digital, microhábitos, recursos tecnológicos e inteligencia artificial en estudiantes de bachillerato",
+              "autores": [
+                "Rita Elizabeth Soto Sánchez",
+                "Nansi Ysabel García García",
+                "Valeria Chávez Muñiz"
+              ],
+              "institucion": "Universidad de Guadalajara"
+            },
+            {
+              "titulo": "Sistema de Diagnóstico Estudiantil. Predicción de Rendimiento Académico mediante el algoritmo Random Forest",
+              "autores": [
+                "Edwin William Osorio Gregorio",
+                "Arturo González López",
+                "Vianey Ríos Romero",
+                "Fátima Yaraset Mendoza Montero",
+                "Yearim Medina Molina"
+              ],
+              "institucion": "Instituto Tecnológico de Milpa Alta"
+            },
+            {
+              "titulo": "Comunicación con herramientas de Inteligencia Artificial como apoyo emocional en jóvenes universitarios",
+              "autores": [
+                "Lucía Margarita González Barrón",
+                "María de los Ángeles Fuentes Vega",
+                "Cristal Anel Alcaráz Domínguez"
+              ],
+              "institucion": "Universidad Estatal de Sonora"
+            },
+            {
+              "titulo": "La igualdad se aprende desde la infancia: comunicación educativa para transformar estereotipos de género",
+              "autores": [
+                "Anna Ivette Rodríguez Navarro"
+              ],
+              "institucion": "Universidad de Sonora"
+            },
+            {
+              "titulo": "Integración de la Realidad Virtual en el Proceso de Enseñanza-Aprendizaje: Caso de Estudio Jóvenes Universitarios",
+              "autores": [
+                "Edgar Gerardo Orduño Aguirre",
+                "Roberto Holguín Beltrán",
+                "Daniel Axel López Tarango",
+                "Ricardo García Parada",
+                "Cynthia Paola Aranda Gómez"
+              ],
+              "institucion": "Instituto Tecnológico de Chihuahua II"
+            },
+            {
+              "titulo": "Evaluación Educativa de Habilidades Duras en Universitarios de Nuevo Ingreso",
+              "autores": [
+                "Martha Susana Brauer Aguilar",
+                "Vianey Ríos Romero",
+                "Víctor Villar Laguna",
+                "Melissa Edith Salazar Echeagaray",
+                "Arturo González Torres"
+              ],
+              "institucion": "Tecnológico Nacional de México"
+            },
+            {
+              "titulo": "Educación Superior e Inteligencia Artificial: Evaluación del Uso, Percepciones e Impacto Académico de ChatGPT en Estudiantes",
+              "autores": [
+                "Lilian Ivette Gutiérrez Moreno",
+                "Melissa Edith Salazar Echeagaray",
+                "Claudia Carolina Lacruhy Enríquez",
+                "Víctor Villar Laguna",
+                "Arturo González Torres"
+              ],
+              "institucion": "Universidad Insurgentes"
+            }
+          ]
+        },
+        {
+          "id": "THU-003",
+          "hora_inicio": "13:00",
+          "hora_fin": "14:00",
+          "tipo_actividad": "Conferencia Magistral",
+          "titulo": "Comportamiento económico y bienestar financiero: un análisis desde Sonora",
+          "lugar": "Sala de Maestría",
+          "sala": "Sala 4",
+          "edificio": "1G",
+          "ponentes": [
+            {
+              "nombre": "Dr. Francisco Javier Laborín Álvarez",
+              "institucion": "Universidad de Sonora"
+            }
+          ],
+          "eje_tematico": "Economía / Desarrollo Regional"
+        },
+        {
+          "id": "THU-MESA-18",
+          "hora_inicio": "13:30",
+          "hora_fin": "16:00",
+          "tipo_actividad": "Trabajos Libres",
+          "mesa_numero": 18,
+          "eje_tematico": "Migración",
+          "lugar": "Sala Audiovisual",
+          "sala": "Sala 2",
+          "edificio": "1E",
+          "ponencias": [
+            {
+              "titulo": "Migración y justicia transformativa: ¿un enfoque pertinente para las nuevas movilidades?",
+              "autores": [
+                "Arturo Lutz Ley"
+              ],
+              "institucion": "Universidad de Sonora"
+            },
+            {
+              "titulo": "Imaginarios sobre la ciudad de Hermosillo en las trayectorias de vida de migrantes internacionales con residencia legal",
+              "autores": [
+                "Bárbara Romero Cota"
+              ],
+              "institucion": "Universidad de Sonora"
+            },
+            {
+              "titulo": "Hábitos de salud de la población de Nicaragua, Venezuela y Haití: antes y después de migrar a cinco ciudades latinoamericanas",
+              "autores": [
+                "Salvador Cobo",
+                "Josefina Franzoni"
+              ],
+              "institucion": "Instituto Politécnico Nacional"
+            },
+            {
+              "titulo": "Reconfiguración familiar en contextos de violencia y migración",
+              "autores": [
+                "María Elena Vega Amaya",
+                "Carmen Lucía Sánchez Casanova",
+                "Virginia Romero Plana"
+              ],
+              "institucion": "Universidad de Sonora"
+            },
+            {
+              "titulo": "Motivos de salida de académicas de origen cubano e inserción en instituciones de educación superior en el noroeste de México",
+              "autores": [
+                "Susana Hernández Galindo",
+                "Emilia Ochoa Castillo"
+              ],
+              "institucion": "Universidad de Sonora"
+            },
+            {
+              "titulo": "Problematizando los espacios irregulares. Estudio de caso: una mirada desde la comunidad",
+              "autores": [
+                "Jorge Alán Salguero García",
+                "José Guadalupe Rodríguez Gutiérrez"
+              ],
+              "institucion": "Universidad de Sonora"
+            },
+            {
+              "titulo": "Fútbol, identidad y cultura. Estado del arte para su estudio en la complejidad fronteriza del norte de México",
+              "autores": [
+                "Enrique Rivera Guerrero"
+              ],
+              "institucion": "Universidad de Sonora"
+            }
+          ]
+        },
+        {
+          "id": "THU-MESA-19",
+          "hora_inicio": "13:00",
+          "hora_fin": "15:30",
+          "tipo_actividad": "Trabajos Libres",
+          "mesa_numero": 19,
+          "eje_tematico": "Educación",
+          "lugar": "Sala Polivalente",
+          "sala": "Sala 3",
+          "edificio": "1M",
+          "ponencias": [
+            {
+              "titulo": "Evaluación de la aceptación de examen gamificado en una materia de biopsicología",
+              "autores": [
+                "Nadia Saraí Corral Frías",
+                "Etna Alejandra Salazar Alcaraz",
+                "Imelda Yazuri Estrella Góngora",
+                "Marc Yancy Lucas"
+              ],
+              "institucion": "Universidad de Sonora"
+            },
+            {
+              "titulo": "An Educational Innovation Model to Address the Digital Divide among Students with Disabilities in Higher Education",
+              "autores": [
+                "Martín Romero Cruz"
+              ],
+              "institucion": "Universidad de Sonora"
+            },
+            {
+              "titulo": "Implementación de cursos de alfabetización digital y evaluación de aprendizajes de adultos participantes: Universidad de Sonora",
+              "autores": [
+                "David Adrián Vásquez Robles"
+              ],
+              "institucion": "Universidad de Sonora"
+            }
+          ]
+        },
+        {
+          "id": "THU-004",
+          "hora_inicio": "16:00",
+          "hora_fin": "17:00",
+          "tipo_actividad": "Conferencia Magistral",
+          "titulo": "Movilidad académica internacional en educación superior, formación y trayectorias educativas",
+          "lugar": "Centro de Convenciones",
+          "sala": "Sala 1",
+          "edificio": "3B",
+          "ponentes": [
+            {
+              "nombre": "Dra. Emilia Castillo Ochoa",
+              "institucion": "Universidad de Sonora"
+            }
+          ],
+          "eje_tematico": "Educación / Movilidad"
+        },
+        {
+          "id": "THU-005",
+          "hora_inicio": "16:00",
+          "hora_fin": "17:00",
+          "tipo_actividad": "Conferencia Magistral",
+          "titulo": "El desahogo de pruebas en el nuevo Código Nacional de Procedimientos Civiles y Familiares",
+          "lugar": "Centro de Convenciones",
+          "sala": "Sala 1",
+          "edificio": "3B",
+          "ponentes": [
+            {
+              "nombre": "Dr. Favio Ossian Ruiz Rodríguez",
+              "institucion": "Poder Judicial del Estado de Sonora"
+            }
+          ],
+          "eje_tematico": "Derecho"
+        },
+        {
+          "id": "THU-CONV-1",
+          "hora_inicio": "16:00",
+          "hora_fin": "17:00",
+          "tipo_actividad": "Conversatorio",
+          "titulo": "Perspectivas sobre la evaluación psicológica: realidades y desafíos en Costa Rica, Brasil y México",
+          "lugar": "Sala Polivalente",
+          "sala": "Sala 3",
+          "edificio": "1M",
+          "ponentes": [
+            {
+              "nombre": "Dra. Josiane Pawlowski",
+              "institucion": "Universidad de Costa Rica"
+            }
+          ],
+          "eje_tematico": "Psicología"
+        },
+        {
+          "id": "THU-CARTELES-PRESENCIALES",
+          "hora_inicio": "16:00",
+          "hora_fin": "18:00",
+          "tipo_actividad": "Carteles Presenciales",
+          "titulo": "Sesión de Carteles Presenciales",
+          "lugar": "Sala de Usos Múltiples",
+          "sala": "Sala de Usos Múltiples",
+          "edificio": "1I",
+          "ponencias": [
+            {
+              "titulo": "Violencia comunitaria y conducta prosocial en estudiantes de una escuela secundaria pública norte de Hermosillo, Sonora",
+              "autores": [
+                "Nohemí Guadalupe Calderón González",
+                "Claudia Alejandra Márquez Fierro"
+              ],
+              "institucion": "Universidad de Sonora"
+            },
+            {
+              "titulo": "Convivencia escolar: programa de intervención desde el modelo ecológico",
+              "autores": [
+                "Dania Lizbeth Aguilar Camargo",
+                "Diana Guadalupe Corrales Velázquez",
+                "José Concepción Gaxiola Romero"
+              ],
+              "institucion": "Universidad de Sonora"
+            },
+            {
+              "titulo": "Calidad de vida y su relación con la actividad física en estudiantes de una escuela secundaria de Hermosillo, Sonora",
+              "autores": [
+                "Melanie Aidil Moreno Monge",
+                "Dania Fernanda Valdez Hernández",
+                "José Concepción Gaxiola Romero"
+              ],
+              "institucion": "Universidad de Sonora"
+            },
+            {
+              "titulo": "Promoción de una parentalidad positiva: evaluación de un programa psicoeducativo",
+              "autores": [
+                "Alexa De Horta Duarte",
+                "Andrea Salazar Aganza",
+                "Bryan Iram Camargo López",
+                "Eunice Gaxiola Villa",
+                "José Concepción Gaxiola Romero"
+              ],
+              "institucion": "Universidad de Sonora"
+            },
+            {
+              "titulo": "Adaptación en Adultos Mayores Institucionalizados, en Caborca, Sonora",
+              "autores": [
+                "Johanna Getsemaní Miranda Guerrero",
+                "Argentina Galván Clark",
+                "Maythe Hernández Figueroa",
+                "Cristal Patricia Silva Flores"
+              ],
+              "institucion": "Universidad de Sonora"
+            },
+            {
+              "titulo": "Habilidades socioemocionales en usuarios de Centro CIDA",
+              "autores": [
+                "Azul Sinaí Sortillón Mata",
+                "Julio César Martínez Sepúlveda",
+                "Manuel Antonio Graciano Pesqueira"
+              ],
+              "institucion": "Universidad de Sonora"
+            },
+            {
+              "titulo": "Adaptación y análisis del instrumento del Clima Social Familiar en estudiantes de sexto de primaria",
+              "autores": [
+                "Katerin Nicol Félix Contreras",
+                "Melanie Moreno Barahona"
+              ],
+              "institucion": "Universidad de Sonora"
+            },
+            {
+              "titulo": "Regulación emocional en adolescentes de educación secundaria",
+              "autores": [
+                "Vica María Mange Ripalda"
+              ],
+              "institucion": "Universidad de Sonora"
+            }
+          ]
+        },
+        {
+          "id": "THU-MESA-20",
+          "hora_inicio": "16:00",
+          "hora_fin": "18:00",
+          "tipo_actividad": "Trabajos Libres",
+          "mesa_numero": 20,
+          "eje_tematico": "Educación",
+          "lugar": "Sala Audiovisual",
+          "sala": "Sala 2",
+          "edificio": "1E",
+          "ponencias": [
+            {
+              "titulo": "El bienestar socioemocional docente como factor determinante para la construcción de ambientes de aprendizaje en educación básica",
+              "autores": [
+                "Flor Guadalupe Alcántar Núñez",
+                "Daniel Fernández Urgellés",
+                "Susana Angélica Pastrana Corral"
+              ],
+              "institucion": "Universidad de Sonora, Universidad de Guantánamo"
+            },
+            {
+              "titulo": "Análisis de desempeño en evaluación externa del aprendizaje en Educación Superior. Caso: EGEL PLUS COMUNICA, período 2023-2026",
+              "autores": [
+                "Lisset Aracely Oliveros Rodríguez"
+              ],
+              "institucion": "Universidad de Sonora"
+            },
+            {
+              "titulo": "Una estrategia socioeducativa de educación sexual en segundo grado de secundaria básica en el Municipio Caborca",
+              "autores": [
+                "Itzel Viridiana Estrella Acuña",
+                "Zulema de la Caridad Matos Columbié"
+              ],
+              "institucion": "Universidad de Sonora"
+            },
+            {
+              "titulo": "Análisis y evaluación de condiciones de educatividad en cursos de alfabetización digital de adultos, a través de la vinculación social universitaria",
+              "autores": [
+                "Izlia Maheli Lerma Moreno"
+              ],
+              "institucion": "Universidad de Sonora"
+            },
+            {
+              "titulo": "Comunicación en el contexto familiar y educativo como una herramienta de influencia en la construcción del autoconcepto y desempeño académico en estudiantes de secundaria en México",
+              "autores": [
+                "Mariana Guadalupe Acosta Campa"
+              ],
+              "institucion": "Universidad de Sonora"
+            },
+            {
+              "titulo": "Identificación de los estilos de aprendizaje en adultos asistentes al taller MADAUS de la Universidad de Sonora",
+              "autores": [
+                "Jimena Olguín Trujillo"
+              ],
+              "institucion": "Universidad de Sonora"
+            }
+          ]
+        },
+        {
+          "id": "THU-MESA-21",
+          "hora_inicio": "16:00",
+          "hora_fin": "18:00",
+          "tipo_actividad": "Trabajos Libres",
+          "mesa_numero": 21,
+          "eje_tematico": "Desarrollo Regional",
+          "lugar": "Sala de Maestría",
+          "sala": "Sala 4",
+          "edificio": "1G",
+          "ponencias": [
+            {
+              "titulo": "Gobernanza territorial, diversidad y desarrollo regional en Chile y América Latina",
+              "autores": [
+                "María Fernanda Herrera Acuña"
+              ],
+              "institucion": "Universidad Bernardo O'Higgins, Chile"
+            },
+            {
+              "titulo": "Satisfacción laboral y desarrollo regional: evaluación mediante un instrumento de medición",
+              "autores": [
+                "Brenda López Martínez",
+                "María Eugenia Astrid Macías Sagarminaga",
+                "Sandra Yarely Rojas García",
+                "Pavel David Ulises Avendaño López",
+                "Arturo González Torres"
+              ],
+              "institucion": "Tecnológico Nacional de México, Centro Universitario Trilingüe, UPN"
+            },
+            {
+              "titulo": "La investigación cualitativa como herramienta para la intervención organizacional enfocada en variables del entorno sindical",
+              "autores": [
+                "Aaron Emiliano Valenzuela Antuna",
+                "Sofía Isabel Casillas Valenzuela",
+                "Ana Nicole Gradías Gutiérrez"
+              ],
+              "institucion": "Universidad de Sonora"
+            },
+            {
+              "titulo": "¿Cómo gestionan sus finanzas los estudiantes universitarios? Ahorro, crédito y preocupaciones",
+              "autores": [
+                "Princesa Alondra Dessens Higuera",
+                "Jesús Francisco Laborín Álvarez"
+              ],
+              "institucion": "Centro de Investigación en Alimentación y Desarrollo (CIAD)"
+            }
+          ]
+        },
+        {
+          "id": "THU-PANEL",
+          "hora_inicio": "18:00",
+          "hora_fin": "18:30",
+          "tipo_actividad": "Panel",
+          "titulo": "Retos y experiencias en investigación de ciencias sociales",
+          "lugar": "Centro de Convenciones",
+          "sala": "Sala 1",
+          "edificio": "3B",
+          "ponentes": [],
+          "eje_tematico": "Metodología / Ciencias Sociales"
+        },
+        {
+          "id": "THU-CLAUSURA",
+          "hora_inicio": "18:30",
+          "hora_fin": "19:00",
+          "tipo_actividad": "Clausura",
+          "titulo": "Premiación de carteles y clausura",
+          "lugar": "Centro de Convenciones",
+          "sala": "Sala 1",
+          "edificio": "3B",
+          "ponentes": [],
+          "eje_tematico": "General"
+        }
+      ]
+    }
+  ]
+}
