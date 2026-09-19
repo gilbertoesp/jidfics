@@ -1,0 +1,322 @@
+[
+  {
+    "id": "event-001",
+    "date": "2026-09-23",
+    "startTime": "09:00",
+    "endTime": "09:30",
+    "title": "Inauguration and Opening Ceremony of the VII JIDFICS",
+    "venueId": "hall-1",
+    "venueLabel": "Hall 1 · Convention Center",
+    "activityType": "Masters Keynote",
+    "thematicAxis": "Education",
+    "speakers": [
+      { "name": "Dra. María Fernanda Ríos", "institution": "Universidad de Sonora", "role": "moderator" },
+      { "name": "Dr. Alejandro Cárdenas", "institution": "Universidad de Sonora, Campus Caborca", "role": "speaker" }
+    ],
+    "authors": [
+      { "name": "Dra. María Fernanda Ríos", "institution": "Universidad de Sonora" }
+    ],
+    "abstract": "Ceremony marking the official start of the VII International Conference on Social Sciences and Legal Sciences, with a welcome from the academic authorities of Universidad de Sonora and an overview of the conference program, scientific objectives, and expected contributions to regional research."
+  },
+  {
+    "id": "event-002",
+    "date": "2026-09-23",
+    "startTime": "09:45",
+    "endTime": "11:00",
+    "title": "Keynote: Sociological Perspectives in the Fight Against Gender Violence in Higher Education",
+    "venueId": "hall-1",
+    "venueLabel": "Hall 1 · Convention Center",
+    "activityType": "Masters Keynote",
+    "thematicAxis": "Gender",
+    "speakers": [
+      { "name": "Dra. Elena Vásquez Ornelas", "institution": "Universidad Nacional Autónoma de México", "role": "speaker" }
+    ],
+    "authors": [
+      { "name": "Dra. Elena Vásquez Ornelas", "institution": "Universidad Nacional Autónoma de México" }
+    ],
+    "abstract": "Master conference addressing institutional strategies to prevent and eradicate gender-based violence within university settings, based on a decade of applied research in Mexican higher education institutions and the implementation of gender equality protocols."
+  },
+  {
+    "id": "event-003",
+    "date": "2026-09-23",
+    "startTime": "09:45",
+    "endTime": "11:00",
+    "title": "Symposium: Public Policy and the Prevention of Violence in the Northern Border Region",
+    "venueId": "hall-2",
+    "venueLabel": "Hall 2 · Audiovisual",
+    "activityType": "Symposium",
+    "thematicAxis": "Violence",
+    "speakers": [
+      { "name": "Mtro. Roberto Alemán Soto", "institution": "El Colegio de Sonora", "role": "speaker" },
+      { "name": "Dra. Lucía Herrera Paz", "institution": "Universidad Autónoma de Baja California", "role": "speaker" },
+      { "name": "Dr. José Manuel Quintero", "institution": "Universidad de Sonora", "role": "moderator" }
+    ],
+    "authors": [
+      { "name": "Mtro. Roberto Alemán Soto", "institution": "El Colegio de Sonora" },
+      { "name": "Dra. Lucía Herrera Paz", "institution": "Universidad Autónoma de Baja California" }
+    ],
+    "abstract": "Comparative analysis of public safety policies implemented across the northern border corridor. The symposium discusses evidence-based prevention programs, community participation, and the articulation between municipal, state, and federal institutions in violence reduction."
+  },
+  {
+    "id": "event-004",
+    "date": "2026-09-23",
+    "startTime": "11:15",
+    "endTime": "12:30",
+    "title": "Free Papers: Migration, Border Dynamics, and Regional Integration",
+    "venueId": "hall-3",
+    "venueLabel": "Hall 3 · Multipurpose",
+    "activityType": "Free Papers",
+    "thematicAxis": "Migration",
+    "speakers": [
+      { "name": "Dra. Ana Belén Figueroa", "institution": "Universidad de Sonora", "role": "chair" },
+      { "name": "Mtro. Luis Ernesto Camacho", "institution": "Colegio de la Frontera Norte", "role": "speaker" }
+    ],
+    "authors": [
+      { "name": "Mtro. Luis Ernesto Camacho", "institution": "Colegio de la Frontera Norte" },
+      { "name": "Dra. Ana Belén Figueroa", "institution": "Universidad de Sonora" },
+      { "name": "Lic. Sara Jiménez Ruelas", "institution": "Universidad de Sonora, Campus Caborca" }
+    ],
+    "abstract": "Presentation of recent findings on migratory flows through the Sonora-Arizona corridor: social networks of migrants, labor insertion processes, and the impact of migration policies on family dynamics in border communities."
+  },
+  {
+    "id": "event-005",
+    "date": "2026-09-23",
+    "startTime": "11:15",
+    "endTime": "12:30",
+    "title": "Panel Discussion: Access to Justice and Indigenous Communities",
+    "venueId": "hall-4",
+    "venueLabel": "Hall 4 · Master's Room",
+    "activityType": "Panel Discussion",
+    "thematicAxis": "Law",
+    "speakers": [
+      { "name": "Dra. Nora Emilia Rivera", "institution": "Tribunal Superior de Justicia de Sonora", "role": "speaker" },
+      { "name": "Mtro. Pablo Cota Escalante", "institution": "Comisión Estatal de Derechos Humanos de Sonora", "role": "speaker" },
+      { "name": "Dra. Patricia Solano Vega", "institution": "Universidad de Sonora", "role": "moderator" }
+    ],
+    "authors": [
+      { "name": "Dra. Nora Emilia Rivera", "institution": "Tribunal Superior de Justicia de Sonora" },
+      { "name": "Mtro. Pablo Cota Escalante", "institution": "Comisión Estatal de Derechos Humanos de Sonora" }
+    ],
+    "abstract": "Round table on the challenges of guaranteeing effective access to justice for indigenous peoples in the state of Sonora: linguistic interpretation, customary law recognition, and the institutional reforms required to close the legal gap."
+  },
+  {
+    "id": "event-006",
+    "date": "2026-09-23",
+    "startTime": "12:45",
+    "endTime": "14:00",
+    "title": "Free Papers: Public Health and Psychosocial Care in the Rural Context",
+    "venueId": "hall-3",
+    "venueLabel": "Hall 3 · Multipurpose",
+    "activityType": "Free Papers",
+    "thematicAxis": "Health",
+    "speakers": [
+      { "name": "Dra. Mónica Alfaro Gastélum", "institution": "Universidad de Sonora", "role": "chair" }
+    ],
+    "authors": [
+      { "name": "Dra. Mónica Alfaro Gastélum", "institution": "Universidad de Sonora" },
+      { "name": "Dr. Omar Ruelas Jiménez", "institution": "Hospital General de Caborca" },
+      { "name": "Lic. Denisse Parra Ibarra", "institution": "Centro de Salud Caborca" }
+    ],
+    "abstract": "Set of presentations on mental health services availability, chronic disease prevention programs, and community health promotion strategies implemented in rural municipalities of the Caborca region."
+  },
+  {
+    "id": "event-007",
+    "date": "2026-09-23",
+    "startTime": "15:00",
+    "endTime": "16:30",
+    "title": "Keynote: Educational Innovation and Teacher Training for the XXI Century",
+    "venueId": "hall-1",
+    "venueLabel": "Hall 1 · Convention Center",
+    "activityType": "Masters Keynote",
+    "thematicAxis": "Education",
+    "speakers": [
+      { "name": "Dr. Héctor Manuel Grijalva", "institution": "Instituto Tecnológico de Sonora", "role": "speaker" }
+    ],
+    "authors": [
+      { "name": "Dr. Héctor Manuel Grijalva", "institution": "Instituto Tecnológico de Sonora" }
+    ],
+    "abstract": "Master lecture on disruptive pedagogical models, the integration of digital technologies in the classroom, and competency-based teacher training as levers to transform educational quality in Northern Mexico."
+  },
+  {
+    "id": "event-008",
+    "date": "2026-09-23",
+    "startTime": "15:00",
+    "endTime": "16:30",
+    "title": "Symposium: Regional Development and Value Chains in the Altar Desert",
+    "venueId": "hall-2",
+    "venueLabel": "Hall 2 · Audiovisual",
+    "activityType": "Symposium",
+    "thematicAxis": "Regional Development",
+    "speakers": [
+      { "name": "Dra. Cristina Torrez Quiroz", "institution": "CIAD Hermosillo", "role": "speaker" },
+      { "name": "Mtro. Jorge Andrade Félix", "institution": "Universidad de Sonora", "role": "speaker" },
+      { "name": "Dr. Iván Rosas Madrid", "institution": "Consejo Económico de Caborca", "role": "chair" }
+    ],
+    "authors": [
+      { "name": "Dra. Cristina Torrez Quiroz", "institution": "CIAD Hermosillo" },
+      { "name": "Mtro. Jorge Andrade Félix", "institution": "Universidad de Sonora" }
+    ],
+    "abstract": "Analysis of agri-food value chains, cluster competitiveness, and territorial development strategies in the Altar Desert region, with an emphasis on grape production, livestock, and the emerging renewable energy sector."
+  },
+  {
+    "id": "event-009",
+    "date": "2026-09-24",
+    "startTime": "09:00",
+    "endTime": "10:30",
+    "title": "Keynote: Contemporary Perspectives on Gender Studies and Feminist Epistemologies",
+    "venueId": "hall-1",
+    "venueLabel": "Hall 1 · Convention Center",
+    "activityType": "Masters Keynote",
+    "thematicAxis": "Gender",
+    "speakers": [
+      { "name": "Dra. Renata Ibáñez Contreras", "institution": "Universidad de Guadalajara", "role": "speaker" }
+    ],
+    "authors": [
+      { "name": "Dra. Renata Ibáñez Contreras", "institution": "Universidad de Guadalajara" }
+    ],
+    "abstract": "Master conference on the evolution of feminist epistemologies and their contribution to the social sciences: from critique of positivist traditions to intersectional methodologies applied in gender studies research."
+  },
+  {
+    "id": "event-010",
+    "date": "2026-09-24",
+    "startTime": "09:00",
+    "endTime": "10:30",
+    "title": "Panel Discussion: Public Security Strategy and Social Cohesion in Sonora",
+    "venueId": "hall-2",
+    "venueLabel": "Hall 2 · Audiovisual",
+    "activityType": "Panel Discussion",
+    "thematicAxis": "Violence",
+    "speakers": [
+      { "name": "Comandante Rosa Mena Ochoa", "institution": "Secretaría de Seguridad Pública de Sonora", "role": "speaker" },
+      { "name": "Dr. Fabián Lara Montes", "institution": "El Colegio de Sonora", "role": "speaker" },
+      { "name": "Dra. Silvia Ceballos Anaya", "institution": "Universidad de Sonora", "role": "moderator" }
+    ],
+    "authors": [
+      { "name": "Comandante Rosa Mena Ochoa", "institution": "Secretaría de Seguridad Pública de Sonora" },
+      { "name": "Dr. Fabián Lara Montes", "institution": "El Colegio de Sonora" }
+    ],
+    "abstract": "Interdisciplinary dialogue between institutional actors and academia on public security strategy: the role of preventive policing, social cohesion programs, and citizen participation mechanisms in reducing violence indexes."
+  },
+  {
+    "id": "event-011",
+    "date": "2026-09-24",
+    "startTime": "10:45",
+    "endTime": "12:00",
+    "title": "Symposium: Legal Reforms and the Modernization of the Justice System",
+    "venueId": "hall-4",
+    "venueLabel": "Hall 4 · Master's Room",
+    "activityType": "Symposium",
+    "thematicAxis": "Law",
+    "speakers": [
+      { "name": "Dr. Ernesto Saldivar Peña", "institution": "Suprema Corte de Justicia de la Nación", "role": "speaker" },
+      { "name": "Dra. Karla Zuloaga Ríos", "institution": "Universidad Autónoma de Sinaloa", "role": "speaker" },
+      { "name": "Mtro. Adrián Camou Healy", "institution": "Universidad de Sonora", "role": "chair" }
+    ],
+    "authors": [
+      { "name": "Dr. Ernesto Saldivar Peña", "institution": "Suprema Corte de Justicia de la Nación" },
+      { "name": "Dra. Karla Zuloaga Ríos", "institution": "Universidad Autónoma de Sinaloa" }
+    ],
+    "abstract": "Symposium on the state of criminal justice reform, oral trials, alternative dispute resolution mechanisms, and the pending agenda in constitutional law regarding human rights standards in Mexico."
+  },
+  {
+    "id": "event-012",
+    "date": "2026-09-24",
+    "startTime": "10:45",
+    "endTime": "12:00",
+    "title": "Free Papers: Educational Trajectories and Rural Schooling",
+    "venueId": "hall-3",
+    "venueLabel": "Hall 3 · Multipurpose",
+    "activityType": "Free Papers",
+    "thematicAxis": "Education",
+    "speakers": [
+      { "name": "Mtro. Sergio Woolfolk López", "institution": "Universidad de Sonora", "role": "chair" },
+      { "name": "Dra. Isabel Casso Renteria", "institution": "Universidad Pedagógica Nacional", "role": "speaker" }
+    ],
+    "authors": [
+      { "name": "Dra. Isabel Casso Renteria", "institution": "Universidad Pedagógica Nacional" },
+      { "name": "Mtro. Sergio Woolfolk López", "institution": "Universidad de Sonora" },
+      { "name": "Lic. Nora Gastélum Romero", "institution": "Escuela Normal de Sonora" }
+    ],
+    "abstract": "Research presentations on dropout prevention, multigrade schooling, and the educational trajectories of first-generation university students coming from rural communities in the northwest of the country."
+  },
+  {
+    "id": "event-013",
+    "date": "2026-09-24",
+    "startTime": "12:15",
+    "endTime": "13:30",
+    "title": "Posters Session: Social Research in the Border Region",
+    "venueId": "hall-2",
+    "venueLabel": "Hall 2 · Audiovisual",
+    "activityType": "Posters",
+    "thematicAxis": "Regional Development",
+    "speakers": [
+      { "name": "Dra. Verónica Ocaña Vizcarra", "institution": "Universidad de Sonora", "role": "chair" }
+    ],
+    "authors": [
+      { "name": "Dra. Verónica Ocaña Vizcarra", "institution": "Universidad de Sonora" },
+      { "name": "Mtro. Erick Bracamontes Zavala", "institution": "Universidad de Sonora, Campus Caborca" },
+      { "name": "Lic. Dulce Cordero Molina", "institution": "Colegio de la Frontera Norte" }
+    ],
+    "abstract": "Guided tour of the poster exhibition featuring ongoing social research projects: local identity, youth entrepreneurship, water management, and cultural heritage preservation in border municipalities."
+  },
+  {
+    "id": "event-014",
+    "date": "2026-09-24",
+    "startTime": "12:15",
+    "endTime": "13:30",
+    "title": "Free Papers: Migration, Health, and Access to Social Services",
+    "venueId": "hall-3",
+    "venueLabel": "Hall 3 · Multipurpose",
+    "activityType": "Free Papers",
+    "thematicAxis": "Migration",
+    "speakers": [
+      { "name": "Dra. Tania Espinoza Noriega", "institution": "Colegio de la Frontera Norte", "role": "chair" }
+    ],
+    "authors": [
+      { "name": "Dra. Tania Espinoza Noriega", "institution": "Colegio de la Frontera Norte" },
+      { "name": "Dr. Rodolfo Castañeda Blanco", "institution": "Instituto Nacional de Salud Pública" },
+      { "name": "Lic. Alondra Domínguez Sierra", "institution": "Universidad de Sonora" }
+    ],
+    "abstract": "Evidence on the health situation of migrant populations in transit through Sonora: access barriers to public health services, mental health impacts of the migratory process, and recommendations for inclusive health policy."
+  },
+  {
+    "id": "event-015",
+    "date": "2026-09-24",
+    "startTime": "15:00",
+    "endTime": "16:00",
+    "title": "Panel Discussion: Gender Perspective in Research and Public Policy",
+    "venueId": "hall-2",
+    "venueLabel": "Hall 2 · Audiovisual",
+    "activityType": "Panel Discussion",
+    "thematicAxis": "Gender",
+    "speakers": [
+      { "name": "Dra. Marisol Luna Quintero", "institution": "INMUJERES Sonora", "role": "speaker" },
+      { "name": "Dra. Beatriz Ramos Villalobos", "institution": "Universidad de Sonora", "role": "speaker" },
+      { "name": "Mtro. Óscar Duarte Gaxiola", "institution": "Universidad de Sonora", "role": "moderator" }
+    ],
+    "authors": [
+      { "name": "Dra. Marisol Luna Quintero", "institution": "INMUJERES Sonora" },
+      { "name": "Dra. Beatriz Ramos Villalobos", "institution": "Universidad de Sonora" }
+    ],
+    "abstract": "Reflection on the mainstreaming of the gender perspective in academic research agendas and public policy design, including gender budgeting, indicator systems, and the evaluation of equality programs at the state level."
+  },
+  {
+    "id": "event-016",
+    "date": "2026-09-24",
+    "startTime": "16:15",
+    "endTime": "17:30",
+    "title": "Closing Ceremony, Awards, and Farewell Message of the VII JIDFICS",
+    "venueId": "hall-1",
+    "venueLabel": "Hall 1 · Convention Center",
+    "activityType": "Masters Keynote",
+    "thematicAxis": "Education",
+    "speakers": [
+      { "name": "Dra. María Fernanda Ríos", "institution": "Universidad de Sonora", "role": "moderator" },
+      { "name": "Dr. Alejandro Cárdenas", "institution": "Universidad de Sonora, Campus Caborca", "role": "speaker" }
+    ],
+    "authors": [
+      { "name": "Dr. Alejandro Cárdenas", "institution": "Universidad de Sonora, Campus Caborca" }
+    ],
+    "abstract": "Closing session with recognition of the best free papers and posters presented during the conference, synthesis of conclusions, and the announcement of the next edition of JIDFICS."
+  }
+]
