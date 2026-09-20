@@ -1,84 +1,134 @@
-export type ConferenceDate = "2026-09-23" | "2026-09-24";
+/* ------------------------------------------------------------------ */
+/* Raw dataset shape (calendario_vii_jidfics.json as shipped)        */
+/* ------------------------------------------------------------------ */
 
-export type ActivityType =
-  | "Masters Keynote"
-  | "Free Papers"
-  | "Symposium"
-  | "Panel Discussion"
-  | "Posters";
+export interface RawPonente {
+  nombre: string;
+  institucion: string;
+}
 
-export type ThematicAxis =
-  | "Violence"
-  | "Gender"
-  | "Education"
-  | "Law"
-  | "Health"
-  | "Regional Development"
-  | "Migration";
+export interface RawPonencia {
+  titulo: string;
+  autores: string[];
+  institucion: string;
+}
 
-export type VenueId = "hall-1" | "hall-2" | "hall-3" | "hall-4";
+/** Session-level event (conferencia, inauguración, conversatorio…). */
+export interface RawEventoSesion {
+  id: string;
+  hora_inicio: string;
+  hora_fin: string;
+  tipo_actividad: string;
+  titulo: string;
+  lugar: string;
+  sala: string;
+  edificio: string;
+  ponentes?: RawPonente[];
+  eje_tematico?: string;
+  ponencias?: undefined;
+  mesa_numero?: undefined;
+}
 
-export type SpeakerRole = "speaker" | "moderator" | "chair";
+/** Mesa (Trabajos Libres / Carteles / Posgrados) holding multiple papers. */
+export interface RawEventoMesa {
+  id: string;
+  hora_inicio: string;
+  hora_fin: string;
+  tipo_actividad: string;
+  titulo?: string;
+  lugar: string;
+  sala: string;
+  edificio: string;
+  ponentes?: RawPonente[];
+  eje_tematico?: string;
+  ponencias?: RawPonencia[];
+  mesa_numero?: number;
+}
+
+export type RawEvento = RawEventoSesion | RawEventoMesa;
+
+export interface RawDia {
+  fecha: string; // YYYY-MM-DD
+  dia: string; // Miércoles / Jueves
+  eventos: RawEvento[];
+}
+
+export interface RawSede {
+  institucion: string;
+  campus: string;
+  lugar: string;
+}
+
+export interface RawCalendario {
+  evento: string;
+  edicion: string;
+  fecha_inicio: string;
+  fecha_fin: string;
+  sede: RawSede;
+  programa: RawDia[];
+}
+
+/* ------------------------------------------------------------------ */
+/* Normalized shape consumed by the UI                                 */
+/* ------------------------------------------------------------------ */
 
 export interface Speaker {
   name: string;
   institution: string;
-  role: SpeakerRole;
+  role: "speaker" | "moderator" | "chair";
 }
 
-export interface Author {
-  name: string;
+export interface Paper {
+  title: string;
+  authors: string[];
   institution: string;
 }
 
 export interface ConferenceEvent {
   id: string;
-  date: ConferenceDate;
-  startTime: string;
-  endTime: string;
+  date: string; // YYYY-MM-DD
+  startTime: string; // HH:mm
+  endTime: string; // HH:mm
   title: string;
-  venueId: VenueId;
+  /** Normalized room key (e.g. "sala-1", "sala-de-danza", "aula-201d"). */
+  venueKey: string;
+  /** Human label, e.g. "Sala 1 · Centro de Convenciones". */
   venueLabel: string;
-  activityType: ActivityType;
-  thematicAxis: ThematicAxis;
+  /** Raw `tipo_actividad` — dynamic, dataset-driven. */
+  activityType: string;
+  /** Raw `eje_tematico` — dynamic, dataset-driven. */
+  thematicAxis: string;
   speakers: Speaker[];
-  authors: Author[];
-  abstract: string;
+  papers: Paper[];
 }
 
-export const VENUES: Record<VenueId, string> = {
-  "hall-1": "Hall 1 · Convention Center",
-  "hall-2": "Hall 2 · Audiovisual",
-  "hall-3": "Hall 3 · Multipurpose",
-  "hall-4": "Hall 4 · Master's Room",
-};
+export interface ConferenceMeta {
+  name: string;
+  edition: string;
+  startDate: string;
+  endDate: string;
+  venueInstitution: string;
+  venueCampus: string;
+  venueLocation: string;
+  /** One entry per day: { date, dayName }. */
+  days: { date: string; dayName: string }[];
+}
 
-export const DATE_LABELS: Record<ConferenceDate, string> = {
-  "2026-09-23": "Wednesday, September 23",
-  "2026-09-24": "Thursday, September 24",
-};
+export interface ScheduleDerived {
+  /** Unique thematic axes in dataset order. */
+  axes: string[];
+  /** Unique activity types in dataset order. */
+  activityTypes: string[];
+  /** Unique venue keys + labels. */
+  venues: { key: string; label: string }[];
+}
 
-export const DATE_SHORT_LABELS: Record<ConferenceDate, string> = {
-  "2026-09-23": "Wed, Sep 23",
-  "2026-09-24": "Thu, Sep 24",
-};
-
-export const ACTIVITY_TYPES: ActivityType[] = [
-  "Masters Keynote",
-  "Free Papers",
-  "Symposium",
-  "Panel Discussion",
-  "Posters",
-];
-
-export const THEMATIC_AXES: ThematicAxis[] = [
-  "Violence",
-  "Gender",
-  "Education",
-  "Law",
-  "Health",
-  "Regional Development",
-  "Migration",
-];
-
-export const VENUE_IDS: VenueId[] = ["hall-1", "hall-2", "hall-3", "hall-4"];
+/** Short human label for tab switcher (derived from day + date). */
+export function dayLabel(dayName: string, date: string): string {
+  const [, month, day] = date.split("-");
+  const monthNames = [
+    "enero", "febrero", "marzo", "abril", "mayo", "junio",
+    "julio", "agosto", "septiembre", "octubre", "noviembre", "diciembre",
+  ];
+  return `${dayName} ${Number(day)} de ${monthNames[Number(month) - 1]}`;
+}

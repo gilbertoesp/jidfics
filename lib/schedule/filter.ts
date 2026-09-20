@@ -1,17 +1,11 @@
-import {
-  type ActivityType,
-  type ConferenceDate,
-  type ConferenceEvent,
-  type ThematicAxis,
-  type VenueId,
-} from "@/lib/schedule/types";
+import { type ConferenceEvent } from "@/lib/schedule/types";
 
 export interface ScheduleFilters {
-  date: ConferenceDate;
+  date: string; // YYYY-MM-DD
   searchQuery: string;
-  axes: ThematicAxis[];
-  activityTypes: ActivityType[];
-  venues: VenueId[];
+  axes: string[];
+  activityTypes: string[];
+  venues: string[]; // venue keys
 }
 
 export const EMPTY_FILTERS: ScheduleFilters = {
@@ -23,10 +17,10 @@ export const EMPTY_FILTERS: ScheduleFilters = {
 };
 
 function normalize(value: string): string {
-  return value.toLocaleLowerCase().trim();
+  return value.toLocaleLowerCase("es").trim();
 }
 
-/** Case-insensitive search across title, speakers, authors, and institutions. */
+/** Case-insensitive search across titles, paper titles, speakers, authors, institutions. */
 function matchSearch(event: ConferenceEvent, query: string): boolean {
   if (!query) return true;
 
@@ -34,19 +28,24 @@ function matchSearch(event: ConferenceEvent, query: string): boolean {
   const haystack = [
     event.title,
     event.venueLabel,
-    event.abstract,
+    event.thematicAxis,
+    event.activityType,
     ...event.speakers.flatMap((s) => [s.name, s.institution]),
-    ...event.authors.flatMap((a) => [a.name, a.institution]),
+    ...event.papers.flatMap((p) => [
+      p.title,
+      p.institution,
+      ...p.authors,
+    ]),
   ];
 
   return haystack.some((value) => normalize(value).includes(q));
 }
 
 /**
- * Multi-facet filter with AND across categories and OR within a category.
+ * Multi-facet filter: AND across categories, OR within a category.
  * - date: exact match
- * - axes / activityTypes / venues: empty array = no constraint (show all)
- * - searchQuery: substring match (see matchSearch)
+ * - axes / activityTypes / venues: empty array = no constraint
+ * - searchQuery: substring across title/speakers/authors/institutions
  */
 export function filterEvents(
   events: ConferenceEvent[],
@@ -60,7 +59,7 @@ export function filterEvents(
     if (axes.length > 0 && !axes.includes(event.thematicAxis)) return false;
     if (activityTypes.length > 0 && !activityTypes.includes(event.activityType))
       return false;
-    if (venues.length > 0 && !venues.includes(event.venueId)) return false;
+    if (venues.length > 0 && !venues.includes(event.venueKey)) return false;
     return true;
   });
 }
@@ -75,5 +74,8 @@ export function hasActiveFilters(filters: ScheduleFilters): boolean {
 }
 
 export function scheduleSorter(a: ConferenceEvent, b: ConferenceEvent): number {
-  return a.startTime.localeCompare(b.startTime) || a.venueId.localeCompare(b.venueId);
+  return (
+    a.startTime.localeCompare(b.startTime) ||
+    a.venueLabel.localeCompare(b.venueLabel)
+  );
 }

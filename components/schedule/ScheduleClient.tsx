@@ -16,21 +16,23 @@ import {
   type ScheduleFilters,
 } from "@/lib/schedule/filter";
 import {
-  DATE_LABELS,
-  DATE_SHORT_LABELS,
-  type ActivityType,
-  type ConferenceDate,
+  dayLabel,
   type ConferenceEvent,
-  type ThematicAxis,
-  type VenueId,
+  type ConferenceMeta,
+  type ScheduleDerived,
 } from "@/lib/schedule/types";
 
 interface ScheduleClientProps {
   events: ConferenceEvent[];
+  meta: ConferenceMeta;
+  derived: ScheduleDerived;
 }
 
-export function ScheduleClient({ events }: ScheduleClientProps) {
-  const [filters, setFilters] = useState<ScheduleFilters>(EMPTY_FILTERS);
+export function ScheduleClient({ events, meta, derived }: ScheduleClientProps) {
+  const [filters, setFilters] = useState<ScheduleFilters>({
+    ...EMPTY_FILTERS,
+    date: meta.days[0]?.date ?? EMPTY_FILTERS.date,
+  });
   const [chatEvent, setChatEvent] = useState<ConferenceEvent | null>(null);
 
   const filteredEvents = useMemo(
@@ -42,27 +44,25 @@ export function ScheduleClient({ events }: ScheduleClientProps) {
     setFilters((prev) => ({ ...prev, ...patch }));
   }
 
-  const toggleValue = <T extends string>(
-    selected: T[],
-    value: T,
-  ): T[] =>
+  const toggleValue = (selected: string[], value: string): string[] =>
     selected.includes(value)
       ? selected.filter((v) => v !== value)
       : [...selected, value];
+
+  const activeDay = meta.days.find((day) => day.date === filters.date);
 
   return (
     <div className="mx-auto flex w-full max-w-5xl flex-col gap-6 px-4 py-8 sm:px-6">
       {/* Date switcher (tablist) */}
       <Tabs
         value={filters.date}
-        onValueChange={(value) => update({ date: value as ConferenceDate })}
+        onValueChange={(value) => update({ date: value })}
       >
         <TabsList className="grid w-full grid-cols-2 sm:w-auto">
-          {(Object.keys(DATE_LABELS) as ConferenceDate[]).map((date) => (
-            <TabsTrigger key={date} value={date} className="gap-2">
+          {meta.days.map((day) => (
+            <TabsTrigger key={day.date} value={day.date} className="gap-2">
               <CalendarDays className="h-4 w-4 text-muted-foreground" aria-hidden="true" />
-              <span className="hidden sm:inline">{DATE_LABELS[date]}</span>
-              <span className="sm:hidden">{DATE_SHORT_LABELS[date]}</span>
+              <span>{dayLabel(day.dayName, day.date)}</span>
             </TabsTrigger>
           ))}
         </TabsList>
@@ -71,30 +71,31 @@ export function ScheduleClient({ events }: ScheduleClientProps) {
       {/* Multi-facet filtering */}
       <FilterPanel
         filters={filters}
+        derived={derived}
         resultCount={filteredEvents.length}
         onSearchChange={(searchQuery) => update({ searchQuery })}
-        onToggleAxis={(axis: ThematicAxis) =>
-          update({ axes: toggleValue(filters.axes, axis) })
-        }
-        onToggleActivityType={(type: ActivityType) =>
+        onToggleAxis={(axis) => update({ axes: toggleValue(filters.axes, axis) })}
+        onToggleActivityType={(type) =>
           update({ activityTypes: toggleValue(filters.activityTypes, type) })
         }
-        onToggleVenue={(venue: VenueId) =>
-          update({ venues: toggleValue(filters.venues, venue) })
+        onToggleVenue={(venueKey) =>
+          update({ venues: toggleValue(filters.venues, venueKey) })
         }
-        onClear={() => setFilters(EMPTY_FILTERS)}
+        onClear={() => setFilters({ ...EMPTY_FILTERS, date: filters.date })}
       />
 
       {/* Results */}
-      <section aria-label={`Sessions on ${DATE_LABELS[filters.date]}`}>
+      <section
+        aria-label={`Sesiones del ${activeDay ? activeDay.dayName : "día"}`}
+      >
         {filteredEvents.length === 0 ? (
           <p
             role="status"
             className="rounded-xl border border-dashed p-10 text-center text-sm text-muted-foreground"
           >
             {hasActiveFilters(filters)
-              ? "No sessions match your current filters. Try clearing one or more filters."
-              : "No sessions scheduled for this day."}
+              ? "No hay sesiones que coincidan con los filtros actuales. Intenta eliminar algún filtro."
+              : "No hay sesiones programadas para este día."}
           </p>
         ) : (
           <ul className="grid grid-cols-1 gap-4 lg:grid-cols-2">

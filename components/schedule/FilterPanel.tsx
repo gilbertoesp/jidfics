@@ -6,43 +6,29 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Separator } from "@/components/ui/separator";
-import {
-  ACTIVITY_TYPE_COLORS,
-  THEMATIC_AXIS_COLORS,
-  VENUE_COLORS,
-} from "@/lib/schedule/colors";
-import {
-  ACTIVITY_TYPES,
-  THEMATIC_AXES,
-  VENUES,
-  VENUE_IDS,
-} from "@/lib/schedule/types";
+import { dotFor } from "@/lib/schedule/colors";
 import { type ScheduleFilters } from "@/lib/schedule/filter";
+import { type ScheduleDerived } from "@/lib/schedule/types";
 import { cn } from "@/lib/utils";
 
 /* ------------------------------------------------------------------ */
 /* Generic toggle pill group                                          */
 /* ------------------------------------------------------------------ */
 
-interface PillGroupProps<T extends string> {
-  id: string;
-  legend: string;
-  options: readonly T[];
-  selected: T[];
-  onToggle: (value: T) => void;
-  colorFor: (value: T) => { dot: string };
-  labelFor?: (value: T) => string;
+interface PillOption {
+  value: string;
+  label: string;
 }
 
-function PillGroup<T extends string>({
-  id,
-  legend,
-  options,
-  selected,
-  onToggle,
-  colorFor,
-  labelFor,
-}: PillGroupProps<T>) {
+interface PillGroupProps {
+  id: string;
+  legend: string;
+  options: PillOption[];
+  selected: string[];
+  onToggle: (value: string) => void;
+}
+
+function PillGroup({ id, legend, options, selected, onToggle }: PillGroupProps) {
   return (
     <fieldset className="flex flex-col gap-2">
       <legend className="sr-only">{legend}</legend>
@@ -58,14 +44,13 @@ function PillGroup<T extends string>({
         className="flex flex-wrap gap-2"
       >
         {options.map((option) => {
-          const active = selected.includes(option);
-          const { dot } = colorFor(option);
+          const active = selected.includes(option.value);
           return (
             <button
-              key={option}
+              key={option.value}
               type="button"
               aria-pressed={active}
-              onClick={() => onToggle(option)}
+              onClick={() => onToggle(option.value)}
               className={cn(
                 "inline-flex min-h-9 items-center gap-1.5 rounded-full border px-3 py-1.5 text-sm font-medium transition-colors",
                 "focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 focus-visible:ring-offset-background",
@@ -76,9 +61,9 @@ function PillGroup<T extends string>({
             >
               <span
                 aria-hidden="true"
-                className={cn("h-2 w-2 rounded-full", active ? "bg-current" : dot)}
+                className={cn("h-2 w-2 rounded-full", active ? "bg-current" : dotFor(option.label ?? ""))}
               />
-              {labelFor ? labelFor(option) : option}
+              {option.label}
             </button>
           );
         })}
@@ -93,16 +78,18 @@ function PillGroup<T extends string>({
 
 interface FilterPanelProps {
   filters: ScheduleFilters;
+  derived: ScheduleDerived;
   resultCount: number;
   onSearchChange: (query: string) => void;
-  onToggleAxis: (axis: ScheduleFilters["axes"][number]) => void;
-  onToggleActivityType: (type: ScheduleFilters["activityTypes"][number]) => void;
-  onToggleVenue: (venue: ScheduleFilters["venues"][number]) => void;
+  onToggleAxis: (axis: string) => void;
+  onToggleActivityType: (type: string) => void;
+  onToggleVenue: (venueKey: string) => void;
   onClear: () => void;
 }
 
 export function FilterPanel({
   filters,
+  derived,
   resultCount,
   onSearchChange,
   onToggleAxis,
@@ -112,13 +99,13 @@ export function FilterPanel({
 }: FilterPanelProps) {
   return (
     <section
-      aria-label="Schedule filters"
+      aria-label="Filtros del programa"
       className="flex flex-col gap-5 rounded-xl border bg-card p-4 text-card-foreground shadow-sm sm:p-5"
     >
       {/* Search */}
       <div className="relative">
         <Label htmlFor="schedule-search" className="sr-only">
-          Search sessions
+          Buscar sesiones
         </Label>
         <Search
           aria-hidden="true"
@@ -127,7 +114,7 @@ export function FilterPanel({
         <Input
           id="schedule-search"
           type="search"
-          placeholder="Search by title, speaker, author, or institution…"
+          placeholder="Buscar por título, ponente, autor o institución…"
           value={filters.searchQuery}
           onChange={(e) => onSearchChange(e.target.value)}
           className="pl-9"
@@ -139,30 +126,29 @@ export function FilterPanel({
 
       <PillGroup
         id="axis-filter"
-        legend="Filter by thematic axis"
-        options={THEMATIC_AXES}
+        legend="Eje temático"
+        options={derived.axes.map((axis) => ({ value: axis, label: axis }))}
         selected={filters.axes}
         onToggle={onToggleAxis}
-        colorFor={(v) => THEMATIC_AXIS_COLORS[v]}
       />
 
       <PillGroup
         id="activity-filter"
-        legend="Filter by activity type"
-        options={ACTIVITY_TYPES}
+        legend="Tipo de actividad"
+        options={derived.activityTypes.map((type) => ({ value: type, label: type }))}
         selected={filters.activityTypes}
         onToggle={onToggleActivityType}
-        colorFor={(v) => ACTIVITY_TYPE_COLORS[v]}
       />
 
       <PillGroup
         id="venue-filter"
-        legend="Filter by room / venue"
-        options={VENUE_IDS}
+        legend="Sala / Lugar"
+        options={derived.venues.map((venue) => ({
+          value: venue.key,
+          label: venue.label,
+        }))}
         selected={filters.venues}
         onToggle={onToggleVenue}
-        colorFor={(v) => VENUE_COLORS[v]}
-        labelFor={(v) => VENUES[v]}
       />
 
       <Separator />
@@ -173,18 +159,17 @@ export function FilterPanel({
           role="status"
           className="text-sm text-muted-foreground"
         >
-          {resultCount} {resultCount === 1 ? "session" : "sessions"} found
+          {resultCount} {resultCount === 1 ? "sesión" : "sesiones"} encontradas
         </p>
         <Button
           type="button"
           variant="outline"
           size="sm"
           onClick={onClear}
-          disabled={resultCount === 0}
           className="gap-1.5"
         >
           <X className="h-3.5 w-3.5" aria-hidden="true" />
-          Clear filters
+          Limpiar filtros
         </Button>
       </div>
     </section>

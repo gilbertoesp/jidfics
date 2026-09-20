@@ -27,13 +27,13 @@ const DEMO_MESSAGES: ChatMessage[] = [
   {
     id: "seed-1",
     author: "Dra. Elena Vásquez",
-    text: "Welcome to this session! Feel free to share questions here.",
+    text: "¡Bienvenidos a esta sesión! Pueden compartir sus preguntas aquí.",
     mine: false,
   },
   {
     id: "seed-2",
     author: "Mtro. Roberto Alemán",
-    text: "Great presentation. Any recommendations for future research lines?",
+    text: "Excelente presentación. ¿Alguna recomendación para futuras líneas de investigación?",
     mine: false,
   },
 ];
@@ -57,8 +57,8 @@ export function LiveChatSheet({ event, onOpenChange }: LiveChatSheetProps) {
         ...DEMO_MESSAGES,
         {
           id: `welcome-${Date.now()}`,
-          author: "Moderator",
-          text: `Live discussion for "${event.title}" has started.`,
+          author: "Moderadora",
+          text: `La discusión en vivo de "${event.title}" ha comenzado.`,
           mine: false,
         },
       ]);
@@ -78,7 +78,7 @@ export function LiveChatSheet({ event, onOpenChange }: LiveChatSheetProps) {
     if (!text) return;
     setMessages((prev) => [
       ...prev,
-      { id: `mine-${Date.now()}`, author: "You", text, mine: true },
+      { id: `mine-${Date.now()}`, author: "Tú", text, mine: true },
     ]);
     setDraft("");
   }
@@ -95,7 +95,7 @@ export function LiveChatSheet({ event, onOpenChange }: LiveChatSheetProps) {
         <SheetHeader className="border-b p-4 pr-12 text-left">
           <SheetTitle className="flex items-center gap-2">
             <MessagesSquare className="h-4 w-4" aria-hidden="true" />
-            Live discussion
+            Discusión en vivo
           </SheetTitle>
           <SheetDescription className="line-clamp-2">
             {event?.title}
@@ -106,7 +106,7 @@ export function LiveChatSheet({ event, onOpenChange }: LiveChatSheetProps) {
         <div
           aria-live="polite"
           role="log"
-          aria-label="Session discussion messages"
+          aria-label="Mensajes de la discusión"
           className="flex flex-1 flex-col gap-3 overflow-y-auto p-4"
         >
           {messages.map((message) => (
@@ -147,14 +147,14 @@ export function LiveChatSheet({ event, onOpenChange }: LiveChatSheetProps) {
             id="chat-message"
             value={draft}
             onChange={(e) => setDraft(e.target.value)}
-            placeholder="Write a message…"
+            placeholder="Escribe un mensaje…"
             className="flex-1"
             autoComplete="off"
           />
           <Button
             type="submit"
             size="icon"
-            aria-label="Send message"
+            aria-label="Enviar mensaje"
             disabled={!draft.trim()}
             className="shrink-0"
           >

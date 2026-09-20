@@ -1,109 +1,219 @@
-<a href="https://demo-nextjs-with-supabase.vercel.app/">
-  <img alt="Next.js and Supabase Starter Kit - the fastest way to build apps with Next.js and Supabase" src="https://demo-nextjs-with-supabase.vercel.app/opengraph-image.png">
-  <h1 align="center">Next.js and Supabase Starter Kit</h1>
-</a>
+# VII JIDFICS — Programa Interactivo
 
-<p align="center">
- The fastest way to build apps with Next.js and Supabase
-</p>
+Sitio web oficial de la **VII Jornadas Internacionales de Docencia e Investigación en Ciencias Sociales** (JIDFICS), celebrada en la **Universidad de Sonora, Campus Caborca** los días **23 y 24 de septiembre de 2026**.
 
-<p align="center">
-  <a href="#features"><strong>Features</strong></a> ·
-  <a href="#demo"><strong>Demo</strong></a> ·
-  <a href="#deploy-to-vercel"><strong>Deploy to Vercel</strong></a> ·
-  <a href="#clone-and-run-locally"><strong>Clone and run locally</strong></a> ·
-  <a href="#feedback-and-issues"><strong>Feedback and issues</strong></a>
-  <a href="#more-supabase-examples"><strong>More Examples</strong></a>
-</p>
-<br/>
+> **Estado**: Programa interactivo desplegado — incluye filtrado por día, eje temático, tipo de actividad y sala; vista de ponencias y ponentes; y hoja lateral de discusión en vivo (UI lista para Supabase Realtime).
 
-## Features
+---
 
-- Works across the entire [Next.js](https://nextjs.org) stack
-  - App Router
-  - Pages Router
-  - Proxy
-  - Client
-  - Server
-  - It just works!
-- supabase-ssr. A package to configure Supabase Auth to use cookies
-- Password-based authentication block installed via the [Supabase UI Library](https://supabase.com/ui/docs/nextjs/password-based-auth)
-- Styling with [Tailwind CSS](https://tailwindcss.com)
-- Components with [shadcn/ui](https://ui.shadcn.com/)
-- Optional deployment with [Supabase Vercel Integration and Vercel deploy](#deploy-your-own)
-  - Environment variables automatically assigned to Vercel project
+## 🚀 Demo en vivo
 
-## Demo
+**Producción (Vercel)**: `https://jidfics.vercel.app` *(después del deploy)*
 
-You can view a fully working demo at [demo-nextjs-with-supabase.vercel.app](https://demo-nextjs-with-supabase.vercel.app/).
+---
 
-## Deploy to Vercel
+## ✨ Características
 
-Vercel deployment will guide you through creating a Supabase account and project.
+- **Programa normalizado desde JSON real** — 45+ sesiones, 2 días, 7 salas, 10+ ejes temáticos, 15+ tipos de actividad.
+- **Filtrado multifacético** — busca por título, ponente, autor, institución; combina ejes, tipos y salas con lógica AND/OR.
+- **Tarjetas de sesión expandibles** — detalle de ponentes + lista de ponencias con autores e instituciones.
+- **Discusión en vivo (UI)** — hoja lateral por sesión (`LiveChatSheet`), backend-ready para Supabase Realtime.
+- **Accesibilidad (a11y)** — ARIA roles, foco visible, navegación por teclado, etiquetas en español.
+- **Tema claro/oscuro** — `next-themes` con persistencia en `localStorage`.
+- **Stack moderno** — Next.js 16 (App Router, Turbopack), React 19, Tailwind CSS v4, shadcn/ui, TypeScript estricto.
+- **Auth preparada** — Supabase SSR (`@supabase/ssr`) con `proxy.ts` (Next 16), cookies HttpOnly, refresco automático de sesión.
+- **CI/CD** — GitHub Actions: lint + typecheck + tests + build en cada push/PR.
+- **Tests** — Vitest: normalización, filtrado, integridad de datos (snapshot de colisiones conocidas), smoke test de conectividad Supabase (se salta si no hay credenciales).
 
-After installation of the Supabase integration, all relevant environment variables will be assigned to the project so the deployment is fully functioning.
+---
 
-[![Deploy with Vercel](https://vercel.com/button)](https://vercel.com/new/clone?repository-url=https%3A%2F%2Fgithub.com%2Fvercel%2Fnext.js%2Ftree%2Fcanary%2Fexamples%2Fwith-supabase&project-name=nextjs-with-supabase&repository-name=nextjs-with-supabase&demo-title=nextjs-with-supabase&demo-description=This+starter+configures+Supabase+Auth+to+use+cookies%2C+making+the+user%27s+session+available+throughout+the+entire+Next.js+app+-+Client+Components%2C+Server+Components%2C+Route+Handlers%2C+Server+Actions+and+Middleware.&demo-url=https%3A%2F%2Fdemo-nextjs-with-supabase.vercel.app%2F&external-id=https%3A%2F%2Fgithub.com%2Fvercel%2Fnext.js%2Ftree%2Fcanary%2Fexamples%2Fwith-supabase&demo-image=https%3A%2F%2Fdemo-nextjs-with-supabase.vercel.app%2Fopengraph-image.png)
+## 🗂️ Estructura del proyecto
 
-The above will also clone the Starter kit to your GitHub, you can clone that locally and develop locally.
+```
+jidfics/
+├── app/
+│   ├── page.tsx                 # Página principal (Server Component)
+│   ├── layout.tsx               # Root layout + providers
+│   └── globals.css              # Estilos globales + variables CSS
+├── components/
+│   ├── schedule/                # Componentes del programa
+│   │   ├── ScheduleHeader.tsx   # Cabecera con metadata del evento
+│   │   ├── ScheduleClient.tsx   # Cliente interactivo (filtros + lista)
+│   │   ├── FilterPanel.tsx      # Panel de filtros dinámicos
+│   │   ├── EventCard.tsx        # Tarjeta de sesión expandible
+│   │   └── LiveChatSheet.tsx    # Hoja lateral de chat (UI lista)
+│   ├── ui/                      # Primitivas shadcn/ui (Accordion, Tabs, Sheet…)
+│   └── theme-switcher.tsx       # Toggle claro/oscuro
+├── lib/
+│   ├── schedule/
+│   │   ├── types.ts             # Tipos TS: Raw* (JSON) + normalizados
+│   │   ├── normalize.ts         # Pipeline: JSON → eventos planos + meta + filtros derivados
+│   │   ├── filter.ts            # Motor de filtrado puro (sin efectos)
+│   │   ├── colors.ts            # Paleta hash-determinista (FNV-1a → 10 colores Tailwind)
+│   │   ├── calendario_vii_jidfics.json   # Dataset real (fuente única)
+│   │   ├── *.test.ts            # Tests unitarios + integridad de datos
+│   ├── supabase/
+│   │   ├── proxy.ts             # updateSession() para proxy.ts (Next 16)
+│   │   ├── server.ts            # createClient() para Server Components
+│   │   └── client.ts            # createClient() para Client Components
+│   └── utils.ts                 # cn(), hasEnvVars
+├── proxy.ts                     # Next 16 proxy (reemplaza middleware.ts)
+├── tests/integration/           # Supabase connectivity smoke test
+├── .github/workflows/ci.yml     # CI: lint + typecheck + test + build
+├── vitest.config.ts             # Config Vitest (alias @, node env)
+├── tailwind.config.ts           # Animaciones accordion + plugin animate
+├── tsconfig.json                # TS estricto + paths @/*
+└── README.md                    # Este archivo
+```
 
-If you wish to just develop locally and not deploy to Vercel, [follow the steps below](#clone-and-run-locally).
+---
 
-## Clone and run locally
+## 🛠️ Desarrollo local
 
-1. You'll first need a Supabase project which can be made [via the Supabase dashboard](https://database.new)
+### Requisitos
 
-2. Create a Next.js app using the Supabase Starter template npx command
+- **bun** ≥ 1.1 (gestor de paquetes y runtime — `npm` falla con `ERESOLVE` en este repo)
+- Node.js ≥ 20 (para `bun` y herramientas)
 
+### Instalación
+
+```bash
+# Clonar
+git clone git@github.com:gilbertoesp/jidfics.git
+cd jidfics
+
+# Instalar dependencias
+bun install
+
+# Variables de entorno (copia y edita)
+cp .env.example .env
+# Edita .env con tus credenciales de Supabase (ver abajo)
+
+# Servidor de desarrollo (Turbopack)
+bun run dev
+```
+
+Abre [http://localhost:3000](http://localhost:3000) — el programa interactivo carga en `/`.
+
+### Variables de entorno
+
+| Variable | Descripción | Requerida |
+|---|---|---|
+| `NEXT_PUBLIC_SUPABASE_URL` | URL del proyecto Supabase (ej. `https://xxxxx.supabase.co`) | Sí (para auth/Realtime) |
+| `NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY` | Clave pública (anon/publishable) de Supabase | Sí (para auth/Realtime) |
+
+> **Nota**: El programa funciona **sin Supabase** (modo solo lectura) si omites las variables. El `proxy.ts` tiene un guard `hasEnvVars` que salta la verificación de sesión en desarrollo sin credenciales.
+
+---
+
+## 🧪 Tests
+
+```bash
+# Todas las suites
+bun test
+
+# Solo unitarias (rápido)
+bun test lib/schedule/
+
+# Integración Supabase (requiere credenciales en .env)
+bun test tests/integration/
+```
+
+**Suites incluidas**:
+- `lib/schedule/normalize.test.ts` — normalización JSON → UI shape
+- `lib/schedule/filter.test.ts` — motor de filtrado (fecha, búsqueda, facetas)
+- `lib/schedule/data-integrity.test.ts` — guards sobre JSON real: IDs únicos, tiempos válidos, campos requeridos, **snapshot de 3 colisiones conocidas de sala/hora en jueves** (falla si aparecen nuevas)
+- `tests/integration/supabase.test.ts` — conectividad real a Supabase (se salta sin credenciales)
+
+---
+
+## 📦 Build y deploy
+
+```bash
+# Build de producción (typecheck + lint + compile)
+bun run build
+
+# Preview local del build
+bun run start
+```
+
+### Deploy a Vercel (producción)
+
+1. **Vercel CLI** (ya instalado globalmente):
    ```bash
-   npx create-next-app --example with-supabase with-supabase-app
+   vercel login          # OAuth device flow
+   vercel link           # Vincula repo → proyecto Vercel
+   vercel env add NEXT_PUBLIC_SUPABASE_URL production
+   vercel env add NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY production
+   vercel deploy --prod
    ```
 
-   ```bash
-   yarn create next-app --example with-supabase with-supabase-app
-   ```
+2. **O bien: GitHub → Vercel Integration** (recomendado para CI/CD)
+   - En Vercel: *Add New Project* → Importa `gilbertoesp/jidfics`
+   - Vercel detecta Next.js automáticamente
+   - En *Settings → Environment Variables*: añade `NEXT_PUBLIC_SUPABASE_URL` y `NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY` (target: **Production**, **Preview**, **Development**)
+   - Push a `main` → deploy automático a producción
 
-   ```bash
-   pnpm create next-app --example with-supabase with-supabase-app
-   ```
+### Supabase Vercel Integration (sincroniza env vars + URLs de auth)
 
-3. Use `cd` to change into the app's directory
+1. En Vercel: *Project → Settings → Integrations → Supabase* → *Connect*
+2. Selecciona tu proyecto Supabase → Vercel inyecta automáticamente:
+   - `NEXT_PUBLIC_SUPABASE_URL`
+   - `NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY`
+   - `NEXT_PUBLIC_SUPABASE_ANON_KEY` (legacy, opcional)
+3. **Auth URLs en Supabase Dashboard** (*Authentication → URL Configuration*):
+   - **Site URL**: `https://jidfics.vercel.app` (tu dominio de prod)
+   - **Redirect URLs**: añade también `https://jidfics-git-main-gilbertoesp.vercel.app/**` (previews de Vercel)
+   - Esto permite login/OAuth en producción y previews.
 
-   ```bash
-   cd with-supabase-app
-   ```
+---
 
-4. Rename `.env.example` to `.env.local` and update the following:
+## 🔐 Auth — Estado actual
 
-  ```env
-  NEXT_PUBLIC_SUPABASE_URL=[INSERT SUPABASE PROJECT URL]
-  NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY=[INSERT SUPABASE PROJECT API PUBLISHABLE OR ANON KEY]
-  ```
-  > [!NOTE]
-  > This example uses `NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY`, which refers to Supabase's new **publishable** key format.
-  > Both legacy **anon** keys and new **publishable** keys can be used with this variable name during the transition period. Supabase's dashboard may show `NEXT_PUBLIC_SUPABASE_ANON_KEY`; its value can be used in this example.
-  > See the [full announcement](https://github.com/orgs/supabase/discussions/29260) for more information.
+- **Proxy SSR** (`proxy.ts` + `lib/supabase/proxy.ts`): refresca sesión en cada request, valida JWT con `getClaims()`.
+- **Server Components**: `lib/supabase/server.ts` → `createClient()` usa `cookies()` de `next/headers`.
+- **Client Components**: `lib/supabase/client.ts` → `createBrowserClient()`.
+- **Rutas públicas**: `/` (programa) — **NO requiere login**.
+- **Rutas protegidas (futuro)**: `/dashboard`, `/admin`, etc. — el proxy redirige a `/auth/login` si no hay sesión.
 
-  Both `NEXT_PUBLIC_SUPABASE_URL` and `NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY` can be found in [your Supabase project's API settings](https://supabase.com/dashboard/project/_?showConnect=true)
+> ⚠️ **Ajuste pendiente antes de prod**: en `lib/supabase/proxy.ts` líneas 50-60, la condición `pathname !== "/"` bloquea el programa para usuarios no autenticados. Cambiar a:
+> ```ts
+> const publicPaths = ["/", "/auth", "/login"];
+> if (!publicPaths.some(p => request.nextUrl.pathname.startsWith(p)) && !user) { ... }
+> ```
 
-5. You can now run the Next.js local development server:
+---
 
-   ```bash
-   npm run dev
-   ```
+## 🧱 Decisiones de arquitectura
 
-   The starter kit should now be running on [localhost:3000](http://localhost:3000/).
+| Área | Decisión | Rationale |
+|---|---|---|
+| **Normalización en build** | `normalizeEvents()` corre en `page.tsx` (Server Component) | Cero runtime cost; datos tipados en cliente |
+| **Filtros dinámicos** | `deriveFilters()` extrae opciones del dataset | Sin unions hardcodeadas; admite nuevos ejes/tipos/salas sin tocar código |
+| **Colores** | FNV-1a hash → 10 colores Tailwind (clase literal) | Determinista, sin colisiones, funciona en dark mode, tree-shakeable |
+| **Venue keys** | `slugify(label)` (minúsculas, sin diacríticas, `-` como separador) | Dedupe "Sala de Usos Múltiples" / "sala de usos multiples" |
+| **Next 16 proxy** | `export function proxy` en `proxy.ts` (no `middleware.ts`) | Convención oficial Next 16; build muestra `ƒ Proxy (Middleware)` |
+| **Tests snapshot** | Colisiones conocidas de sala/hora en jueves fijadas en test | Detecta regresiones de integridad sin luchar contra datos editoriales |
 
-6. This template comes with the default shadcn/ui style initialized. If you instead want other ui.shadcn styles, delete `components.json` and [re-install shadcn/ui](https://ui.shadcn.com/docs/installation/next)
+---
 
-> Check out [the docs for Local Development](https://supabase.com/docs/guides/getting-started/local-development) to also run Supabase locally.
+## 📄 Licencia
 
-## Feedback and issues
+Código del sitio: **MIT** — libre para usar, modificar y distribuir.
 
-Please file feedback and issues over on the [Supabase GitHub org](https://github.com/supabase/supabase/issues/new/choose).
+Datos del programa (JSON): **propiedad de los organizadores de JIDFICS** — uso autorizado para este sitio.
 
-## More Supabase examples
+---
 
-- [Next.js Subscription Payments Starter](https://github.com/vercel/nextjs-subscription-payments)
-- [Cookie-based Auth and the Next.js 13 App Router (free course)](https://youtube.com/playlist?list=PL5S4mPUpp4OtMhpnp93EFSo42iQ40XjbF)
-- [Supabase Auth and the Next.js App Router](https://github.com/supabase/supabase/tree/master/examples/auth/nextjs)
+## 🤝 Créditos
+
+- **Organización**: VII JIDFICS — Universidad de Sonora, Campus Caborca
+- **Desarrollo**: Gilberto Espinoza ([@gilbertoesp](https://github.com/gilbertoesp))
+- **Stack**: Next.js, Supabase, Tailwind CSS, shadcn/ui, Vitest, Vercel
+
+---
+
+## 📞 Contacto
+
+- Issues: [GitHub Issues](https://github.com/gilbertoesp/jidfics/issues)
+- Email: organización JIDFICS (ver sitio oficial)
