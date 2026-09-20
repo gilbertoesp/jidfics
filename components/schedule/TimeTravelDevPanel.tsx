@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, useCallback } from "react";
 import { RotateCcw, Play, Pause, FastForward, SkipBack } from "lucide-react";
 import { format, parseISO, startOfDay, endOfDay } from "date-fns";
 import { cn } from "@/lib/utils";
@@ -8,13 +8,6 @@ import type { UseCurrentSessionReturn } from "@/lib/schedule/hooks/useCurrentSes
 
 const CONFERENCE_START = "2026-09-23";
 const CONFERENCE_END = "2026-09-24";
-
-const PRESETS = [
-  { label: "Ahora", getDate: () => new Date() },
-  { label: "Inicio Dia 1", getDate: () => new Date(`${CONFERENCE_START}T08:00:00`) },
-  { label: "Inicio Dia 2", getDate: () => new Date(`${CONFERENCE_END}T08:00:00`) },
-  { label: "Fin Evento", getDate: () => new Date(`${CONFERENCE_END}T23:59:00`) },
-] as const;
 
 export function TimeTravelDevPanel({
   currentTime,
@@ -26,45 +19,94 @@ export function TimeTravelDevPanel({
   UseCurrentSessionReturn,
   "currentTime" | "isTimeTravel" | "isWithinConferenceDates" | "setTimeTravel" | "advanceMinutes"
 >) {
-  const safeCurrentTime = currentTime ?? new Date(0);
-  const [sliderValue, setSliderValue] = useState(() => safeCurrentTime.getTime());
+  // Use real current time as fallback for initial slider value
+  // Use lazy initializer to avoid new Date() during prerender
+  const [sliderValue, setSliderValue] = useState(() => {
+    if (typeof window !== "undefined") {
+      return currentTime?.getTime() ?? Date.now();
+    }
+    return currentTime?.getTime() ?? 0;
+  });
   const [isPlaying, setIsPlaying] = useState(false);
+
+  // Initialize slider value on mount (client-side only)
+  useEffect(() => {
+    if (sliderValue === 0 && currentTime) {
+      setSliderValue(currentTime.getTime());
+    } else if (sliderValue === 0) {
+      setSliderValue(Date.now());
+    }
+  }, [currentTime, sliderValue]);
 
   const confStart = startOfDay(parseISO(CONFERENCE_START));
   const confEnd = endOfDay(parseISO(CONFERENCE_END));
   const minTime = confStart.getTime();
   const maxTime = confEnd.getTime();
 
-  const handleSliderChange = (value: number) => {
+  // Sync slider value to hook's timeTravelTime when in time-travel mode
+  // This keeps the slider in sync when the hook's time changes (e.g., via jumpToEvent)
+  useEffect(() => {
+    if (isTimeTravel && currentTime) {
+      setSliderValue(currentTime.getTime());
+    } else if (!isTimeTravel) {
+      // In real-time mode, slider follows real time
+      setSliderValue(Date.now());
+    }
+  }, [isTimeTravel, currentTime]);
+
+  const handleSliderChange = useCallback((value: number) => {
     const date = new Date(value);
     setSliderValue(value);
-    if (isTimeTravel) {
-      setTimeTravel(date);
-    }
-  };
+    // Always call setTimeTravel - the hook will handle mode logic
+    setTimeTravel(date);
+  }, [setTimeTravel]);
 
-  const handleSliderEnd = () => {
+  const handleSliderEnd = useCallback(() => {
+    // Slider drag ended - already synced via handleSliderChange
+  }, []);
+
+  const togglePlay = useCallback(() => {
     if (!isTimeTravel) {
-      setTimeTravel(new Date(sliderValue));
+      // Enter time-travel mode at current real time
+      setTimeTravel(new Date());
     }
-  };
+    setIsPlaying((prev) => !prev);
+  }, [isTimeTravel, setTimeTravel]);
 
-  const togglePlay = () => {
-    if (!isTimeTravel) {
-      setTimeTravel(safeCurrentTime);
-    }
-    setIsPlaying(!isPlaying);
-  };
-
+  // Auto-advance when playing
   useEffect(() => {
     if (isPlaying && isTimeTravel) {
       const interval = setInterval(() => {
         advanceMinutes(5);
-        setSliderValue((prev) => prev + 5 * 60 * 1000);
+        // Slider will sync via the effect above when currentTime changes
       }, 1000);
       return () => clearInterval(interval);
     }
   }, [isPlaying, isTimeTravel, advanceMinutes]);
+
+  // Preset buttons - use simulated time when in time-travel mode
+  const getPresetDate = useCallback((label: string) => {
+    switch (label) {
+      case "Ahora":
+        // Use simulated time if in time-travel, otherwise real time
+        return isTimeTravel && currentTime ? currentTime : new Date();
+      case "Inicio Dia 1":
+        return new Date(`${CONFERENCE_START}T08:00:00`);
+      case "Inicio Dia 2":
+        return new Date(`${CONFERENCE_END}T08:00:00`);
+      case "Fin Evento":
+        return new Date(`${CONFERENCE_END}T23:59:00`);
+      default:
+        return new Date();
+    }
+  }, [isTimeTravel, currentTime]);
+
+  const PRESETS = [
+    { label: "Ahora" },
+    { label: "Inicio Dia 1" },
+    { label: "Inicio Dia 2" },
+    { label: "Fin Evento" },
+  ] as const;
 
   if (process.env.NODE_ENV === "production") return null;
 
@@ -130,7 +172,7 @@ export function TimeTravelDevPanel({
               key={preset.label}
               type="button"
               onClick={() => {
-                const date = preset.getDate();
+                const date = getPresetDate(preset.label);
                 setSliderValue(date.getTime());
                 setTimeTravel(date);
                 setIsPlaying(false);
@@ -146,10 +188,17 @@ export function TimeTravelDevPanel({
           <button
             type="button"
             onClick={() => {
-              advanceMinutes(-5);
-              setSliderValue((prev) => prev - 5 * 60 * 1000);
+              if (isTimeTravel) {
+                advanceMinutes(-5);
+              }
             }}
-            className="p-1.5 rounded bg-gray-100 dark:bg-gray-800 hover:bg-gray-200 dark:hover:bg-gray-700 transition-colors"
+            disabled={!isTimeTravel}
+            className={cn(
+              "p-1.5 rounded transition-colors",
+              isTimeTravel
+                ? "bg-gray-100 dark:bg-gray-800 hover:bg-gray-200 dark:hover:bg-gray-700"
+                : "bg-gray-100 dark:bg-gray-800 opacity-50 cursor-not-allowed",
+            )}
             aria-label="Retroceder 5 minutos"
           >
             <SkipBack className="h-4 w-4" />
@@ -165,10 +214,17 @@ export function TimeTravelDevPanel({
           <button
             type="button"
             onClick={() => {
-              advanceMinutes(5);
-              setSliderValue((prev) => prev + 5 * 60 * 1000);
+              if (isTimeTravel) {
+                advanceMinutes(5);
+              }
             }}
-            className="p-1.5 rounded bg-gray-100 dark:bg-gray-800 hover:bg-gray-200 dark:hover:bg-gray-700 transition-colors"
+            disabled={!isTimeTravel}
+            className={cn(
+              "p-1.5 rounded transition-colors",
+              isTimeTravel
+                ? "bg-gray-100 dark:bg-gray-800 hover:bg-gray-200 dark:hover:bg-gray-700"
+                : "bg-gray-100 dark:bg-gray-800 opacity-50 cursor-not-allowed",
+            )}
             aria-label="Avanzar 5 minutos"
           >
             <FastForward className="h-4 w-4" />
@@ -178,7 +234,7 @@ export function TimeTravelDevPanel({
             onClick={() => {
               setTimeTravel(null);
               setIsPlaying(false);
-              setSliderValue(new Date().getTime());
+              setSliderValue(Date.now());
             }}
             className="ml-auto p-1.5 rounded bg-gray-100 dark:bg-gray-800 hover:bg-gray-200 dark:hover:bg-gray-700 transition-colors"
             aria-label="Volver al tiempo real"
@@ -188,7 +244,7 @@ export function TimeTravelDevPanel({
         </div>
 
         <div className="text-xs text-muted-foreground">
-          <p>Hora actual: {format(safeCurrentTime, "yyyy-MM-dd HH:mm:ss")}</p>
+          <p>Hora actual: {format(currentTime ?? (typeof window !== "undefined" ? new Date() : new Date(0)), "yyyy-MM-dd HH:mm:ss")}</p>
           <p>Dentro de fechas de conferencia: {isWithinConferenceDates ? "Si" : "No"}</p>
         </div>
       </div>

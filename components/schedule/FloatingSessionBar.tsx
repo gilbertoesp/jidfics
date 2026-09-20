@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useRef, useState } from "react";
+import { useState } from "react";
 import { ChevronUp, ChevronDown, X, Radio } from "lucide-react";
 import { cn } from "@/lib/utils";
 import type { ConferenceEvent } from "@/lib/schedule/types";
@@ -30,19 +30,11 @@ export function FloatingSessionBar({
   onDismiss,
 }: FloatingSessionBarProps) {
   const [isExpanded, setIsExpanded] = useState(true);
-  const [isVisible, setIsVisible] = useState(true);
-  const barRef = useRef<HTMLDivElement>(null);
 
+  // Compute visibility during render to avoid flash
   const hasLiveEvents = Object.values(liveByHall).some((arr) => arr.length > 0);
   const hasUpNextEvents = Object.values(upNextByHall).some((arr) => arr.length > 0);
-
-  useEffect(() => {
-    if (!hasLiveEvents && !hasUpNextEvents) {
-      setIsVisible(false);
-    } else {
-      setIsVisible(true);
-    }
-  }, [hasLiveEvents, hasUpNextEvents]);
+  const isVisible = hasLiveEvents || hasUpNextEvents;
 
   if (!isVisible) return null;
 
@@ -53,6 +45,10 @@ export function FloatingSessionBar({
       element.scrollIntoView({ behavior: "smooth", block: "center" });
       element.focus({ preventScroll: true });
     }
+  };
+
+  const handleDismiss = () => {
+    onDismiss?.();
   };
 
   const renderHallSection = (
@@ -128,9 +124,18 @@ export function FloatingSessionBar({
     );
   };
 
+  // Collect all halls that have events
+  const allHalls = [
+    ...HALLS,
+    OTROS_HALL,
+  ].filter((hall) => {
+    const live = liveByHall[hall] ?? [];
+    const upNext = upNextByHall[hall] ?? [];
+    return live.length > 0 || upNext.length > 0;
+  });
+
   return (
     <div
-      ref={barRef}
       className={cn(
         "fixed bottom-0 left-0 right-0 z-50 mx-auto max-w-5xl border-t bg-background/95 backdrop-blur-sm shadow-lg transition-all duration-300",
         isExpanded ? "pb-0" : "pb-0",
@@ -155,7 +160,7 @@ export function FloatingSessionBar({
       {onDismiss && (
         <button
           type="button"
-          onClick={onDismiss}
+          onClick={handleDismiss}
           className="absolute -top-2 left-4 mx-auto max-w-5xl flex h-8 w-8 items-center justify-center rounded-full bg-background border shadow-lg hover:bg-accent transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
           aria-label="Cerrar barra de sesiones"
         >
@@ -164,16 +169,9 @@ export function FloatingSessionBar({
       )}
 
       <div className={cn("px-4 py-3 transition-all duration-300 overflow-hidden", isExpanded ? "max-h-96 opacity-100" : "max-h-0 opacity-0")}>
-        <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-4">
-          {HALLS.map((hall) => renderHallSection(hall, liveByHall[hall] ?? [], upNextByHall[hall] ?? []))}
-          {renderHallSection(OTROS_HALL, liveByHall[OTROS_HALL] ?? [], upNextByHall[OTROS_HALL] ?? [])}
+        <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-5">
+          {allHalls.map((hall) => renderHallSection(hall, liveByHall[hall] ?? [], upNextByHall[hall] ?? []))}
         </div>
-
-        {!hasLiveEvents && !hasUpNextEvents && (
-          <p className="text-center text-sm text-muted-foreground py-4">
-            No hay sesiones en vivo ni proximas en este momento.
-          </p>
-        )}
       </div>
     </div>
   );

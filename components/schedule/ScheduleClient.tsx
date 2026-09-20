@@ -1,6 +1,6 @@
 "use client";
 
-import { useMemo, useState } from "react";
+import { useMemo, useState, useCallback } from "react";
 
 import { CalendarDays } from "lucide-react";
 
@@ -37,6 +37,7 @@ export function ScheduleClient({ events, meta, derived }: ScheduleClientProps) {
     date: meta.days[0]?.date ?? EMPTY_FILTERS.date,
   });
   const [chatEvent, setChatEvent] = useState<ConferenceEvent | null>(null);
+  const [barDismissed, setBarDismissed] = useState(false);
 
   const {
     liveNow,
@@ -48,7 +49,6 @@ export function ScheduleClient({ events, meta, derived }: ScheduleClientProps) {
     isWithinConferenceDates,
     setTimeTravel,
     advanceMinutes,
-    jumpToEvent,
   } = useCurrentSession({
     events,
   });
@@ -69,20 +69,25 @@ export function ScheduleClient({ events, meta, derived }: ScheduleClientProps) {
 
   const activeDay = meta.days.find((day) => day.date === filters.date);
 
-  const getLiveStatus = (event: ConferenceEvent): "live" | "up-next" | "idle" => {
+  const getLiveStatus = useCallback((event: ConferenceEvent): "live" | "up-next" | "idle" => {
     if (liveNow.some((e) => e.id === event.id)) return "live";
     if (upNext.some((e) => e.id === event.id)) return "up-next";
     return "idle";
-  };
+  }, [liveNow, upNext]);
 
-  const handleScrollToEvent = (eventId: string) => {
-    jumpToEvent(eventId);
+  // Scroll to event without triggering time-travel
+  const handleScrollToEvent = useCallback((eventId: string) => {
     const element = document.getElementById(eventId);
     if (element) {
       element.scrollIntoView({ behavior: "smooth", block: "center" });
       element.focus({ preventScroll: true });
     }
-  };
+  }, []);
+
+  // Dismiss floating bar for this session
+  const handleDismissBar = useCallback(() => {
+    setBarDismissed(true);
+  }, []);
 
   return (
     <div className="mx-auto flex w-full max-w-5xl flex-col gap-6 px-4 py-8 sm:px-6 pb-24">
@@ -152,11 +157,14 @@ export function ScheduleClient({ events, meta, derived }: ScheduleClientProps) {
       />
 
       {/* Floating Session Bar - shows live/up-next across halls */}
-      <FloatingSessionBar
-        liveByHall={liveByHall}
-        upNextByHall={upNextByHall}
-        onScrollToEvent={handleScrollToEvent}
-      />
+      {!barDismissed && (
+        <FloatingSessionBar
+          liveByHall={liveByHall}
+          upNextByHall={upNextByHall}
+          onScrollToEvent={handleScrollToEvent}
+          onDismiss={handleDismissBar}
+        />
+      )}
 
       {/* Time Travel Debug Panel (dev only) */}
       <TimeTravelDevPanel

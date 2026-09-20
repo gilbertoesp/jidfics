@@ -93,18 +93,37 @@ export function useCurrentSession({
   }, []);
 
   const tickRef = useRef<ReturnType<typeof setInterval> | null>(null);
+  const initializedRef = useRef(false);
 
+  // Tick effect - updates real time every interval when not in time-travel mode
   useEffect(() => {
-    if (!enabled || isTimeTravel || !now) return;
+    if (!enabled || isTimeTravel) {
+      // Cleanup if we entered time-travel or disabled
+      if (tickRef.current) {
+        clearInterval(tickRef.current);
+        tickRef.current = null;
+      }
+      return;
+    }
+
+    // Mark as initialized after first render
+    if (!initializedRef.current) {
+      initializedRef.current = true;
+      setNow(new Date());
+    }
 
     const tick = () => setNow(new Date());
     tick();
     tickRef.current = setInterval(tick, tickIntervalMs);
     return () => {
-      if (tickRef.current) clearInterval(tickRef.current);
+      if (tickRef.current) {
+        clearInterval(tickRef.current);
+        tickRef.current = null;
+      }
     };
-  }, [enabled, isTimeTravel, tickIntervalMs, now]);
+  }, [enabled, isTimeTravel, tickIntervalMs]);
 
+  // Sync now to timeTravelTime when entering time-travel mode
   useEffect(() => {
     if (isTimeTravel && timeTravelTime) {
       setNow(timeTravelTime);
@@ -143,26 +162,32 @@ export function useCurrentSession({
     setTimeTravelTime(date);
   }, []);
 
+  // Only advances time when in time-travel mode
   const advanceMinutes = useCallback((min: number) => {
-    const base = isTimeTravel ? timeTravelTime : new Date();
-    if (!base) return;
-    const next = addMinutes(base, min);
-    if (isTimeTravel) {
-      setTimeTravelTime(next);
-    } else {
-      setTimeTravelTime(next);
+    if (!isTimeTravel || !timeTravelTime) {
+      // In real-time mode, advanceMinutes is a no-op
+      // Could optionally throw or warn in development
+      if (process.env.NODE_ENV === "development") {
+        console.warn("[useCurrentSession] advanceMinutes called but not in time-travel mode");
+      }
+      return;
     }
+    const next = addMinutes(timeTravelTime, min);
+    setTimeTravelTime(next);
   }, [isTimeTravel, timeTravelTime]);
 
+  // Only jumps to event when in time-travel mode
   const jumpToEvent = useCallback((eventId: string) => {
+    if (!isTimeTravel) {
+      if (process.env.NODE_ENV === "development") {
+        console.warn("[useCurrentSession] jumpToEvent called but not in time-travel mode");
+      }
+      return;
+    }
     const event = events.find((e) => e.id === eventId);
     if (!event) return;
     const target = parseEventTime(event.date, event.startTime);
-    if (isTimeTravel) {
-      setTimeTravelTime(target);
-    } else {
-      setTimeTravelTime(target);
-    }
+    setTimeTravelTime(target);
   }, [events, isTimeTravel]);
 
   return {
