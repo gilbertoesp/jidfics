@@ -6,7 +6,9 @@ import { CalendarDays } from "lucide-react";
 
 import { EventCard } from "@/components/schedule/EventCard";
 import { FilterPanel } from "@/components/schedule/FilterPanel";
+import { FloatingSessionBar } from "@/components/schedule/FloatingSessionBar";
 import { LiveChatSheet } from "@/components/schedule/LiveChatSheet";
+import { TimeTravelDevPanel } from "@/components/schedule/TimeTravelDevPanel";
 import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import {
   EMPTY_FILTERS,
@@ -21,6 +23,7 @@ import {
   type ConferenceMeta,
   type ScheduleDerived,
 } from "@/lib/schedule/types";
+import { useCurrentSession } from "@/lib/schedule/hooks/useCurrentSession";
 
 interface ScheduleClientProps {
   events: ConferenceEvent[];
@@ -34,6 +37,21 @@ export function ScheduleClient({ events, meta, derived }: ScheduleClientProps) {
     date: meta.days[0]?.date ?? EMPTY_FILTERS.date,
   });
   const [chatEvent, setChatEvent] = useState<ConferenceEvent | null>(null);
+
+  const {
+    liveNow,
+    upNext,
+    liveByHall,
+    upNextByHall,
+    currentTime,
+    isTimeTravel,
+    isWithinConferenceDates,
+    setTimeTravel,
+    advanceMinutes,
+    jumpToEvent,
+  } = useCurrentSession({
+    events,
+  });
 
   const filteredEvents = useMemo(
     () => filterEvents(events, filters).sort(scheduleSorter),
@@ -51,8 +69,23 @@ export function ScheduleClient({ events, meta, derived }: ScheduleClientProps) {
 
   const activeDay = meta.days.find((day) => day.date === filters.date);
 
+  const getLiveStatus = (event: ConferenceEvent): "live" | "up-next" | "idle" => {
+    if (liveNow.some((e) => e.id === event.id)) return "live";
+    if (upNext.some((e) => e.id === event.id)) return "up-next";
+    return "idle";
+  };
+
+  const handleScrollToEvent = (eventId: string) => {
+    jumpToEvent(eventId);
+    const element = document.getElementById(eventId);
+    if (element) {
+      element.scrollIntoView({ behavior: "smooth", block: "center" });
+      element.focus({ preventScroll: true });
+    }
+  };
+
   return (
-    <div className="mx-auto flex w-full max-w-5xl flex-col gap-6 px-4 py-8 sm:px-6">
+    <div className="mx-auto flex w-full max-w-5xl flex-col gap-6 px-4 py-8 sm:px-6 pb-24">
       {/* Date switcher (tablist) */}
       <Tabs
         value={filters.date}
@@ -85,9 +118,7 @@ export function ScheduleClient({ events, meta, derived }: ScheduleClientProps) {
       />
 
       {/* Results */}
-      <section
-        aria-label={`Sesiones del ${activeDay ? activeDay.dayName : "día"}`}
-      >
+      <section aria-label={`Sesiones del ${activeDay ? activeDay.dayName : "dia"}`}>
         {filteredEvents.length === 0 ? (
           <p
             role="status"
@@ -100,8 +131,12 @@ export function ScheduleClient({ events, meta, derived }: ScheduleClientProps) {
         ) : (
           <ul className="grid grid-cols-1 gap-4 lg:grid-cols-2">
             {filteredEvents.map((event) => (
-              <li key={event.id} className="h-full">
-                <EventCard event={event} onOpenChat={setChatEvent} />
+              <li key={event.id} id={event.id} className="h-full">
+                <EventCard
+                  event={event}
+                  onOpenChat={setChatEvent}
+                  liveStatus={getLiveStatus(event)}
+                />
               </li>
             ))}
           </ul>
@@ -114,6 +149,22 @@ export function ScheduleClient({ events, meta, derived }: ScheduleClientProps) {
         onOpenChange={(open) => {
           if (!open) setChatEvent(null);
         }}
+      />
+
+      {/* Floating Session Bar - shows live/up-next across halls */}
+      <FloatingSessionBar
+        liveByHall={liveByHall}
+        upNextByHall={upNextByHall}
+        onScrollToEvent={handleScrollToEvent}
+      />
+
+      {/* Time Travel Debug Panel (dev only) */}
+      <TimeTravelDevPanel
+        currentTime={currentTime}
+        isTimeTravel={isTimeTravel}
+        isWithinConferenceDates={isWithinConferenceDates}
+        setTimeTravel={setTimeTravel}
+        advanceMinutes={advanceMinutes}
       />
     </div>
   );

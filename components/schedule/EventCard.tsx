@@ -19,15 +19,17 @@ import {
 } from "@/components/ui/card";
 import { Separator } from "@/components/ui/separator";
 import { colorFor } from "@/lib/schedule/colors";
+import { LiveIndicatorBadge, type LiveStatus } from "@/components/schedule/LiveIndicatorBadge";
 import { type ConferenceEvent } from "@/lib/schedule/types";
 import { cn } from "@/lib/utils";
 
 interface EventCardProps {
   event: ConferenceEvent;
   onOpenChat: (event: ConferenceEvent) => void;
+  liveStatus?: LiveStatus;
 }
 
-export function EventCard({ event, onOpenChat }: EventCardProps) {
+export function EventCard({ event, onOpenChat, liveStatus }: EventCardProps) {
   const activityColor = colorFor(event.activityType);
   const axisColor = colorFor(event.thematicAxis);
 
@@ -45,6 +47,7 @@ export function EventCard({ event, onOpenChat }: EventCardProps) {
           <MapPin className="h-3.5 w-3.5" aria-hidden="true" />
           {event.venueLabel}
         </span>
+        {liveStatus && <LiveIndicatorBadge status={liveStatus} showLabel />}
       </div>
 
       <CardHeader className="gap-2 pb-3">
