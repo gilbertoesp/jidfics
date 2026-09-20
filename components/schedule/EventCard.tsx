@@ -31,7 +31,7 @@ interface EventCardProps {
 
 export function EventCard({ event, onOpenChat, liveStatus }: EventCardProps) {
   const activityColor = colorFor(event.activityType);
-  const axisColor = colorFor(event.thematicAxis);
+  const displayTags = event.tags.length > 0 ? event.tags : [event.thematicAxis];
 
   return (
     <Card className="group flex flex-col overflow-hidden transition-shadow hover:shadow-md">
@@ -46,6 +46,9 @@ export function EventCard({ event, onOpenChat, liveStatus }: EventCardProps) {
         <span className="inline-flex items-center gap-1.5 text-muted-foreground">
           <MapPin className="h-3.5 w-3.5" aria-hidden="true" />
           {event.venueLabel}
+          {event.building && event.building !== "Unknown" && (
+            <span className="text-muted-foreground/70">· {event.building}</span>
+          )}
         </span>
         {liveStatus && <LiveIndicatorBadge status={liveStatus} showLabel />}
       </div>
@@ -59,13 +62,22 @@ export function EventCard({ event, onOpenChat, liveStatus }: EventCardProps) {
             />
             {event.activityType}
           </Badge>
-          <Badge variant="outline" className={cn("gap-1.5 border", axisColor.badge)}>
-            <span
-              aria-hidden="true"
-              className={cn("h-1.5 w-1.5 rounded-full", axisColor.dot)}
-            />
-            {event.thematicAxis}
-          </Badge>
+          {displayTags.map((tag) => {
+            const tagColor = colorFor(tag);
+            return (
+              <Badge
+                key={tag}
+                variant="outline"
+                className={cn("gap-1.5 border", tagColor.badge)}
+              >
+                <span
+                  aria-hidden="true"
+                  className={cn("h-1.5 w-1.5 rounded-full", tagColor.dot)}
+                />
+                {tag}
+              </Badge>
+            );
+          })}
         </div>
         <CardTitle className="text-lg leading-snug">
           <h3>{event.title}</h3>

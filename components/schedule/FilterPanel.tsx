@@ -81,9 +81,12 @@ interface FilterPanelProps {
   derived: ScheduleDerived;
   resultCount: number;
   onSearchChange: (query: string) => void;
-  onToggleAxis: (axis: string) => void;
+  /** @deprecated Use onToggleTag instead — kept for backwards compat */
+  onToggleAxis?: (axis: string) => void;
+  onToggleTag: (tag: string) => void;
   onToggleActivityType: (type: string) => void;
   onToggleVenue: (venueKey: string) => void;
+  onToggleBuilding: (building: string) => void;
   onClear: () => void;
 }
 
@@ -92,11 +95,14 @@ export function FilterPanel({
   derived,
   resultCount,
   onSearchChange,
-  onToggleAxis,
+  onToggleAxis: _onToggleAxis,
+  onToggleTag,
   onToggleActivityType,
   onToggleVenue,
+  onToggleBuilding,
   onClear,
 }: FilterPanelProps) {
+  void _onToggleAxis;
   return (
     <section
       aria-label="Filtros del programa"
@@ -125,11 +131,11 @@ export function FilterPanel({
       <Separator />
 
       <PillGroup
-        id="axis-filter"
-        legend="Eje temático"
-        options={derived.axes.map((axis) => ({ value: axis, label: axis }))}
-        selected={filters.axes}
-        onToggle={onToggleAxis}
+        id="tag-filter"
+        legend="Etiquetas"
+        options={derived.tags.map((tag) => ({ value: tag, label: tag }))}
+        selected={filters.tags}
+        onToggle={onToggleTag}
       />
 
       <PillGroup
@@ -149,6 +155,14 @@ export function FilterPanel({
         }))}
         selected={filters.venues}
         onToggle={onToggleVenue}
+      />
+
+      <PillGroup
+        id="building-filter"
+        legend="Edificio"
+        options={derived.buildings.map((b) => ({ value: b.key, label: b.label }))}
+        selected={filters.buildings}
+        onToggle={onToggleBuilding}
       />
 
       <Separator />

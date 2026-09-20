@@ -2,13 +2,15 @@
 
 import { useMemo, useState, useCallback } from "react";
 
-import { CalendarDays } from "lucide-react";
+import { CalendarDays, LayoutGrid, Timer } from "lucide-react";
 
+import { BuildingTimelines } from "@/components/schedule/BuildingTimelines";
 import { EventCard } from "@/components/schedule/EventCard";
 import { FilterPanel } from "@/components/schedule/FilterPanel";
 import { FloatingSessionBar } from "@/components/schedule/FloatingSessionBar";
 import { LiveChatSheet } from "@/components/schedule/LiveChatSheet";
 import { TimeTravelDevPanel } from "@/components/schedule/TimeTravelDevPanel";
+import { Button } from "@/components/ui/button";
 import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import {
   EMPTY_FILTERS,
@@ -36,6 +38,7 @@ export function ScheduleClient({ events, meta, derived }: ScheduleClientProps) {
     ...EMPTY_FILTERS,
     date: meta.days[0]?.date ?? EMPTY_FILTERS.date,
   });
+  const [view, setView] = useState<"grid" | "timeline">("grid");
   const [chatEvent, setChatEvent] = useState<ConferenceEvent | null>(null);
   const [barDismissed, setBarDismissed] = useState(false);
 
@@ -91,33 +94,68 @@ export function ScheduleClient({ events, meta, derived }: ScheduleClientProps) {
 
   return (
     <div className="mx-auto flex w-full max-w-5xl flex-col gap-6 px-4 py-8 sm:px-6 pb-24">
-      {/* Date switcher (tablist) */}
-      <Tabs
-        value={filters.date}
-        onValueChange={(value) => update({ date: value })}
-      >
-        <TabsList className="grid w-full grid-cols-2 sm:w-auto">
-          {meta.days.map((day) => (
-            <TabsTrigger key={day.date} value={day.date} className="gap-2">
-              <CalendarDays className="h-4 w-4 text-muted-foreground" aria-hidden="true" />
-              <span>{dayLabel(day.dayName, day.date)}</span>
-            </TabsTrigger>
-          ))}
-        </TabsList>
-      </Tabs>
+      {/* Date switcher + view switcher — visible in both views, filters still apply */}
+      <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
+        <Tabs
+          value={filters.date}
+          onValueChange={(value) => update({ date: value })}
+        >
+          <TabsList className="grid w-full grid-cols-2 sm:w-auto">
+            {meta.days.map((day) => (
+              <TabsTrigger key={day.date} value={day.date} className="gap-2">
+                <CalendarDays className="h-4 w-4 text-muted-foreground" aria-hidden="true" />
+                <span>{dayLabel(day.dayName, day.date)}</span>
+              </TabsTrigger>
+            ))}
+          </TabsList>
+        </Tabs>
 
-      {/* Multi-facet filtering */}
+        <div
+          role="group"
+          aria-label="Cambiar vista del programa"
+          className="inline-flex items-center gap-1 self-start rounded-lg bg-muted p-1 sm:self-auto"
+        >
+          <Button
+            type="button"
+            size="sm"
+            variant={view === "grid" ? "default" : "ghost"}
+            aria-pressed={view === "grid"}
+            onClick={() => setView("grid")}
+            className="gap-1.5"
+          >
+            <LayoutGrid className="h-4 w-4" aria-hidden="true" />
+            Grilla
+          </Button>
+          <Button
+            type="button"
+            size="sm"
+            variant={view === "timeline" ? "default" : "ghost"}
+            aria-pressed={view === "timeline"}
+            onClick={() => setView("timeline")}
+            className="gap-1.5"
+          >
+            <Timer className="h-4 w-4" aria-hidden="true" />
+            Timeline por Edificio
+          </Button>
+        </div>
+      </div>
+
+      {/* Multi-facet filtering — visible in both views */}
       <FilterPanel
         filters={filters}
         derived={derived}
         resultCount={filteredEvents.length}
         onSearchChange={(searchQuery) => update({ searchQuery })}
-        onToggleAxis={(axis) => update({ axes: toggleValue(filters.axes, axis) })}
+        onToggleAxis={(axis) => setFilters((prev) => ({ ...prev, axes: toggleValue(prev.axes, axis) }))}
+        onToggleTag={(tag) => setFilters((prev) => ({ ...prev, tags: toggleValue(prev.tags, tag) }))}
         onToggleActivityType={(type) =>
-          update({ activityTypes: toggleValue(filters.activityTypes, type) })
+          setFilters((prev) => ({ ...prev, activityTypes: toggleValue(prev.activityTypes, type) }))
         }
         onToggleVenue={(venueKey) =>
-          update({ venues: toggleValue(filters.venues, venueKey) })
+          setFilters((prev) => ({ ...prev, venues: toggleValue(prev.venues, venueKey) }))
+        }
+        onToggleBuilding={(building) =>
+          setFilters((prev) => ({ ...prev, buildings: toggleValue(prev.buildings, building) }))
         }
         onClear={() => setFilters({ ...EMPTY_FILTERS, date: filters.date })}
       />
@@ -133,7 +171,7 @@ export function ScheduleClient({ events, meta, derived }: ScheduleClientProps) {
               ? "No hay sesiones que coincidan con los filtros actuales. Intenta eliminar algún filtro."
               : "No hay sesiones programadas para este día."}
           </p>
-        ) : (
+        ) : view === "grid" ? (
           <ul className="grid grid-cols-1 gap-4 lg:grid-cols-2">
             {filteredEvents.map((event) => (
               <li key={event.id} id={event.id} className="h-full">
@@ -145,6 +183,15 @@ export function ScheduleClient({ events, meta, derived }: ScheduleClientProps) {
               </li>
             ))}
           </ul>
+        ) : (
+          <div className="flex flex-col gap-4">
+            <p className="text-sm text-muted-foreground">Vista cronológica por edificio</p>
+            <BuildingTimelines
+              events={filteredEvents}
+              derived={derived}
+              getLiveStatus={getLiveStatus}
+            />
+          </div>
         )}
       </section>
 

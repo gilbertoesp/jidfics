@@ -14,6 +14,8 @@ const mockEvents: ConferenceEvent[] = [
     venueLabel: "Sala 1 · Centro de Convenciones",
     activityType: "Conferencia Magistral",
     thematicAxis: "Salud",
+    tags: ["Salud"],
+    building: "3B",
     speakers: [],
     papers: [],
   },
@@ -27,6 +29,8 @@ const mockEvents: ConferenceEvent[] = [
     venueLabel: "Sala 2 · Sala Audiovisual",
     activityType: "Trabajos Libres",
     thematicAxis: "Violencia",
+    tags: ["Violencia"],
+    building: "1E",
     speakers: [],
     papers: [],
   },
@@ -40,6 +44,8 @@ const mockEvents: ConferenceEvent[] = [
     venueLabel: "Sala 3 · Sala Polivalente",
     activityType: "Conversatorio",
     thematicAxis: "Educación",
+    tags: ["Educación"],
+    building: "1M",
     speakers: [],
     papers: [],
   },
@@ -53,6 +59,8 @@ const mockEvents: ConferenceEvent[] = [
     venueLabel: "Sala 1 · Centro de Convenciones",
     activityType: "Clausura",
     thematicAxis: "General",
+    tags: ["General"],
+    building: "3B",
     speakers: [],
     papers: [],
   },
@@ -97,7 +105,9 @@ describe("useCurrentSession", () => {
 
     expect(result.current.liveNow).toHaveLength(1);
     expect(result.current.liveNow[0].id).toBe("evt-1");
-    expect(result.current.upNext).toHaveLength(0);
+    // evt-2 starts at 10:00, 30min window from 09:30 => up-next
+    expect(result.current.upNext).toHaveLength(1);
+    expect(result.current.upNext[0].id).toBe("evt-2");
     expect(result.current.isWithinConferenceDates).toBe(true);
   });
 
@@ -139,7 +149,7 @@ describe("useCurrentSession", () => {
 
   it("time-travel mode works with setTimeTravel", () => {
     const { result } = renderHook(() =>
-      useCurrentSession({ events: mockEvents, initialTime: new Date("2026-09-20T12:00:00") }),
+      useCurrentSession({ events: mockEvents }),
     );
 
     expect(result.current.isTimeTravel).toBe(false);

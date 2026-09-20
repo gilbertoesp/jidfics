@@ -16,8 +16,17 @@ function slugify(value: string): string {
     .replace(/^-|-$/g, "");
 }
 
-function normalizeVenueLabel(sala: string, lugar: string): string {
-  return `${sala} · ${lugar}`;
+/** Building label mapping for human-readable names. */
+export function buildingLabel(edificio: string): string {
+  const labels: Record<string, string> = {
+    "3B": "Centro de Convenciones (Edificio 3B)",
+    "1E": "Sala Audiovisual / Danza (Edificio 1E)",
+    "1M": "Sala Polivalente (Edificio 1M)",
+    "1G": "Sala de Maestría (Edificio 1G)",
+    "201D": "Aula 201D (Edificio 201D)",
+    "1I": "Sala de Usos Múltiples (Edificio 1I)",
+  };
+  return labels[edificio] ?? `Edificio ${edificio}`;
 }
 
 /** Sense of a title: mesa events carry papers instead of a title. */
@@ -54,6 +63,19 @@ export function normalizeEvents(calendario: RawCalendario): ConferenceEvent[] {
 
   for (const day of calendario.programa) {
     for (const evento of day.eventos) {
+      // Use tags from JSON, or derive from eje_tematico as fallback. Filter empty strings from split.
+      const rawTags = evento.tags;
+      const tags =
+        rawTags && rawTags.length > 0
+          ? rawTags.map((t) => t.trim()).filter(Boolean)
+          : evento.eje_tematico
+            ? evento.eje_tematico
+                .split("/")
+                .map((s) => s.trim())
+                .filter(Boolean)
+            : ["General"];
+      const normalizedTags = tags.length > 0 ? tags : ["General"];
+
       events.push({
         id: evento.id,
         date: day.fecha,
@@ -61,9 +83,11 @@ export function normalizeEvents(calendario: RawCalendario): ConferenceEvent[] {
         endTime: evento.hora_fin,
         title: titleFor(evento),
         venueKey: slugify(evento.sala),
-        venueLabel: normalizeVenueLabel(evento.sala, evento.lugar),
+        venueLabel: `${evento.sala} · ${evento.lugar}`,
         activityType: evento.tipo_actividad,
         thematicAxis: evento.eje_tematico ?? "General",
+        tags: normalizedTags,
+        building: evento.edificio?.trim() || "Unknown",
         speakers: toSpeakers(evento),
         papers: toPapers(evento),
       });
@@ -92,6 +116,16 @@ export function normalizeMeta(calendario: RawCalendario): ConferenceMeta {
 /** Unique values in dataset order — drives the filter pills. */
 export function deriveFilters(events: ConferenceEvent[]): ScheduleDerived {
   const axes = [...new Set(events.map((e) => e.thematicAxis))];
+
+  // Collect unique tags from all events
+  const tagSet = new Set<string>();
+  for (const event of events) {
+    for (const tag of event.tags) {
+      tagSet.add(tag);
+    }
+  }
+  const tags = [...tagSet].sort((a, b) => a.localeCompare(b, "es"));
+
   const activityTypes = [...new Set(events.map((e) => e.activityType))];
 
   const venueMap = new Map<string, string>();
@@ -102,5 +136,15 @@ export function deriveFilters(events: ConferenceEvent[]): ScheduleDerived {
   }
   const venues = [...venueMap.entries()].map(([key, label]) => ({ key, label }));
 
-  return { axes, activityTypes, venues };
+  // Unique buildings — filter out Unknown to avoid "Edificio Unknown" tab
+  const buildingMap = new Map<string, string>();
+  for (const event of events) {
+    if (event.building === "Unknown") continue;
+    if (!buildingMap.has(event.building)) {
+      buildingMap.set(event.building, buildingLabel(event.building));
+    }
+  }
+  const buildings = [...buildingMap.entries()].map(([key, label]) => ({ key, label }));
+
+  return { axes, tags, activityTypes, venues, buildings };
 }

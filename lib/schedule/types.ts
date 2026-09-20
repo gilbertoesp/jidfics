@@ -25,6 +25,7 @@ export interface RawEventoSesion {
   edificio: string;
   ponentes?: RawPonente[];
   eje_tematico?: string;
+  tags?: string[];
   ponencias?: undefined;
   mesa_numero?: undefined;
 }
@@ -41,6 +42,7 @@ export interface RawEventoMesa {
   edificio: string;
   ponentes?: RawPonente[];
   eje_tematico?: string;
+  tags?: string[];
   ponencias?: RawPonencia[];
   mesa_numero?: number;
 }
@@ -98,6 +100,10 @@ export interface ConferenceEvent {
   activityType: string;
   /** Raw `eje_tematico` — dynamic, dataset-driven. */
   thematicAxis: string;
+  /** Individual thematic tags derived from `eje_tematico` (split on "/"). */
+  tags: string[];
+  /** Building identifier (e.g. "3B", "1E", "1M", "1G", "201D", "1I"). */
+  building: string;
   speakers: Speaker[];
   papers: Paper[];
 }
@@ -117,10 +123,14 @@ export interface ConferenceMeta {
 export interface ScheduleDerived {
   /** Unique thematic axes in dataset order. */
   axes: string[];
+  /** Unique thematic tags in dataset order. */
+  tags: string[];
   /** Unique activity types in dataset order. */
   activityTypes: string[];
   /** Unique venue keys + labels. */
   venues: { key: string; label: string }[];
+  /** Unique buildings in dataset order. */
+  buildings: { key: string; label: string }[];
 }
 
 /** Short human label for tab switcher (derived from day + date). */
