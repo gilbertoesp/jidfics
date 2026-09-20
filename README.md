@@ -2,7 +2,7 @@
 
 Sitio web oficial de la **VII Jornadas Internacionales de Docencia e Investigación en Ciencias Sociales** (JIDFICS), celebrada en la **Universidad de Sonora, Campus Caborca** los días **23 y 24 de septiembre de 2026**.
 
-> **Estado**: Programa interactivo desplegado — incluye filtrado por día, eje temático, tipo de actividad y sala; vista de ponencias y ponentes; y hoja lateral de discusión en vivo (UI lista para Supabase Realtime).
+> **Estado**: Programa interactivo desplegado — búsqueda full-text con índice invertido, filtrado por día/eje/tipo/sala/edificio, vista timeline por edificio, tarjetas expandibles, hoja lateral de discusión en vivo (UI lista para Supabase Realtime).
 
 ---
 
@@ -14,16 +14,21 @@ Sitio web oficial de la **VII Jornadas Internacionales de Docencia e Investigaci
 
 ## ✨ Características
 
-- **Programa normalizado desde JSON real** — 45+ sesiones, 2 días, 7 salas, 10+ ejes temáticos, 15+ tipos de actividad.
-- **Filtrado multifacético** — busca por título, ponente, autor, institución; combina ejes, tipos y salas con lógica AND/OR.
-- **Tarjetas de sesión expandibles** — detalle de ponentes + lista de ponencias con autores e instituciones.
+- **Búsqueda inteligente (nuevo)** — índice invertido + fuzzy matching (Levenshtein ≤ 2) + ranking ponderado (título > ponente > etiquetas > ponencias > sala > edificio). Maneja tildes y typos: "violncia" → "Violencia", "educacion" → "Educación".
+- **Programa normalizado desde JSON real** — 45+ sesiones, 2 días, 6 edificios, 10+ ejes temáticos, 15+ tipos de actividad.
+- **Filtrado multifacético** — busca por título, ponente, autor, institución, etiqueta, edificio, sala; combina facetas con lógica AND/OR.
+- **Vista Timeline por edificio** — pestañas por edificio con contador de sesiones, timeline vertical cronológico.
+- **Tarjetas de sesión expandibles** — detalle de ponentes + lista de ponencias con autores e instituciones; etiquetas accionables (click → filtra).
+- **Filtros activos visibles** — barra de chips removibles con contador de resultados.
 - **Discusión en vivo (UI)** — hoja lateral por sesión (`LiveChatSheet`), backend-ready para Supabase Realtime.
+- **Seguimiento en tiempo real** — barra flotante con sesiones LIVE NOW / UP NEXT (30 min) agrupadas por sala.
+- **Modo "Time Travel" (dev)** — simula hora del evento para probar estados live/up-next.
 - **Accesibilidad (a11y)** — ARIA roles, foco visible, navegación por teclado, etiquetas en español.
 - **Tema claro/oscuro** — `next-themes` con persistencia en `localStorage`.
 - **Stack moderno** — Next.js 16 (App Router, Turbopack), React 19, Tailwind CSS v4, shadcn/ui, TypeScript estricto.
 - **Auth preparada** — Supabase SSR (`@supabase/ssr`) con `proxy.ts` (Next 16), cookies HttpOnly, refresco automático de sesión.
 - **CI/CD** — GitHub Actions: lint + typecheck + tests + build en cada push/PR.
-- **Tests** — Vitest: normalización, filtrado, integridad de datos (snapshot de colisiones conocidas), smoke test de conectividad Supabase (se salta si no hay credenciales).
+- **Tests (TDD)** — 93 tests Vitest: búsqueda (53), filtrado, normalización, integridad de datos, live sessions, smoke test Supabase.
 
 ---
 
@@ -32,23 +37,33 @@ Sitio web oficial de la **VII Jornadas Internacionales de Docencia e Investigaci
 ```
 jidfics/
 ├── app/
-│   ├── page.tsx                 # Página principal (Server Component)
+│   ├── page.tsx                 # Página principal (Server Component) — usa ScheduleApp
 │   ├── layout.tsx               # Root layout + providers
 │   └── globals.css              # Estilos globales + variables CSS
 ├── components/
-│   ├── schedule/                # Componentes del programa
+│   ├── schedule/
+│   │   ├── ScheduleApp.tsx      # Componente monolítico principal (filtros + grid + timeline + live)
 │   │   ├── ScheduleHeader.tsx   # Cabecera con metadata del evento
-│   │   ├── ScheduleClient.tsx   # Cliente interactivo (filtros + lista)
-│   │   ├── FilterPanel.tsx      # Panel de filtros dinámicos
-│   │   ├── EventCard.tsx        # Tarjeta de sesión expandible
-│   │   └── LiveChatSheet.tsx    # Hoja lateral de chat (UI lista)
-│   ├── ui/                      # Primitivas shadcn/ui (Accordion, Tabs, Sheet…)
+│   │   ├── EventCard.tsx        # Tarjeta de sesión expandible (etiquetas accionables)
+│   │   ├── BuildingTimeline.tsx # Timeline vertical por edificio
+│   │   ├── BuildingTimelines.tsx# Pestañas por edificio con contadores
+│   │   ├── FilterPanel.tsx      # Panel de filtros (usa TagGroup)
+│   │   ├── Tag.tsx              # Primitiva Tag + TagGroup + ActiveFiltersBar
+│   │   ├── LiveIndicatorBadge.tsx
+│   │   ├── FloatingSessionBar.tsx
+│   │   ├── LiveChatSheet.tsx
+│   │   └── TimeTravelDevPanel.tsx
+│   ├── ui/                      # Primitivas shadcn/ui (Button, Input, Tabs, Accordion…)
 │   └── theme-switcher.tsx       # Toggle claro/oscuro
 ├── lib/
 │   ├── schedule/
 │   │   ├── types.ts             # Tipos TS: Raw* (JSON) + normalizados
 │   │   ├── normalize.ts         # Pipeline: JSON → eventos planos + meta + filtros derivados
 │   │   ├── filter.ts            # Motor de filtrado puro (sin efectos)
+│   │   ├── search.ts            # **NUEVO**: SearchEngine (índice invertido + fuzzy + ranking)
+│   │   ├── hooks.ts             # **NUEVO**: hooks compuestos (useScheduleApp, useSearch, etc.)
+│   │   ├── hooks/               # Hooks atómicos
+│   │   │   └── useCurrentSession.ts  # Seguimiento live/up-next + time travel
 │   │   ├── colors.ts            # Paleta hash-determinista (FNV-1a → 10 colores Tailwind)
 │   │   ├── calendario_vii_jidfics.json   # Dataset real (fuente única)
 │   │   ├── *.test.ts            # Tests unitarios + integridad de datos
@@ -58,9 +73,10 @@ jidfics/
 │   │   └── client.ts            # createClient() para Client Components
 │   └── utils.ts                 # cn(), hasEnvVars
 ├── proxy.ts                     # Next 16 proxy (reemplaza middleware.ts)
-├── tests/integration/           # Supabase connectivity smoke test
+├── src/test/                    # Tests de integración + búsqueda
+│   └── search.test.ts           # 53 tests TDD del SearchEngine
 ├── .github/workflows/ci.yml     # CI: lint + typecheck + test + build
-├── vitest.config.ts             # Config Vitest (alias @, node env)
+├── vitest.config.ts             # Config Vitest (alias @, node env, jsdom)
 ├── tailwind.config.ts           # Animaciones accordion + plugin animate
 ├── tsconfig.json                # TS estricto + paths @/*
 └── README.md                    # Este archivo
@@ -109,21 +125,23 @@ Abre [http://localhost:3000](http://localhost:3000) — el programa interactivo 
 ## 🧪 Tests
 
 ```bash
-# Todas las suites
-bun test
+# Todas las suites (vitest con jsdom)
+bunx vitest run
 
-# Solo unitarias (rápido)
+# Solo unitarias (rápido, sin jsdom)
 bun test lib/schedule/
 
-# Integración Supabase (requiere credenciales en .env)
-bun test tests/integration/
+# Tests de búsqueda (TDD - 53 tests)
+bunx vitest run src/test/search.test.ts
 ```
 
 **Suites incluidas**:
-- `lib/schedule/normalize.test.ts` — normalización JSON → UI shape
-- `lib/schedule/filter.test.ts` — motor de filtrado (fecha, búsqueda, facetas)
-- `lib/schedule/data-integrity.test.ts` — guards sobre JSON real: IDs únicos, tiempos válidos, campos requeridos, **snapshot de 3 colisiones conocidas de sala/hora en jueves** (falla si aparecen nuevas)
-- `tests/integration/supabase.test.ts` — conectividad real a Supabase (se salta sin credenciales)
+- `src/test/search.test.ts` — **53 tests TDD** del SearchEngine: índice invertido, fuzzy matching (Levenshtein), prefix matching, ranking ponderado, highlighting, sugerencias, filtros combinados, español (tildes/ñ).
+- `lib/schedule/normalize.test.ts` — normalización JSON → UI shape (7 tests).
+- `lib/schedule/filter.test.ts` — motor de filtrado puro: fecha, búsqueda, facetas AND/OR (12 tests).
+- `lib/schedule/data-integrity.test.ts` — guards sobre JSON real: IDs únicos, tiempos válidos, campos requeridos, **snapshot de 3 colisiones conocidas de sala/hora en jueves** (8 tests).
+- `lib/schedule/hooks/useCurrentSession.test.ts` — live/up-next, agrupación por sala, time travel, límites de conferencia (10 tests).
+- `tests/integration/supabase.test.ts` — conectividad real a Supabase (se salta sin credenciales).
 
 ---
 
@@ -190,6 +208,9 @@ bun run start
 |---|---|---|
 | **Normalización en build** | `normalizeEvents()` corre en `page.tsx` (Server Component) | Cero runtime cost; datos tipados en cliente |
 | **Filtros dinámicos** | `deriveFilters()` extrae opciones del dataset | Sin unions hardcodeadas; admite nuevos ejes/tipos/salas sin tocar código |
+| **Búsqueda (nuevo)** | `SearchEngine` con índice invertido + Levenshtein + ranking ponderado | Encuentra charlas por título/ponente/autor/institución/etiqueta/edificio/sala; tolera typos; <50ms |
+| **Componente monolítico** | `ScheduleApp` unifica filtros, grid, timeline, live bar | Menos archivos, flujo de datos claro, fácil de mantener |
+| **Hooks compuestos** | `useScheduleApp` orquesta search + filters + live + view + chat | Separación de concerns; testable; reutilizable |
 | **Colores** | FNV-1a hash → 10 colores Tailwind (clase literal) | Determinista, sin colisiones, funciona en dark mode, tree-shakeable |
 | **Venue keys** | `slugify(label)` (minúsculas, sin diacríticas, `-` como separador) | Dedupe "Sala de Usos Múltiples" / "sala de usos multiples" |
 | **Next 16 proxy** | `export function proxy` en `proxy.ts` (no `middleware.ts`) | Convención oficial Next 16; build muestra `ƒ Proxy (Middleware)` |

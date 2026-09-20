@@ -1,5 +1,4 @@
-import { ScheduleHeader } from "@/components/schedule/ScheduleHeader";
-import { ScheduleClient } from "@/components/schedule/ScheduleClient";
+import { ScheduleApp } from "@/components/schedule/ScheduleApp";
 import { ThemeSwitcher } from "@/components/theme-switcher";
 import {
   deriveFilters,
@@ -31,10 +30,8 @@ export default function SchedulePage() {
         <ThemeSwitcher />
       </div>
 
-      <ScheduleHeader meta={meta} />
-
       {/* Client boundary — all dynamic state lives below this point */}
-      <ScheduleClient events={events} meta={meta} derived={derived} />
+      <ScheduleApp events={events} meta={meta} derived={derived} />
 
       <footer className="mt-8 border-t py-8 text-center text-xs text-muted-foreground">
         {meta.name} · {meta.venueInstitution}, Campus {meta.venueCampus}

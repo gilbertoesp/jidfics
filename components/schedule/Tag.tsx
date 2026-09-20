@@ -26,6 +26,8 @@ export interface TagProps extends Omit<React.ComponentProps<"button">, "value"> 
   removable?: boolean;
   /** Called when tag is toggled/removed */
   onTagToggle?: (value: string) => void;
+  /** Called when remove icon is clicked (separate from toggle for ActiveFilters) */
+  onRemove?: (value: string) => void;
   /** asChild polymorphism — render as child element via Slot */
   asChild?: boolean;
 }
@@ -46,6 +48,7 @@ export const Tag = React.forwardRef<HTMLButtonElement, TagProps>(
       interactive = true,
       removable = false,
       onTagToggle,
+      onRemove,
       asChild = false,
       className,
       children,
@@ -73,6 +76,11 @@ export const Tag = React.forwardRef<HTMLButtonElement, TagProps>(
         onTagToggle?.(value);
       }
       onKeyDown?.(e);
+    };
+
+    const handleRemoveClick = (e: React.MouseEvent<HTMLButtonElement>) => {
+      e.stopPropagation();
+      onRemove?.(value);
     };
 
     return (
@@ -110,7 +118,15 @@ export const Tag = React.forwardRef<HTMLButtonElement, TagProps>(
         />
         <span data-slot="tag-label">{children ?? displayLabel}</span>
         {selected && removable && (
-          <X aria-hidden="true" data-slot="tag-remove-icon" className="h-3 w-3 opacity-70" />
+          <button
+            type="button"
+            onClick={handleRemoveClick}
+            aria-label={`Quitar ${displayLabel}`}
+            data-slot="tag-remove"
+            className="p-0.5 rounded hover:bg-accent focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
+          >
+            <X aria-hidden="true" data-slot="tag-remove-icon" className="h-3 w-3 opacity-70" />
+          </button>
         )}
       </Comp>
     );
