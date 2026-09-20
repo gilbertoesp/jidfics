@@ -91,10 +91,6 @@ export function useScheduleFilters(meta: ConferenceMeta) {
     setFilters((prev) => ({ ...prev, activityTypes: toggleValue(prev.activityTypes, type) }));
   }, [toggleValue]);
 
-  const toggleAxis = useCallback((axis: string) => {
-    setFilters((prev) => ({ ...prev, axes: toggleValue(prev.axes, axis) }));
-  }, [toggleValue]);
-
   const setDate = useCallback((date: string) => {
     update({ date });
   }, [update]);
@@ -112,7 +108,6 @@ export function useScheduleFilters(meta: ConferenceMeta) {
     toggleBuilding,
     toggleVenue,
     toggleActivityType,
-    toggleAxis,
     setDate,
     setSearchQuery,
     hasActive: hasActiveFilters(filters),
@@ -195,7 +190,6 @@ export function useScheduleApp(events: ConferenceEvent[], meta: ConferenceMeta) 
       // Use search engine with combined filters
       const searchResults = searchHook.searchEngine.search(searchQuery, {
         date: otherFilters.date,
-        axes: otherFilters.axes,
         tags: otherFilters.tags,
         buildings: otherFilters.buildings,
         activityTypes: otherFilters.activityTypes,
@@ -235,7 +229,6 @@ export function useScheduleApp(events: ConferenceEvent[], meta: ConferenceMeta) 
     toggleBuilding: filtersHook.toggleBuilding,
     toggleVenue: filtersHook.toggleVenue,
     toggleActivityType: filtersHook.toggleActivityType,
-    toggleAxis: filtersHook.toggleAxis,
     setDate: filtersHook.setDate,
     setSearchQuery: filtersHook.setSearchQuery,
     setView: viewHook.setView,

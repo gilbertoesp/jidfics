@@ -1,19 +1,20 @@
 "use client";
 
-import { useCallback } from "react";
-import { CalendarDays, LayoutGrid, Timer, Search, X } from "lucide-react";
+import { useState, useCallback, useEffect, useRef } from "react";
+import React from "react";
+import { CalendarDays, LayoutGrid, Timer, Search, X, Filter, ChevronLeft } from "lucide-react";
 
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Separator } from "@/components/ui/separator";
 import { Tag } from "@/components/schedule/Tag";
+import { cn } from "@/lib/utils";
 import { TagGroup } from "@/components/schedule/Tag";
 import { EventCard } from "@/components/schedule/EventCard";
 import { BuildingTimelines } from "@/components/schedule/BuildingTimelines";
 import { FloatingSessionBar } from "@/components/schedule/FloatingSessionBar";
 import { LiveChatSheet } from "@/components/schedule/LiveChatSheet";
-import { TimeTravelDevPanel } from "@/components/schedule/TimeTravelDevPanel";
 import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import {
   useScheduleApp,
@@ -34,7 +35,6 @@ function FilterSection({
   resultCount,
   onSearchChange,
   onToggleTag,
-  onToggleAxis,
   onToggleActivityType,
   onToggleVenue,
   onToggleBuilding,
@@ -46,7 +46,6 @@ function FilterSection({
   resultCount: number;
   onSearchChange: (query: string) => void;
   onToggleTag: (tag: string) => void;
-  onToggleAxis: (axis: string) => void;
   onToggleActivityType: (type: string) => void;
   onToggleVenue: (venue: string) => void;
   onToggleBuilding: (building: string) => void;
@@ -54,7 +53,7 @@ function FilterSection({
   hasActive: boolean;
 }) {
   return (
-    <section aria-label="Filtros del programa" className="flex flex-col gap-5 rounded-xl border bg-card p-4 text-card-foreground shadow-sm sm:p-5">
+    <section aria-label="Filtros del programa" className="flex flex-col gap-5">
       {/* Search */}
       <div className="relative">
         <Label htmlFor="schedule-search" className="sr-only">Buscar sesiones</Label>
@@ -85,26 +84,11 @@ function FilterSection({
               onTagToggle={onToggleTag}
               aria-label={`${filters.tags.includes(tag) ? "Quitar filtro" : "Filtrar por etiqueta"} ${tag}`}
               data-slot="filter-tag"
-              className="min-h-9 px-3 py-1.5 text-sm"
+              className="min-h-9 px-3 py-1.5 text-sm w-full justify-start"
             />
           ))}
         </TagGroup>
       </div>
-
-      {/* Activity Types */}
-      <TagGroup label="Ejes temáticos">
-        {derived.axes.map((axis) => (
-          <Tag
-            key={axis}
-            value={axis}
-            selected={filters.axes.includes(axis)}
-            onTagToggle={onToggleAxis}
-            aria-label={`${filters.axes.includes(axis) ? "Quitar filtro" : "Filtrar por eje"} ${axis}`}
-            data-slot="filter-axis"
-            className="min-h-9 px-3 py-1.5 text-sm"
-          />
-        ))}
-      </TagGroup>
 
       {/* Activity Types */}
       <TagGroup label="Tipo de actividad">
@@ -116,7 +100,7 @@ function FilterSection({
             onTagToggle={onToggleActivityType}
             aria-label={`${filters.activityTypes.includes(type) ? "Quitar filtro" : "Filtrar por tipo"} ${type}`}
             data-slot="filter-activity"
-            className="min-h-9 px-3 py-1.5 text-sm"
+            className="min-h-9 px-3 py-1.5 text-sm w-full justify-start"
           />
         ))}
       </TagGroup>
@@ -131,7 +115,7 @@ function FilterSection({
             onTagToggle={onToggleVenue}
             aria-label={`${filters.venues.includes(venue.key) ? "Quitar filtro" : "Filtrar por sala"} ${venue.label}`}
             data-slot="filter-venue"
-            className="min-h-9 px-3 py-1.5 text-sm"
+            className="min-h-9 px-3 py-1.5 text-sm w-full justify-start"
           >
             {venue.label}
           </Tag>
@@ -148,7 +132,7 @@ function FilterSection({
             onTagToggle={onToggleBuilding}
             aria-label={`${filters.buildings.includes(building.key) ? "Quitar filtro" : "Filtrar por edificio"} ${building.label}`}
             data-slot="filter-building"
-            className="min-h-9 px-3 py-1.5 text-sm"
+            className="min-h-9 px-3 py-1.5 text-sm w-full justify-start"
           >
             {building.label}
           </Tag>
@@ -174,12 +158,10 @@ function FilterSection({
 /** Active Filters Bar */
 function ActiveFiltersBar({
   tags,
-  axes,
   buildings,
   venues,
   activityTypes,
   onRemoveTag,
-  onRemoveAxis,
   onRemoveBuilding,
   onRemoveVenue,
   onRemoveActivityType,
@@ -187,19 +169,17 @@ function ActiveFiltersBar({
   resultCount,
 }: {
   tags: string[];
-  axes: string[];
   buildings: string[];
   venues: string[];
   activityTypes: string[];
   onRemoveTag: (tag: string) => void;
-  onRemoveAxis: (axis: string) => void;
   onRemoveBuilding: (building: string) => void;
   onRemoveVenue: (venue: string) => void;
   onRemoveActivityType: (type: string) => void;
   onClearAll: () => void;
   resultCount: number;
 }) {
-  const hasActive = tags.length + axes.length + buildings.length + venues.length + activityTypes.length > 0;
+  const hasActive = tags.length + buildings.length + venues.length + activityTypes.length > 0;
 
   if (!hasActive) return null;
 
@@ -224,19 +204,6 @@ function ActiveFiltersBar({
             aria-label={`Quitar filtro de etiqueta ${tag}`}
             data-slot="active-tag"
             className="bg-primary/10 border-primary text-primary"
-          />
-        ))}
-        {axes.map((axis) => (
-          <Tag
-            key={axis}
-            value={axis}
-            selected
-            removable
-            onTagToggle={onRemoveAxis}
-            onRemove={onRemoveAxis}
-            aria-label={`Quitar filtro de eje ${axis}`}
-            data-slot="active-axis"
-            className="bg-purple/10 border-purple text-purple"
           />
         ))}
         {buildings.map((b) => (
@@ -360,6 +327,188 @@ function DateSwitcher({
   );
 }
 
+/** Mobile Sidebar Trigger */
+const MobileSidebarTrigger = React.forwardRef<HTMLButtonElement, { onOpen: () => void }>(
+  ({ onOpen }, ref) => {
+    return (
+      <Button
+        ref={ref}
+        type="button"
+        variant="outline"
+        size="icon"
+        onClick={onOpen}
+        aria-label="Abrir filtros"
+        className="lg:hidden"
+      >
+        <Filter className="h-4 w-4" aria-hidden="true" />
+        <span className="sr-only">Abrir filtros</span>
+      </Button>
+    );
+  }
+);
+MobileSidebarTrigger.displayName = "MobileSidebarTrigger";
+
+/** Mobile Sidebar - simple fixed position overlay with focus trap */
+function MobileSidebar({
+  isOpen,
+  onClose,
+  children,
+  triggerRef,
+}: {
+  isOpen: boolean;
+  onClose: () => void;
+  children: React.ReactNode;
+  triggerRef?: React.RefObject<HTMLButtonElement | null>;
+}) {
+  const sidebarRef = useRef<HTMLDivElement>(null);
+  const previousActiveElement = useRef<HTMLElement | null>(null);
+
+  // Focus trap effect
+  useEffect(() => {
+    if (!isOpen || !sidebarRef.current) return;
+
+    // Capture trigger ref at effect start to avoid stale closure
+    const trigger = triggerRef?.current;
+
+    // Store previously focused element
+    previousActiveElement.current = document.activeElement as HTMLElement;
+
+    // Focus first focusable element in sidebar
+    const focusableElements = Array.from(
+      sidebarRef.current.querySelectorAll<HTMLElement>(
+        'button, [href], input, select, textarea, [tabindex]:not([tabindex="-1"])'
+      )
+    );
+    if (focusableElements.length > 0) {
+      focusableElements[0].focus();
+    }
+
+    // Handle Escape key
+    const handleKeyDown = (e: KeyboardEvent) => {
+      if (e.key === "Escape") {
+        e.preventDefault();
+        onClose();
+      }
+      // Trap Tab key
+      if (e.key === "Tab") {
+        const first = focusableElements[0];
+        const last = focusableElements[focusableElements.length - 1];
+        if (e.shiftKey && document.activeElement === first) {
+          e.preventDefault();
+          last.focus();
+        } else if (!e.shiftKey && document.activeElement === last) {
+          e.preventDefault();
+          first.focus();
+        }
+      }
+    };
+
+    document.addEventListener("keydown", handleKeyDown);
+    document.body.style.overflow = "hidden"; // Prevent background scroll
+
+    return () => {
+      document.removeEventListener("keydown", handleKeyDown);
+      document.body.style.overflow = "";
+      // Restore focus to trigger button
+      if (previousActiveElement.current && previousActiveElement.current !== document.body) {
+        previousActiveElement.current.focus();
+      } else if (trigger) {
+        trigger.focus();
+      }
+    };
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+}, [isOpen, onClose]);
+
+  if (!isOpen) return null;
+
+  return (
+    <>
+      {/* Overlay */}
+      <div
+        className="fixed inset-0 z-40 bg-black/50 animate-in fade-in-0 lg:hidden"
+        onClick={onClose}
+        aria-hidden="true"
+      />
+      {/* Sidebar panel */}
+      <aside
+        ref={sidebarRef}
+        className={cn(
+          "fixed inset-y-0 left-0 z-50 w-full max-w-sm bg-background border-r shadow-xl lg:hidden",
+          isOpen ? "animate-slide-in-from-left" : "animate-slide-out-to-left"
+        )}
+        role="dialog"
+        aria-modal="true"
+        aria-label="Filtros"
+      >
+        <div className="flex flex-col h-full">
+          {/* Header with close button */}
+          <div className="flex items-center justify-between border-b p-4">
+            <div>
+              <h2 className="text-base font-semibold">Filtros</h2>
+              <p className="text-xs text-muted-foreground">
+                Busca y filtra sesiones por etiquetas, tipo, sala o edificio
+              </p>
+            </div>
+            <Button
+              type="button"
+              variant="ghost"
+              size="icon"
+              onClick={onClose}
+              aria-label="Cerrar filtros"
+              className="p-1"
+            >
+              <ChevronLeft className="h-5 w-5" aria-hidden="true" />
+            </Button>
+          </div>
+          <div className="flex-1 overflow-y-auto p-4">
+            {children}
+          </div>
+        </div>
+      </aside>
+    </>
+  );
+}
+
+/** Sidebar Content - shared between desktop (persistent) and mobile */
+function SidebarContent({
+  filters,
+  derived,
+  filteredEvents,
+  handleSearchChange,
+  toggleTag,
+  toggleActivityType,
+  toggleVenue,
+  toggleBuilding,
+  clearFilters,
+  hasActiveFilters,
+}: {
+  filters: ScheduleFilters;
+  derived: ScheduleDerived;
+  filteredEvents: ConferenceEvent[];
+  handleSearchChange: (query: string) => void;
+  toggleTag: (tag: string) => void;
+  toggleActivityType: (type: string) => void;
+  toggleVenue: (venue: string) => void;
+  toggleBuilding: (building: string) => void;
+  clearFilters: () => void;
+  hasActiveFilters: boolean;
+}) {
+  return (
+    <FilterSection
+      filters={filters}
+      derived={derived}
+      resultCount={filteredEvents.length}
+      onSearchChange={handleSearchChange}
+      onToggleTag={toggleTag}
+      onToggleActivityType={toggleActivityType}
+      onToggleVenue={toggleVenue}
+      onToggleBuilding={toggleBuilding}
+      onClear={clearFilters}
+      hasActive={hasActiveFilters}
+    />
+  );
+}
+
 /** Main ScheduleApp Component */
 export function ScheduleApp({ events, meta, derived }: ScheduleAppProps) {
   const {
@@ -371,7 +520,6 @@ export function ScheduleApp({ events, meta, derived }: ScheduleAppProps) {
     filteredEvents,
     clearFilters,
     toggleTag,
-    toggleAxis,
     toggleBuilding,
     toggleVenue,
     toggleActivityType,
@@ -384,19 +532,19 @@ export function ScheduleApp({ events, meta, derived }: ScheduleAppProps) {
     scrollToEvent,
     liveByHall,
     upNextByHall,
-    currentTime,
-    isTimeTravel,
-    isWithinConferenceDates,
-    setTimeTravel,
-    advanceMinutes,
     getLiveStatus,
     hasActiveFilters,
   } = useScheduleApp(events, meta);
 
+  // Mobile sidebar state - only used on mobile (< lg)
+  const [mobileSidebarOpen, setMobileSidebarOpen] = useState(false);
+
+  // Ref for mobile sidebar trigger button (focus restoration)
+  const mobileSidebarTriggerRef = useRef<HTMLButtonElement>(null);
+
   // Handle search input with debounced suggestions
   const handleSearchChange = useCallback((query: string) => {
     setSearchQuery(query);
-    // Could add debounced suggestions here
   }, [setSearchQuery]);
 
   // Handle tag click from EventCard/BuildingTimeline
@@ -452,47 +600,75 @@ export function ScheduleApp({ events, meta, derived }: ScheduleAppProps) {
 
   return (
     <div className="mx-auto flex w-full max-w-5xl flex-col gap-6 px-4 py-8 sm:px-6 pb-24">
-      {/* Header: Date + View Switcher */}
+      {/* Header: Date + View Switcher + Mobile Sidebar Trigger */}
       <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
         <DateSwitcher days={meta.days} selectedDate={filters.date} onDateChange={setDate} />
-        <ViewSwitcher view={view} onViewChange={setView} />
+        <div className="flex items-center gap-2">
+          <ViewSwitcher view={view} onViewChange={setView} />
+          <MobileSidebarTrigger ref={mobileSidebarTriggerRef} onOpen={() => setMobileSidebarOpen(true)} />
+        </div>
       </div>
 
-      {/* Filters */}
-      <FilterSection
-        filters={filters}
-        derived={derived}
-        resultCount={filteredEvents.length}
-        onSearchChange={handleSearchChange}
-        onToggleTag={toggleTag}
-        onToggleAxis={toggleAxis}
-        onToggleActivityType={toggleActivityType}
-        onToggleVenue={toggleVenue}
-        onToggleBuilding={toggleBuilding}
-        onClear={clearFilters}
-        hasActive={hasActiveFilters}
-      />
+      {/* Main content area: sidebar (desktop) + results */}
+      <div className="flex flex-col lg:flex-row gap-6">
+        {/* Desktop Sidebar - always visible on lg+ */}
+        <aside className="hidden lg:block lg:w-80 flex-shrink-0">
+          <SidebarContent
+            filters={filters}
+            derived={derived}
+            filteredEvents={filteredEvents}
+            handleSearchChange={handleSearchChange}
+            toggleTag={toggleTag}
+            toggleActivityType={toggleActivityType}
+            toggleVenue={toggleVenue}
+            toggleBuilding={toggleBuilding}
+            clearFilters={clearFilters}
+            hasActiveFilters={hasActiveFilters}
+          />
+        </aside>
 
-      {/* Active Filters Bar */}
-      <ActiveFiltersBar
-        tags={filters.tags}
-        axes={filters.axes}
-        buildings={filters.buildings}
-        venues={filters.venues}
-        activityTypes={filters.activityTypes}
-        onRemoveTag={toggleTag}
-        onRemoveAxis={toggleAxis}
-        onRemoveBuilding={toggleBuilding}
-        onRemoveVenue={toggleVenue}
-        onRemoveActivityType={toggleActivityType}
-        onClearAll={clearFilters}
-        resultCount={filteredEvents.length}
-      />
+        {/* Mobile Sidebar - simple fixed overlay */}
+        <MobileSidebar
+          triggerRef={mobileSidebarTriggerRef}
+          isOpen={mobileSidebarOpen}
+          onClose={() => setMobileSidebarOpen(false)}
+        >
+          <SidebarContent
+            filters={filters}
+            derived={derived}
+            filteredEvents={filteredEvents}
+            handleSearchChange={handleSearchChange}
+            toggleTag={toggleTag}
+            toggleActivityType={toggleActivityType}
+            toggleVenue={toggleVenue}
+            toggleBuilding={toggleBuilding}
+            clearFilters={clearFilters}
+            hasActiveFilters={hasActiveFilters}
+          />
+        </MobileSidebar>
 
-      {/* Results */}
-      <section aria-label={`Sesiones del ${activeDay?.dayName || "día"}`}>
-        {filteredEvents.length === 0 ? renderEmpty() : view === "grid" ? renderGrid() : renderTimeline()}
-      </section>
+        {/* Results */}
+        <main className="flex-1 min-w-0">
+          {/* Active Filters Bar - always visible above results */}
+          <ActiveFiltersBar
+            tags={filters.tags}
+            buildings={filters.buildings}
+            venues={filters.venues}
+            activityTypes={filters.activityTypes}
+            onRemoveTag={toggleTag}
+            onRemoveBuilding={toggleBuilding}
+            onRemoveVenue={toggleVenue}
+            onRemoveActivityType={toggleActivityType}
+            onClearAll={clearFilters}
+            resultCount={filteredEvents.length}
+          />
+
+          {/* Results */}
+          <section aria-label={`Sesiones del ${activeDay?.dayName || "día"}`}>
+            {filteredEvents.length === 0 ? renderEmpty() : view === "grid" ? renderGrid() : renderTimeline()}
+          </section>
+        </main>
+      </div>
 
       {/* Live Chat Sheet */}
       <LiveChatSheet event={chatEvent} onOpenChange={closeChat} />
@@ -506,15 +682,6 @@ export function ScheduleApp({ events, meta, derived }: ScheduleAppProps) {
           onDismiss={dismissBar}
         />
       )}
-
-      {/* Time Travel Dev Panel */}
-      <TimeTravelDevPanel
-        currentTime={currentTime}
-        isTimeTravel={isTimeTravel}
-        isWithinConferenceDates={isWithinConferenceDates}
-        setTimeTravel={setTimeTravel}
-        advanceMinutes={advanceMinutes}
-      />
     </div>
   );
 }

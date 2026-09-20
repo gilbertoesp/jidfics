@@ -34,7 +34,8 @@ export interface TagProps extends Omit<React.ComponentProps<"button">, "value"> 
 
 /**
  * Tag — composable primitive.
- * - Semantic: renders as <button> when interactive, <span> otherwise
+ * - Semantic: renders as <button> when interactive & not removable, <span> otherwise
+ * - When removable: renders as inline-flex wrapper with label + remove button (no nested buttons)
  * - Accessible: aria-pressed, aria-label, keyboard Enter/Space, focus-visible
  * - Data attributes: data-slot="tag", data-state="selected|default", data-interactive
  * - Styling: deterministic colorFor(value) + Tailwind data-[state] variants
@@ -61,16 +62,20 @@ export const Tag = React.forwardRef<HTMLButtonElement, TagProps>(
   ) => {
     const displayLabel = label ?? value;
     const colors = colorFor(value);
-    const Comp = asChild ? Slot : interactive ? "button" : "span";
+    
+    // When removable, we render a wrapper div with label + remove button as siblings
+    // to avoid nested <button> elements (invalid HTML)
+    const isRemovable = removable && selected;
+    const Comp = asChild ? Slot : interactive && !isRemovable ? "button" : "span";
 
     const handleClick = (e: React.MouseEvent<HTMLButtonElement>) => {
-      if (!interactive) return;
+      if (!interactive || isRemovable) return;
       onTagToggle?.(value);
       onClick?.(e);
     };
 
     const handleKeyDown = (e: React.KeyboardEvent<HTMLButtonElement>) => {
-      if (!interactive) return;
+      if (!interactive || isRemovable) return;
       if (e.key === "Enter" || e.key === " ") {
         e.preventDefault();
         onTagToggle?.(value);
@@ -83,6 +88,79 @@ export const Tag = React.forwardRef<HTMLButtonElement, TagProps>(
       onRemove?.(value);
     };
 
+    const handleLabelClick = (e: React.MouseEvent<HTMLDivElement>) => {
+      if (!interactive || !isRemovable) return;
+      onTagToggle?.(value);
+      onClick?.(e as unknown as React.MouseEvent<HTMLButtonElement>);
+    };
+
+    const handleLabelKeyDown = (e: React.KeyboardEvent<HTMLDivElement>) => {
+      if (!interactive || !isRemovable) return;
+      if (e.key === "Enter" || e.key === " ") {
+        e.preventDefault();
+        onTagToggle?.(value);
+      }
+      onKeyDown?.(e as unknown as React.KeyboardEvent<HTMLButtonElement>);
+    };
+
+    const baseClassName = cn(
+      "inline-flex items-center gap-1.5 rounded-full border px-3 py-1 text-xs font-medium transition-all",
+      "focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 focus-visible:ring-offset-background",
+      "data-[state=selected]:shadow-sm data-[state=selected]:border-primary data-[state=selected]:bg-primary data-[state=selected]:text-primary-foreground",
+      "data-[state=default]:bg-background data-[state=default]:text-foreground data-[state=default]:hover:bg-accent",
+      interactive && !isRemovable && "cursor-pointer select-none",
+      !interactive && "cursor-default",
+      isRemovable && "cursor-pointer select-none",
+      !selected && colors.badge,
+      className,
+    );
+
+    // When removable, render wrapper with label (clickable) + remove button as siblings
+    if (isRemovable) {
+      // Don't spread button-specific props to div
+      return (
+        <div
+          data-slot="tag"
+          data-state="selected"
+          data-interactive="true"
+          data-value={value}
+          data-removable="true"
+          className={baseClassName}
+        >
+          <span
+            aria-hidden="true"
+            data-slot="tag-dot"
+            className={cn(
+              "h-1.5 w-1.5 rounded-full transition-colors",
+              "bg-current",
+            )}
+          />
+          <span
+            data-slot="tag-label"
+            role="button"
+            tabIndex={0}
+            aria-label={ariaLabel ?? `Quitar filtro ${displayLabel}`}
+            aria-pressed={true}
+            onClick={handleLabelClick}
+            onKeyDown={handleLabelKeyDown}
+            className="cursor-pointer select-none"
+          >
+            {children ?? displayLabel}
+          </span>
+          <button
+            type="button"
+            onClick={handleRemoveClick}
+            aria-label={`Quitar ${displayLabel}`}
+            data-slot="tag-remove"
+            className="p-0.5 rounded hover:bg-accent focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
+          >
+            <X aria-hidden="true" data-slot="tag-remove-icon" className="h-3 w-3 opacity-70" />
+          </button>
+        </div>
+      );
+    }
+
+    // Normal (non-removable) rendering
     return (
       <Comp
         ref={ref}
@@ -96,16 +174,7 @@ export const Tag = React.forwardRef<HTMLButtonElement, TagProps>(
         role={interactive && Comp === "span" ? "button" : undefined}
         onClick={interactive ? handleClick : undefined}
         onKeyDown={interactive ? handleKeyDown : undefined}
-        className={cn(
-          "inline-flex items-center gap-1.5 rounded-full border px-3 py-1 text-xs font-medium transition-all",
-          "focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 focus-visible:ring-offset-background",
-          "data-[state=selected]:shadow-sm data-[state=selected]:border-primary data-[state=selected]:bg-primary data-[state=selected]:text-primary-foreground",
-          "data-[state=default]:bg-background data-[state=default]:text-foreground data-[state=default]:hover:bg-accent",
-          interactive && "cursor-pointer select-none",
-          !interactive && "cursor-default",
-          !selected && colors.badge,
-          className,
-        )}
+        className={baseClassName}
         {...props}
       >
         <span
@@ -117,17 +186,6 @@ export const Tag = React.forwardRef<HTMLButtonElement, TagProps>(
           )}
         />
         <span data-slot="tag-label">{children ?? displayLabel}</span>
-        {selected && removable && (
-          <button
-            type="button"
-            onClick={handleRemoveClick}
-            aria-label={`Quitar ${displayLabel}`}
-            data-slot="tag-remove"
-            className="p-0.5 rounded hover:bg-accent focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
-          >
-            <X aria-hidden="true" data-slot="tag-remove-icon" className="h-3 w-3 opacity-70" />
-          </button>
-        )}
       </Comp>
     );
   },
@@ -155,117 +213,6 @@ export function TagGroup({ label, className, children, ...props }: TagGroupProps
     >
       <span className="sr-only">{label}</span>
       {children}
-    </div>
-  );
-}
-
-// ------------------------------------------------------------------
-// Block: ActiveFiltersBar — delivers value: shows active filters + clear
-// ------------------------------------------------------------------
-
-export interface ActiveFiltersBarProps {
-  tags: string[];
-  buildings: string[];
-  venues: string[];
-  activityTypes: string[];
-  onRemoveTag: (tag: string) => void;
-  onRemoveBuilding: (building: string) => void;
-  onRemoveVenue: (venue: string) => void;
-  onRemoveActivityType: (type: string) => void;
-  onClearAll: () => void;
-  resultCount: number;
-}
-
-export function ActiveFiltersBar({
-  tags,
-  buildings,
-  venues,
-  activityTypes,
-  onRemoveTag,
-  onRemoveBuilding,
-  onRemoveVenue,
-  onRemoveActivityType,
-  onClearAll,
-  resultCount,
-}: ActiveFiltersBarProps) {
-  const hasActive = tags.length > 0 || buildings.length > 0 || venues.length > 0 || activityTypes.length > 0;
-
-  if (!hasActive) return null;
-
-  return (
-    <div
-      data-slot="active-filters-bar"
-      aria-live="polite"
-      aria-atomic="true"
-      className="flex flex-col gap-3 rounded-xl border bg-card p-3 shadow-sm sm:p-4"
-    >
-      <div className="flex items-center justify-between gap-2">
-        <h3 className="text-xs font-semibold uppercase tracking-wide text-muted-foreground">
-          Filtros activos · {resultCount} {resultCount === 1 ? "sesión" : "sesiones"}
-        </h3>
-        <button
-          type="button"
-          onClick={onClearAll}
-          data-slot="active-filters-clear"
-          className="inline-flex items-center gap-1 text-xs font-medium text-muted-foreground hover:text-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring rounded-md px-2 py-1"
-          aria-label="Limpiar todos los filtros"
-        >
-          <X className="h-3 w-3" aria-hidden="true" />
-          Limpiar
-        </button>
-      </div>
-
-      <div className="flex flex-wrap gap-2">
-        {tags.map((tag) => (
-          <Tag
-            key={`active-tag-${tag}`}
-            value={tag}
-            selected
-            removable
-            onTagToggle={onRemoveTag}
-            aria-label={`Quitar filtro de etiqueta ${tag}`}
-            data-slot="active-tag"
-          />
-        ))}
-        {buildings.map((b) => (
-          <Tag
-            key={`active-building-${b}`}
-            value={b}
-            label={b}
-            selected
-            removable
-            onTagToggle={onRemoveBuilding}
-            aria-label={`Quitar filtro de edificio ${b}`}
-            data-slot="active-tag"
-          />
-        ))}
-        {venues.map((v) => (
-          <Tag
-            key={`active-venue-${v}`}
-            value={v}
-            selected
-            removable
-            onTagToggle={onRemoveVenue}
-            aria-label={`Quitar filtro de sala ${v}`}
-            data-slot="active-tag"
-          />
-        ))}
-        {activityTypes.map((t) => (
-          <Tag
-            key={`active-type-${t}`}
-            value={t}
-            selected
-            removable
-            onTagToggle={onRemoveActivityType}
-            aria-label={`Quitar filtro de tipo ${t}`}
-            data-slot="active-tag"
-          />
-        ))}
-      </div>
-
-      <p className="text-xs text-muted-foreground">
-        Haz clic en una etiqueta para quitarla. Las etiquetas en las tarjetas también son accionables.
-      </p>
     </div>
   );
 }

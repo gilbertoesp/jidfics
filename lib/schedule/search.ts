@@ -77,7 +77,6 @@ export interface SearchResult {
 /** Search filters */
 export interface SearchFilters {
   date?: string;
-  axes?: string[];
   tags?: string[];
   buildings?: string[];
   activityTypes?: string[];
@@ -334,7 +333,6 @@ export class SearchEngine {
   /** Check if event matches filters */
   private matchesFilters(event: ConferenceEvent, filters: SearchFilters): boolean {
     if (filters.date && event.date !== filters.date) return false;
-    if (filters.axes?.length && !filters.axes.includes(event.thematicAxis)) return false;
     if (filters.tags?.length && !filters.tags.some(t => event.tags.includes(t))) return false;
     if (filters.buildings?.length && !filters.buildings.includes(event.building)) return false;
     if (filters.activityTypes?.length && !filters.activityTypes.includes(event.activityType)) return false;
