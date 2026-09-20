@@ -10,6 +10,7 @@ import { FilterPanel } from "@/components/schedule/FilterPanel";
 import { FloatingSessionBar } from "@/components/schedule/FloatingSessionBar";
 import { LiveChatSheet } from "@/components/schedule/LiveChatSheet";
 import { TimeTravelDevPanel } from "@/components/schedule/TimeTravelDevPanel";
+import { ActiveFiltersBar } from "@/components/schedule/Tag";
 import { Button } from "@/components/ui/button";
 import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import {
@@ -65,10 +66,11 @@ export function ScheduleClient({ events, meta, derived }: ScheduleClientProps) {
     setFilters((prev) => ({ ...prev, ...patch }));
   }
 
-  const toggleValue = (selected: string[], value: string): string[] =>
-    selected.includes(value)
-      ? selected.filter((v) => v !== value)
-      : [...selected, value];
+  const toggleValue = useCallback(
+    (selected: string[], value: string): string[] =>
+      selected.includes(value) ? selected.filter((v) => v !== value) : [...selected, value],
+    [],
+  );
 
   const activeDay = meta.days.find((day) => day.date === filters.date);
 
@@ -91,6 +93,19 @@ export function ScheduleClient({ events, meta, derived }: ScheduleClientProps) {
   const handleDismissBar = useCallback(() => {
     setBarDismissed(true);
   }, []);
+
+  // Actionable tag: click tag on card/timeline → toggle filter + ensure grid view for immediate value delivery
+  const handleTagClick = useCallback(
+    (tag: string) => {
+      setFilters((prev) => ({ ...prev, tags: toggleValue(prev.tags, tag) }));
+      // If in timeline view, the filtered timeline will update; no need to switch view, but we provide feedback via ActiveFiltersBar
+    },
+    [toggleValue],
+  );
+
+  const handleClearAll = useCallback(() => {
+    setFilters({ ...EMPTY_FILTERS, date: filters.date });
+  }, [filters.date]);
 
   return (
     <div className="mx-auto flex w-full max-w-5xl flex-col gap-6 px-4 py-8 sm:px-6 pb-24">
@@ -157,7 +172,21 @@ export function ScheduleClient({ events, meta, derived }: ScheduleClientProps) {
         onToggleBuilding={(building) =>
           setFilters((prev) => ({ ...prev, buildings: toggleValue(prev.buildings, building) }))
         }
-        onClear={() => setFilters({ ...EMPTY_FILTERS, date: filters.date })}
+        onClear={handleClearAll}
+      />
+
+      {/* Active filters — delivers immediate value: shows selected tags as removable chips */}
+      <ActiveFiltersBar
+        tags={filters.tags}
+        buildings={filters.buildings}
+        venues={filters.venues}
+        activityTypes={filters.activityTypes}
+        onRemoveTag={handleTagClick}
+        onRemoveBuilding={(b) => setFilters((prev) => ({ ...prev, buildings: toggleValue(prev.buildings, b) }))}
+        onRemoveVenue={(v) => setFilters((prev) => ({ ...prev, venues: toggleValue(prev.venues, v) }))}
+        onRemoveActivityType={(t) => setFilters((prev) => ({ ...prev, activityTypes: toggleValue(prev.activityTypes, t) }))}
+        onClearAll={handleClearAll}
+        resultCount={filteredEvents.length}
       />
 
       {/* Results */}
@@ -179,17 +208,23 @@ export function ScheduleClient({ events, meta, derived }: ScheduleClientProps) {
                   event={event}
                   onOpenChat={setChatEvent}
                   liveStatus={getLiveStatus(event)}
+                  onTagClick={handleTagClick}
+                  selectedTags={filters.tags}
                 />
               </li>
             ))}
           </ul>
         ) : (
           <div className="flex flex-col gap-4">
-            <p className="text-sm text-muted-foreground">Vista cronológica por edificio</p>
+            <p className="text-sm text-muted-foreground">
+              Vista cronológica por edificio — haz clic en cualquier etiqueta para filtrar
+            </p>
             <BuildingTimelines
               events={filteredEvents}
               derived={derived}
               getLiveStatus={getLiveStatus}
+              onTagClick={handleTagClick}
+              selectedTags={filters.tags}
             />
           </div>
         )}

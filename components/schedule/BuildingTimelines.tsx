@@ -9,6 +9,8 @@ export interface BuildingTimelinesProps {
   events: ConferenceEvent[];
   derived: ScheduleDerived;
   getLiveStatus?: (event: ConferenceEvent) => LiveStatus;
+  onTagClick?: (tag: string) => void;
+  selectedTags?: string[];
 }
 
 /**
@@ -23,6 +25,8 @@ export function BuildingTimelines({
   events,
   derived,
   getLiveStatus,
+  onTagClick,
+  selectedTags = [],
 }: BuildingTimelinesProps) {
   const buildings = derived.buildings;
 
@@ -39,22 +43,41 @@ export function BuildingTimelines({
 
   const defaultValue = buildings[0]?.key ?? "";
 
+  // Counts per building for clear UX — delivers value: user sees where sessions are
+  const counts = new Map<string, number>();
+  for (const e of events) counts.set(e.building, (counts.get(e.building) ?? 0) + 1);
+
   return (
-    <Tabs defaultValue={defaultValue} className="w-full">
+    <Tabs defaultValue={defaultValue} className="w-full" data-slot="building-timelines">
       <TabsList
         aria-label="Seleccionar edificio"
+        data-slot="building-timelines-list"
         className="inline-flex h-auto w-full flex-wrap items-center justify-start gap-1 rounded-lg bg-muted p-1"
       >
-        {buildings.map((building) => (
-          <TabsTrigger
-            key={building.key}
-            value={building.key}
-            className="whitespace-nowrap text-xs sm:text-sm"
-          >
-            <span className="hidden sm:inline">{building.label}</span>
-            <span className="sm:hidden">{building.key}</span>
-          </TabsTrigger>
-        ))}
+        {buildings.map((building) => {
+          const count = counts.get(building.key) ?? 0;
+          return (
+            <TabsTrigger
+              key={building.key}
+              value={building.key}
+              data-slot="building-tab"
+              data-count={count}
+              data-empty={count === 0 ? "true" : undefined}
+              className="whitespace-nowrap text-xs sm:text-sm data-[empty=true]:opacity-60"
+            >
+              <span className="hidden sm:inline">{building.label}</span>
+              <span className="sm:hidden">{building.key}</span>
+              <span
+                aria-hidden="true"
+                data-slot="building-tab-count"
+                className="ml-1.5 inline-flex min-h-4 min-w-4 items-center justify-center rounded bg-background px-1 py-0.5 text-[10px] font-semibold leading-none text-muted-foreground data-[empty=true]:hidden"
+                data-empty={count === 0 ? "true" : undefined}
+              >
+                {count}
+              </span>
+            </TabsTrigger>
+          );
+        })}
       </TabsList>
 
       {buildings.map((building) => (
@@ -67,6 +90,8 @@ export function BuildingTimelines({
             building={building}
             events={events}
             getLiveStatus={getLiveStatus}
+            onTagClick={onTagClick}
+            selectedTags={selectedTags}
           />
         </TabsContent>
       ))}

@@ -19,11 +19,14 @@ import { scheduleSorter } from "@/lib/schedule/filter";
 import type { ConferenceEvent } from "@/lib/schedule/types";
 import { cn } from "@/lib/utils";
 import type { LiveStatus } from "@/components/schedule/LiveIndicatorBadge";
+import { Tag } from "@/components/schedule/Tag";
 
 export interface BuildingTimelineProps {
   building: { key: string; label: string };
   events: ConferenceEvent[];
   getLiveStatus?: (event: ConferenceEvent) => LiveStatus;
+  onTagClick?: (tag: string) => void;
+  selectedTags?: string[];
 }
 
 function indicatorClasses(
@@ -51,6 +54,8 @@ export function BuildingTimeline({
   building,
   events,
   getLiveStatus,
+  onTagClick,
+  selectedTags = [],
 }: BuildingTimelineProps) {
   const sorted = useMemo(() => {
     const filtered = events.filter((e) => e.building === building.key);
@@ -165,19 +170,18 @@ export function BuildingTimeline({
                       {event.activityType}
                     </Badge>
                     {event.tags.map((tag) => {
-                      const tagColor = colorFor(tag);
+                      const isSelected = selectedTags.includes(tag);
                       return (
-                        <Badge
+                        <Tag
                           key={`${event.id}-${tag}`}
-                          variant="outline"
-                          className={cn("gap-1.5 border text-[11px]", tagColor.badge)}
-                        >
-                          <span
-                            aria-hidden="true"
-                            className={cn("h-1.5 w-1.5 rounded-full", tagColor.dot)}
-                          />
-                          {tag}
-                        </Badge>
+                          value={tag}
+                          selected={isSelected}
+                          interactive={!!onTagClick}
+                          onTagToggle={onTagClick}
+                          aria-label={`${isSelected ? "Quitar filtro" : "Filtrar por etiqueta"} ${tag}`}
+                          className="text-[11px] px-2 py-0.5"
+                          data-slot="timeline-tag"
+                        />
                       );
                     })}
                   </div>

@@ -20,6 +20,7 @@ import {
 import { Separator } from "@/components/ui/separator";
 import { colorFor } from "@/lib/schedule/colors";
 import { LiveIndicatorBadge, type LiveStatus } from "@/components/schedule/LiveIndicatorBadge";
+import { Tag } from "@/components/schedule/Tag";
 import { type ConferenceEvent } from "@/lib/schedule/types";
 import { cn } from "@/lib/utils";
 
@@ -27,9 +28,13 @@ interface EventCardProps {
   event: ConferenceEvent;
   onOpenChat: (event: ConferenceEvent) => void;
   liveStatus?: LiveStatus;
+  /** Called when a tag/badget is clicked — delivers filtering value */
+  onTagClick?: (tag: string) => void;
+  /** Set of currently selected tags for visual pressed state */
+  selectedTags?: string[];
 }
 
-export function EventCard({ event, onOpenChat, liveStatus }: EventCardProps) {
+export function EventCard({ event, onOpenChat, liveStatus, onTagClick, selectedTags = [] }: EventCardProps) {
   const activityColor = colorFor(event.activityType);
   const displayTags = event.tags.length > 0 ? event.tags : [event.thematicAxis];
 
@@ -63,19 +68,19 @@ export function EventCard({ event, onOpenChat, liveStatus }: EventCardProps) {
             {event.activityType}
           </Badge>
           {displayTags.map((tag) => {
-            const tagColor = colorFor(tag);
+            const isSelected = selectedTags.includes(tag);
+            // Actionable tag — click filters the schedule (delivers value)
             return (
-              <Badge
+              <Tag
                 key={tag}
-                variant="outline"
-                className={cn("gap-1.5 border", tagColor.badge)}
-              >
-                <span
-                  aria-hidden="true"
-                  className={cn("h-1.5 w-1.5 rounded-full", tagColor.dot)}
-                />
-                {tag}
-              </Badge>
+                value={tag}
+                selected={isSelected}
+                interactive={!!onTagClick}
+                onTagToggle={onTagClick}
+                aria-label={`${isSelected ? "Quitar filtro" : "Filtrar por etiqueta"} ${tag}`}
+                className={cn(!isSelected && "border")}
+                data-slot="event-tag"
+              />
             );
           })}
         </div>

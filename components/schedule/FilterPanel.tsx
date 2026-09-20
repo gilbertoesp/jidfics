@@ -10,6 +10,7 @@ import { dotFor } from "@/lib/schedule/colors";
 import { type ScheduleFilters } from "@/lib/schedule/filter";
 import { type ScheduleDerived } from "@/lib/schedule/types";
 import { cn } from "@/lib/utils";
+import { Tag, TagGroup } from "@/components/schedule/Tag";
 
 /* ------------------------------------------------------------------ */
 /* Generic toggle pill group                                          */
@@ -30,7 +31,7 @@ interface PillGroupProps {
 
 function PillGroup({ id, legend, options, selected, onToggle }: PillGroupProps) {
   return (
-    <fieldset className="flex flex-col gap-2">
+    <fieldset className="flex flex-col gap-2" data-slot="pill-group" data-label={legend}>
       <legend className="sr-only">{legend}</legend>
       <span
         id={`${id}-label`}
@@ -42,6 +43,7 @@ function PillGroup({ id, legend, options, selected, onToggle }: PillGroupProps) 
         role="group"
         aria-labelledby={`${id}-label`}
         className="flex flex-wrap gap-2"
+        data-slot="pill-group-content"
       >
         {options.map((option) => {
           const active = selected.includes(option.value);
@@ -50,17 +52,20 @@ function PillGroup({ id, legend, options, selected, onToggle }: PillGroupProps) 
               key={option.value}
               type="button"
               aria-pressed={active}
+              data-slot="filter-pill"
+              data-state={active ? "active" : "inactive"}
+              data-value={option.value}
               onClick={() => onToggle(option.value)}
               className={cn(
                 "inline-flex min-h-9 items-center gap-1.5 rounded-full border px-3 py-1.5 text-sm font-medium transition-colors",
                 "focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 focus-visible:ring-offset-background",
-                active
-                  ? "border-primary bg-primary text-primary-foreground shadow-sm"
-                  : "border-input bg-background text-foreground hover:bg-accent hover:text-accent-foreground",
+                "data-[state=active]:border-primary data-[state=active]:bg-primary data-[state=active]:text-primary-foreground data-[state=active]:shadow-sm",
+                "data-[state=inactive]:border-input data-[state=inactive]:bg-background data-[state=inactive]:text-foreground hover:data-[state=inactive]:bg-accent hover:data-[state=inactive]:text-accent-foreground",
               )}
             >
               <span
                 aria-hidden="true"
+                data-slot="filter-pill-dot"
                 className={cn("h-2 w-2 rounded-full", active ? "bg-current" : dotFor(option.label ?? ""))}
               />
               {option.label}
@@ -130,13 +135,25 @@ export function FilterPanel({
 
       <Separator />
 
-      <PillGroup
-        id="tag-filter"
-        legend="Etiquetas"
-        options={derived.tags.map((tag) => ({ value: tag, label: tag }))}
-        selected={filters.tags}
-        onToggle={onToggleTag}
-      />
+      {/* Composable TagGroup — building-components skill: composition, data-attributes, a11y */}
+      <div className="flex flex-col gap-2" data-slot="filter-tag-group">
+        <span className="text-xs font-semibold uppercase tracking-wide text-muted-foreground">
+          Etiquetas
+        </span>
+        <TagGroup label="Etiquetas">
+          {derived.tags.map((tag) => (
+            <Tag
+              key={tag}
+              value={tag}
+              selected={filters.tags.includes(tag)}
+              onTagToggle={onToggleTag}
+              aria-label={`${filters.tags.includes(tag) ? "Quitar filtro" : "Filtrar por etiqueta"} ${tag}`}
+              data-slot="filter-tag"
+              className="min-h-9 px-3 py-1.5 text-sm"
+            />
+          ))}
+        </TagGroup>
+      </div>
 
       <PillGroup
         id="activity-filter"
