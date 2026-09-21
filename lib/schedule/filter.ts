@@ -4,23 +4,27 @@ export interface ScheduleFilters {
   date: string; // YYYY-MM-DD
   searchQuery: string;
   axes: string[];
+  tags: string[];
   activityTypes: string[];
   venues: string[]; // venue keys
+  buildings: string[];
 }
 
 export const EMPTY_FILTERS: ScheduleFilters = {
   date: "2026-09-23",
   searchQuery: "",
   axes: [],
+  tags: [],
   activityTypes: [],
   venues: [],
+  buildings: [],
 };
 
 function normalize(value: string): string {
   return value.toLocaleLowerCase("es").trim();
 }
 
-/** Case-insensitive search across titles, paper titles, speakers, authors, institutions. */
+/** Case-insensitive search across titles, paper titles, speakers, authors, institutions, tags, building. */
 function matchSearch(event: ConferenceEvent, query: string): boolean {
   if (!query) return true;
 
@@ -30,6 +34,8 @@ function matchSearch(event: ConferenceEvent, query: string): boolean {
     event.venueLabel,
     event.thematicAxis,
     event.activityType,
+    event.building ?? "",
+    ...(event.tags ?? []),
     ...event.speakers.flatMap((s) => [s.name, s.institution]),
     ...event.papers.flatMap((p) => [
       p.title,
@@ -44,22 +50,29 @@ function matchSearch(event: ConferenceEvent, query: string): boolean {
 /**
  * Multi-facet filter: AND across categories, OR within a category.
  * - date: exact match
- * - axes / activityTypes / venues: empty array = no constraint
- * - searchQuery: substring across title/speakers/authors/institutions
+ * - axes / tags / activityTypes / venues / buildings: empty array = no constraint
+ * - searchQuery: substring across title/speakers/authors/institutions/tags/building
  */
 export function filterEvents(
   events: ConferenceEvent[],
   filters: ScheduleFilters,
 ): ConferenceEvent[] {
-  const { date, axes, activityTypes, venues } = filters;
+  const { date, axes, tags, activityTypes, venues, buildings } = filters;
 
   return events.filter((event) => {
     if (event.date !== date) return false;
     if (!matchSearch(event, filters.searchQuery)) return false;
     if (axes.length > 0 && !axes.includes(event.thematicAxis)) return false;
+    if (
+      tags.length > 0 &&
+      !(event.tags ?? []).some((t) => tags.includes(t))
+    )
+      return false;
     if (activityTypes.length > 0 && !activityTypes.includes(event.activityType))
       return false;
     if (venues.length > 0 && !venues.includes(event.venueKey)) return false;
+    if (buildings.length > 0 && !buildings.includes(event.building))
+      return false;
     return true;
   });
 }
@@ -68,8 +81,10 @@ export function hasActiveFilters(filters: ScheduleFilters): boolean {
   return (
     filters.searchQuery.trim() !== "" ||
     filters.axes.length > 0 ||
+    filters.tags.length > 0 ||
     filters.activityTypes.length > 0 ||
-    filters.venues.length > 0
+    filters.venues.length > 0 ||
+    filters.buildings.length > 0
   );
 }
 

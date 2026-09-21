@@ -49,6 +49,9 @@ describe.skipIf(!supabaseProjectConfigured)(
 describe("Supabase configuration guard (offline)", () => {
   it("refuses to run the live suite without credentials", () => {
     // Documented behavior: the integration describe block self-skips.
-    expect(typeof url).toBe("string");
+    // When env not set, url is undefined (local), when set in CI it's string.
+    expect(["string", "undefined"]).toContain(typeof url);
+    // Verify skip logic matches env presence
+    expect(supabaseProjectConfigured).toBe(Boolean(url && publishableKey));
   });
 });

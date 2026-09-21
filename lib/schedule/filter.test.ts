@@ -18,6 +18,8 @@ function makeEvent(partial: Partial<ConferenceEvent>): ConferenceEvent {
     title: "Sesión",
     activityType: "Conferencia Magistral",
     thematicAxis: "Violencia",
+    tags: ["Violencia"],
+    building: "3B",
     venueKey: "sala-1",
     venueLabel: "Sala 1 · Centro de Convenciones",
     speakers: [],
@@ -34,6 +36,8 @@ const events: ConferenceEvent[] = [
     title: "Violencia digital",
     activityType: "Conferencia Magistral",
     thematicAxis: "Violencia",
+    tags: ["Violencia"],
+    building: "3B",
     venueKey: "sala-1",
     speakers: [{ name: "Dra. Ana", institution: "UNISON", role: "speaker" }],
   }),
@@ -44,6 +48,8 @@ const events: ConferenceEvent[] = [
     title: "Mesa 1 · Género",
     activityType: "Trabajos Libres",
     thematicAxis: "Género",
+    tags: ["Género"],
+    building: "1E",
     venueKey: "sala-2",
     venueLabel: "Sala 2 · Sala Audiovisual",
     papers: [
@@ -61,6 +67,8 @@ const events: ConferenceEvent[] = [
     title: "Inauguración",
     activityType: "Inauguración",
     thematicAxis: "General",
+    tags: ["General"],
+    building: "3B",
     venueKey: "sala-1",
   }),
 ];
@@ -153,5 +161,34 @@ describe("EMPTY_FILTERS", () => {
     expect(EMPTY_FILTERS.activityTypes).toEqual([]);
     expect(EMPTY_FILTERS.venues).toEqual([]);
     expect(filters.axes).toEqual(["Violencia"]);
+  });
+});
+
+describe("tag and building filters", () => {
+  it("filters by tags OR within facet", () => {
+    const viol = filterEvents(events, { ...EMPTY_FILTERS, tags: ["Violencia"] });
+    expect(viol.map((e) => e.id)).toEqual(["a"]);
+    const multi = filterEvents(events, { ...EMPTY_FILTERS, tags: ["Violencia", "Género"] });
+    expect(multi.map((e) => e.id).sort()).toEqual(["a", "b"]);
+  });
+
+  it("filters building AND tags", () => {
+    const both = filterEvents(events, { ...EMPTY_FILTERS, buildings: ["3B"], tags: ["Violencia"] });
+    expect(both.map((e) => e.id)).toEqual(["a"]);
+    const miss = filterEvents(events, { ...EMPTY_FILTERS, buildings: ["1E"], tags: ["Violencia"] });
+    expect(miss).toEqual([]);
+  });
+
+  it("search matches tag and building", () => {
+    const byTag = filterEvents(events, { ...EMPTY_FILTERS, searchQuery: "violencia" });
+    expect(byTag.map((e) => e.id)).toContain("a");
+    const byBuilding = filterEvents(events, { ...EMPTY_FILTERS, searchQuery: "1E" });
+    // b has building 1E, should match via building haystack
+    expect(byBuilding.map((e) => e.id)).toContain("b");
+  });
+
+  it("hasActiveFilters true for tags/buildings", () => {
+    expect(hasActiveFilters({ ...EMPTY_FILTERS, tags: ["Género"] })).toBe(true);
+    expect(hasActiveFilters({ ...EMPTY_FILTERS, buildings: ["3B"] })).toBe(true);
   });
 });

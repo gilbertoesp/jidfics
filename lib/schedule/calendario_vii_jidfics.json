@@ -23,7 +23,10 @@
           "sala": "Sala 1",
           "edificio": "3B",
           "ponentes": [],
-          "eje_tematico": "General"
+          "eje_tematico": "General",
+          "tags": [
+            "General"
+          ]
         },
         {
           "id": "WED-002",
@@ -35,7 +38,10 @@
           "sala": "Sala 1",
           "edificio": "3B",
           "ponentes": [],
-          "eje_tematico": "General"
+          "eje_tematico": "General",
+          "tags": [
+            "General"
+          ]
         },
         {
           "id": "WED-003",
@@ -52,7 +58,11 @@
               "institucion": "Universidad de Guadalajara"
             }
           ],
-          "eje_tematico": "Salud / Psicología"
+          "eje_tematico": "Salud / Psicología",
+          "tags": [
+            "Salud",
+            "Psicología"
+          ]
         },
         {
           "id": "WED-004",
@@ -69,7 +79,11 @@
               "institucion": "Universidad de Sonora"
             }
           ],
-          "eje_tematico": "Salud / Psicología"
+          "eje_tematico": "Salud / Psicología",
+          "tags": [
+            "Salud",
+            "Psicología"
+          ]
         },
         {
           "id": "WED-005",
@@ -86,7 +100,11 @@
               "institucion": "Universidad de Sonora"
             }
           ],
-          "eje_tematico": "Migración / Comunicación"
+          "eje_tematico": "Migración / Comunicación",
+          "tags": [
+            "Migración",
+            "Comunicación"
+          ]
         },
         {
           "id": "WED-MESA-1",
@@ -151,6 +169,9 @@
               ],
               "institucion": "Universidad de Sonora"
             }
+          ],
+          "tags": [
+            "Violencia"
           ]
         },
         {
@@ -224,6 +245,9 @@
               ],
               "institucion": "Universidad de Sonora"
             }
+          ],
+          "tags": [
+            "Género"
           ]
         },
         {
@@ -236,7 +260,10 @@
           "lugar": "Sala de Maestría",
           "sala": "Sala 4",
           "edificio": "1G",
-          "ponencias": []
+          "ponencias": [],
+          "tags": [
+            "Educación"
+          ]
         },
         {
           "id": "WED-MESA-4",
@@ -248,7 +275,10 @@
           "lugar": "Centro de Convenciones",
           "sala": "Sala 1",
           "edificio": "3B",
-          "ponencias": []
+          "ponencias": [],
+          "tags": [
+            "Derecho"
+          ]
         },
         {
           "id": "WED-MESA-5",
@@ -337,6 +367,9 @@
               ],
               "institucion": "Universidad de Sonora, UNAD"
             }
+          ],
+          "tags": [
+            "Educación"
           ]
         },
         {
@@ -364,6 +397,10 @@
               ],
               "institucion": "Universidad de Sonora"
             }
+          ],
+          "tags": [
+            "Desarrollo Regional",
+            "Migración"
           ]
         },
         {
@@ -404,6 +441,9 @@
               ],
               "institucion": "Universidad de Sonora"
             }
+          ],
+          "tags": [
+            "Violencia"
           ]
         },
         {
@@ -440,6 +480,9 @@
               ],
               "institucion": "El Colegio de México"
             }
+          ],
+          "tags": [
+            "Género"
           ]
         },
         {
@@ -457,7 +500,10 @@
               "institucion": "Centro Regional de Formación Profesional Docente de Sonora (CRESON)"
             }
           ],
-          "eje_tematico": "Educación"
+          "eje_tematico": "Educación",
+          "tags": [
+            "Educación"
+          ]
         },
         {
           "id": "WED-006",
@@ -474,7 +520,11 @@
               "institucion": "Universidad de Sonora"
             }
           ],
-          "eje_tematico": "Desarrollo Regional / Política"
+          "eje_tematico": "Desarrollo Regional / Política",
+          "tags": [
+            "Desarrollo Regional",
+            "Política"
+          ]
         },
         {
           "id": "WED-MESA-10",
@@ -513,6 +563,9 @@
               ],
               "institucion": "Universidad de Sonora"
             }
+          ],
+          "tags": [
+            "Educación"
           ]
         },
         {
@@ -549,6 +602,9 @@
               ],
               "institucion": "UNAD, Universidad de Sonora"
             }
+          ],
+          "tags": [
+            "Derecho"
           ]
         },
         {
@@ -643,6 +699,9 @@
               ],
               "institucion": "Universidad de Sonora, Instituto Superior de Estudios de Occidente"
             }
+          ],
+          "tags": [
+            "Salud"
           ]
         },
         {
@@ -660,7 +719,11 @@
               "institucion": "Universidad de Sonora"
             }
           ],
-          "eje_tematico": "Salud / Psicología"
+          "eje_tematico": "Salud / Psicología",
+          "tags": [
+            "Salud",
+            "Psicología"
+          ]
         },
         {
           "id": "WED-MESA-13",
@@ -706,6 +769,9 @@
               ],
               "institucion": "Universidad de Sonora"
             }
+          ],
+          "tags": [
+            "Derecho"
           ]
         },
         {
@@ -735,7 +801,11 @@
               "institucion": "Universidad Pedagógica y Tecnológica de Colombia"
             }
           ],
-          "eje_tematico": "Psicología / Sociedad"
+          "eje_tematico": "Psicología / Sociedad",
+          "tags": [
+            "Psicología",
+            "Sociedad"
+          ]
         },
         {
           "id": "WED-YOGA",
@@ -752,7 +822,11 @@
               "institucion": "Universidad de Guadalajara"
             }
           ],
-          "eje_tematico": "Salud / Bienestar"
+          "eje_tematico": "Salud / Bienestar",
+          "tags": [
+            "Salud",
+            "Bienestar"
+          ]
         },
         {
           "id": "WED-PODCAST",
@@ -769,7 +843,10 @@
               "institucion": "Universidad de Sonora"
             }
           ],
-          "eje_tematico": "Comunicación Científica"
+          "eje_tematico": "Comunicación Científica",
+          "tags": [
+            "Comunicación Científica"
+          ]
         },
         {
           "id": "WED-SIMP-ESP",
@@ -806,7 +883,10 @@
               "institucion": "Universidad de Sonora"
             }
           ],
-          "eje_tematico": "Psicología"
+          "eje_tematico": "Psicología",
+          "tags": [
+            "Psicología"
+          ]
         },
         {
           "id": "WED-MESA-14",
@@ -818,7 +898,10 @@
           "lugar": "Sala Audiovisual",
           "sala": "Sala 2",
           "edificio": "1E",
-          "ponencias": []
+          "ponencias": [],
+          "tags": [
+            "Educación"
+          ]
         },
         {
           "id": "WED-MESA-15",
@@ -857,6 +940,9 @@
               ],
               "institucion": "Universidad Veracruzana"
             }
+          ],
+          "tags": [
+            "Desarrollo Regional"
           ]
         },
         {
@@ -869,7 +955,10 @@
           "sala": "Sala de usos múltiples",
           "edificio": "1I",
           "ponentes": [],
-          "eje_tematico": "General"
+          "eje_tematico": "General",
+          "tags": [
+            "General"
+          ]
         }
       ]
     },
@@ -892,7 +981,11 @@
               "institucion": "Universidad Nacional de Costa Rica"
             }
           ],
-          "eje_tematico": "Educación / Tecnología"
+          "eje_tematico": "Educación / Tecnología",
+          "tags": [
+            "Educación",
+            "Tecnología"
+          ]
         },
         {
           "id": "THU-SIMP-1",
@@ -917,7 +1010,11 @@
               "institucion": "Universidad de Sonora"
             }
           ],
-          "eje_tematico": "Migración / Derecho"
+          "eje_tematico": "Migración / Derecho",
+          "tags": [
+            "Migración",
+            "Derecho"
+          ]
         },
         {
           "id": "THU-002",
@@ -934,7 +1031,11 @@
               "institucion": "Universidad de Sonora"
             }
           ],
-          "eje_tematico": "Educación / Derecho"
+          "eje_tematico": "Educación / Derecho",
+          "tags": [
+            "Educación",
+            "Derecho"
+          ]
         },
         {
           "id": "THU-MESA-16",
@@ -1006,6 +1107,9 @@
               ],
               "institucion": "Universidad de Sonora"
             }
+          ],
+          "tags": [
+            "Educación"
           ]
         },
         {
@@ -1042,6 +1146,9 @@
               ],
               "institucion": "Universidad de Sonora"
             }
+          ],
+          "tags": [
+            "General"
           ]
         },
         {
@@ -1162,6 +1269,9 @@
               ],
               "institucion": "Universidad de Sonora"
             }
+          ],
+          "tags": [
+            "General"
           ]
         },
         {
@@ -1258,6 +1368,9 @@
               ],
               "institucion": "Universidad Insurgentes"
             }
+          ],
+          "tags": [
+            "Educación"
           ]
         },
         {
@@ -1275,7 +1388,11 @@
               "institucion": "Universidad de Sonora"
             }
           ],
-          "eje_tematico": "Economía / Desarrollo Regional"
+          "eje_tematico": "Economía / Desarrollo Regional",
+          "tags": [
+            "Economía",
+            "Desarrollo Regional"
+          ]
         },
         {
           "id": "THU-MESA-18",
@@ -1342,6 +1459,9 @@
               ],
               "institucion": "Universidad de Sonora"
             }
+          ],
+          "tags": [
+            "Migración"
           ]
         },
         {
@@ -1379,6 +1499,9 @@
               ],
               "institucion": "Universidad de Sonora"
             }
+          ],
+          "tags": [
+            "Educación"
           ]
         },
         {
@@ -1396,7 +1519,11 @@
               "institucion": "Universidad de Sonora"
             }
           ],
-          "eje_tematico": "Educación / Movilidad"
+          "eje_tematico": "Educación / Movilidad",
+          "tags": [
+            "Educación",
+            "Movilidad"
+          ]
         },
         {
           "id": "THU-005",
@@ -1413,7 +1540,10 @@
               "institucion": "Poder Judicial del Estado de Sonora"
             }
           ],
-          "eje_tematico": "Derecho"
+          "eje_tematico": "Derecho",
+          "tags": [
+            "Derecho"
+          ]
         },
         {
           "id": "THU-CONV-1",
@@ -1430,7 +1560,10 @@
               "institucion": "Universidad de Costa Rica"
             }
           ],
-          "eje_tematico": "Psicología"
+          "eje_tematico": "Psicología",
+          "tags": [
+            "Psicología"
+          ]
         },
         {
           "id": "THU-CARTELES-PRESENCIALES",
@@ -1513,6 +1646,9 @@
               ],
               "institucion": "Universidad de Sonora"
             }
+          ],
+          "tags": [
+            "General"
           ]
         },
         {
@@ -1571,6 +1707,9 @@
               ],
               "institucion": "Universidad de Sonora"
             }
+          ],
+          "tags": [
+            "Educación"
           ]
         },
         {
@@ -1619,6 +1758,9 @@
               ],
               "institucion": "Centro de Investigación en Alimentación y Desarrollo (CIAD)"
             }
+          ],
+          "tags": [
+            "Desarrollo Regional"
           ]
         },
         {
@@ -1631,7 +1773,11 @@
           "sala": "Sala 1",
           "edificio": "3B",
           "ponentes": [],
-          "eje_tematico": "Metodología / Ciencias Sociales"
+          "eje_tematico": "Metodología / Ciencias Sociales",
+          "tags": [
+            "Metodología",
+            "Ciencias Sociales"
+          ]
         },
         {
           "id": "THU-CLAUSURA",
@@ -1643,7 +1789,10 @@
           "sala": "Sala 1",
           "edificio": "3B",
           "ponentes": [],
-          "eje_tematico": "General"
+          "eje_tematico": "General",
+          "tags": [
+            "General"
+          ]
         }
       ]
     }

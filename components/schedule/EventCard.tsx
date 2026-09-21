@@ -19,17 +19,24 @@ import {
 } from "@/components/ui/card";
 import { Separator } from "@/components/ui/separator";
 import { colorFor } from "@/lib/schedule/colors";
+import { LiveIndicatorBadge, type LiveStatus } from "@/components/schedule/LiveIndicatorBadge";
+import { Tag } from "@/components/schedule/Tag";
 import { type ConferenceEvent } from "@/lib/schedule/types";
 import { cn } from "@/lib/utils";
 
 interface EventCardProps {
   event: ConferenceEvent;
   onOpenChat: (event: ConferenceEvent) => void;
+  liveStatus?: LiveStatus;
+  /** Called when a tag/badget is clicked — delivers filtering value */
+  onTagClick?: (tag: string) => void;
+  /** Set of currently selected tags for visual pressed state */
+  selectedTags?: string[];
 }
 
-export function EventCard({ event, onOpenChat }: EventCardProps) {
+export function EventCard({ event, onOpenChat, liveStatus, onTagClick, selectedTags = [] }: EventCardProps) {
   const activityColor = colorFor(event.activityType);
-  const axisColor = colorFor(event.thematicAxis);
+  const displayTags = event.tags.length > 0 ? event.tags : [event.thematicAxis];
 
   return (
     <Card className="group flex flex-col overflow-hidden transition-shadow hover:shadow-md">
@@ -44,7 +51,11 @@ export function EventCard({ event, onOpenChat }: EventCardProps) {
         <span className="inline-flex items-center gap-1.5 text-muted-foreground">
           <MapPin className="h-3.5 w-3.5" aria-hidden="true" />
           {event.venueLabel}
+          {event.building && event.building !== "Unknown" && (
+            <span className="text-muted-foreground/70">· {event.building}</span>
+          )}
         </span>
+        {liveStatus && <LiveIndicatorBadge status={liveStatus} showLabel />}
       </div>
 
       <CardHeader className="gap-2 pb-3">
@@ -56,13 +67,22 @@ export function EventCard({ event, onOpenChat }: EventCardProps) {
             />
             {event.activityType}
           </Badge>
-          <Badge variant="outline" className={cn("gap-1.5 border", axisColor.badge)}>
-            <span
-              aria-hidden="true"
-              className={cn("h-1.5 w-1.5 rounded-full", axisColor.dot)}
-            />
-            {event.thematicAxis}
-          </Badge>
+          {displayTags.map((tag) => {
+            const isSelected = selectedTags.includes(tag);
+            // Actionable tag — click filters the schedule (delivers value)
+            return (
+              <Tag
+                key={tag}
+                value={tag}
+                selected={isSelected}
+                interactive={!!onTagClick}
+                onTagToggle={onTagClick}
+                aria-label={`${isSelected ? "Quitar filtro" : "Filtrar por etiqueta"} ${tag}`}
+                className={cn(!isSelected && "border")}
+                data-slot="event-tag"
+              />
+            );
+          })}
         </div>
         <CardTitle className="text-lg leading-snug">
           <h3>{event.title}</h3>
