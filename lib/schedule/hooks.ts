@@ -174,6 +174,13 @@ export function useFloatingBar() {
 }
 
 /** Main schedule logic hook - combines everything */
+/* TODO(backlog): next iterations —
+ *   TODO(sessions): personal schedule ("Mis sesiones", localStorage/Supabase)
+ *   TODO(notifications): per-session reminders before start time
+ *   TODO(multi-day): cross-day view + day range navigation
+ *   TODO(speakers): speaker profile pages (aggregated from papers/speakers)
+ * Tracked TODO markers are listed in README › "Files with TODOs".
+ */
 export function useScheduleApp(events: ConferenceEvent[], meta: ConferenceMeta) {
   const filtersHook = useScheduleFilters(meta);
   const liveHook = useLiveSessions(events);

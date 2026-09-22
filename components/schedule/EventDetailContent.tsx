@@ -256,6 +256,7 @@ export function EventDetailContent({
         <div className="flex-1" />
         {/* TODO(calendar): ICS / Google Calendar export — README › TODO files */}
         {/* TODO(directions): map deep link (venue + building) — README › TODO files */}
+        {/* TODO(auth): enable once chat auth ships (needs Supabase session). */}
         <Button
           type="button"
           variant="ghost"
