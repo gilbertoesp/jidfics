@@ -12,7 +12,11 @@ const fixture: RawCalendario = {
   edicion: "VII",
   fecha_inicio: "2026-09-23",
   fecha_fin: "2026-09-24",
-  sede: { institucion: "Universidad de Sonora", campus: "Caborca", lugar: "Caborca, Sonora" },
+  sede: {
+    institucion: "Universidad de Sonora",
+    campus: "Caborca",
+    lugar: "Caborca, Sonora",
+  },
   programa: [
     {
       fecha: "2026-09-23",
@@ -114,9 +118,7 @@ describe("normalizeMeta", () => {
     const meta = normalizeMeta(fixture);
     expect(meta.edition).toBe("VII");
     expect(meta.venueCampus).toBe("Caborca");
-    expect(meta.days).toEqual([
-      { date: "2026-09-23", dayName: "Miércoles" },
-    ]);
+    expect(meta.days).toEqual([{ date: "2026-09-23", dayName: "Miércoles" }]);
   });
 });
 
@@ -151,6 +153,8 @@ describe("deriveFilters", () => {
 
 describe("dayLabel", () => {
   it("formats Spanish day labels", () => {
-    expect(dayLabel("Miércoles", "2026-09-23")).toBe("Miércoles 23 de septiembre");
+    expect(dayLabel("Miércoles", "2026-09-23")).toBe(
+      "Miércoles 23 de septiembre",
+    );
   });
 });

@@ -1,7 +1,15 @@
 "use client";
 
-import { useEffect, useMemo, useRef, useState, useCallback } from "react";
-import { parse, isBefore, isAfter, addMinutes, differenceInMinutes, startOfDay, endOfDay } from "date-fns";
+import {
+  addMinutes,
+  differenceInMinutes,
+  endOfDay,
+  isAfter,
+  isBefore,
+  parse,
+  startOfDay,
+} from "date-fns";
+import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 
 import type { ConferenceEvent } from "@/lib/schedule/types";
 
@@ -11,7 +19,11 @@ const TICK_INTERVAL_MS = 10_000;
 const UP_NEXT_WINDOW_MIN = 30;
 
 // Pre-parsed conference boundaries (module level, no new Date() at render time)
-const CONFERENCE_START_DATE = parse(CONFERENCE_START, "yyyy-MM-dd", new Date(0));
+const CONFERENCE_START_DATE = parse(
+  CONFERENCE_START,
+  "yyyy-MM-dd",
+  new Date(0),
+);
 const CONFERENCE_END_DATE = parse(CONFERENCE_END, "yyyy-MM-dd", new Date(0));
 const CONFERENCE_START_DAY = startOfDay(CONFERENCE_START_DATE);
 const CONFERENCE_END_DAY = endOfDay(CONFERENCE_END_DATE);
@@ -23,11 +35,16 @@ function parseEventTime(date: string, time: string): Date {
 
 /** Check if a date falls within conference dates (inclusive). */
 function isWithinConference(date: Date): boolean {
-  return !isBefore(date, CONFERENCE_START_DAY) && !isAfter(date, CONFERENCE_END_DAY);
+  return (
+    !isBefore(date, CONFERENCE_START_DAY) && !isAfter(date, CONFERENCE_END_DAY)
+  );
 }
 
 /** Compute live/up-next status for a single event at a given time. */
-function computeEventStatus(event: ConferenceEvent, now: Date): "live" | "up-next" | "idle" {
+function computeEventStatus(
+  event: ConferenceEvent,
+  now: Date,
+): "live" | "up-next" | "idle" {
   const start = parseEventTime(event.date, event.startTime);
   const end = parseEventTime(event.date, event.endTime);
 
@@ -76,14 +93,16 @@ export function useCurrentSession({
   tickIntervalMs = TICK_INTERVAL_MS,
   enabled = true,
 }: UseCurrentSessionOptions): UseCurrentSessionReturn {
-  const [timeTravelTime, setTimeTravelTime] = useState<Date | null>(initialTime ?? null);
+  const [timeTravelTime, setTimeTravelTime] = useState<Date | null>(
+    initialTime ?? null,
+  );
   const [now, setNow] = useState<Date | null>(null);
 
   const isTimeTravel = timeTravelTime !== null;
   const effectiveTime = isTimeTravel ? timeTravelTime : now;
 
   const isWithinConferenceDates = useMemo(
-    () => effectiveTime ? isWithinConference(effectiveTime) : false,
+    () => (effectiveTime ? isWithinConference(effectiveTime) : false),
     [effectiveTime],
   );
 
@@ -132,12 +151,16 @@ export function useCurrentSession({
 
   const liveNow = useMemo(() => {
     if (!isWithinConferenceDates || !effectiveTime) return [];
-    return events.filter((e) => computeEventStatus(e, effectiveTime) === "live");
+    return events.filter(
+      (e) => computeEventStatus(e, effectiveTime) === "live",
+    );
   }, [events, effectiveTime, isWithinConferenceDates]);
 
   const upNext = useMemo(() => {
     if (!isWithinConferenceDates || !effectiveTime) return [];
-    return events.filter((e) => computeEventStatus(e, effectiveTime) === "up-next");
+    return events.filter(
+      (e) => computeEventStatus(e, effectiveTime) === "up-next",
+    );
   }, [events, effectiveTime, isWithinConferenceDates]);
 
   const liveByHall = useMemo(() => {
@@ -169,32 +192,42 @@ export function useCurrentSession({
   }, []);
 
   // Only advances time when in time-travel mode
-  const advanceMinutes = useCallback((min: number) => {
-    if (!isTimeTravel || !timeTravelTime) {
-      // In real-time mode, advanceMinutes is a no-op
-      // Could optionally throw or warn in development
-      if (process.env.NODE_ENV === "development") {
-        console.warn("[useCurrentSession] advanceMinutes called but not in time-travel mode");
+  const advanceMinutes = useCallback(
+    (min: number) => {
+      if (!isTimeTravel || !timeTravelTime) {
+        // In real-time mode, advanceMinutes is a no-op
+        // Could optionally throw or warn in development
+        if (process.env.NODE_ENV === "development") {
+          console.warn(
+            "[useCurrentSession] advanceMinutes called but not in time-travel mode",
+          );
+        }
+        return;
       }
-      return;
-    }
-    const next = addMinutes(timeTravelTime, min);
-    setTimeTravelTime(next);
-  }, [isTimeTravel, timeTravelTime]);
+      const next = addMinutes(timeTravelTime, min);
+      setTimeTravelTime(next);
+    },
+    [isTimeTravel, timeTravelTime],
+  );
 
   // Only jumps to event when in time-travel mode
-  const jumpToEvent = useCallback((eventId: string) => {
-    if (!isTimeTravel) {
-      if (process.env.NODE_ENV === "development") {
-        console.warn("[useCurrentSession] jumpToEvent called but not in time-travel mode");
+  const jumpToEvent = useCallback(
+    (eventId: string) => {
+      if (!isTimeTravel) {
+        if (process.env.NODE_ENV === "development") {
+          console.warn(
+            "[useCurrentSession] jumpToEvent called but not in time-travel mode",
+          );
+        }
+        return;
       }
-      return;
-    }
-    const event = events.find((e) => e.id === eventId);
-    if (!event) return;
-    const target = parseEventTime(event.date, event.startTime);
-    setTimeTravelTime(target);
-  }, [events, isTimeTravel]);
+      const event = events.find((e) => e.id === eventId);
+      if (!event) return;
+      const target = parseEventTime(event.date, event.startTime);
+      setTimeTravelTime(target);
+    },
+    [events, isTimeTravel],
+  );
 
   return {
     liveNow,

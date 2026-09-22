@@ -1,12 +1,11 @@
 "use client";
 
-import * as React from "react";
 import { Slot } from "@radix-ui/react-slot";
 import { X } from "lucide-react";
-
-import { cn } from "@/lib/utils";
+import * as React from "react";
 import { colorFor } from "@/lib/schedule/colors";
 import type { TagCategory } from "@/lib/schedule/types";
+import { cn } from "@/lib/utils";
 
 // ------------------------------------------------------------------
 // Primitive: Tag — actionable, accessible, composable
@@ -14,7 +13,8 @@ import type { TagCategory } from "@/lib/schedule/types";
 // customizability (cn), lightweight, transparency.
 // ------------------------------------------------------------------
 
-export interface TagProps extends Omit<React.ComponentProps<"button">, "value"> {
+export interface TagProps
+  extends Omit<React.ComponentProps<"button">, "value"> {
   /** Tag value (e.g. "Salud") */
   value: string;
   /** Visual label, defaults to value */
@@ -66,11 +66,15 @@ export const Tag = React.forwardRef<HTMLButtonElement, TagProps>(
   ) => {
     const displayLabel = label ?? value;
     const colors = colorFor(value);
-    
+
     // When removable, we render a wrapper div with label + remove button as siblings
     // to avoid nested <button> elements (invalid HTML)
     const isRemovable = removable && selected;
-    const Comp = asChild ? Slot : interactive && !isRemovable ? "button" : "span";
+    const Comp = asChild
+      ? Slot
+      : interactive && !isRemovable
+        ? "button"
+        : "span";
 
     const handleClick = (e: React.MouseEvent<HTMLButtonElement>) => {
       if (!interactive || isRemovable) return;
@@ -149,7 +153,11 @@ export const Tag = React.forwardRef<HTMLButtonElement, TagProps>(
             data-slot="tag-remove"
             className="p-0.5 rounded hover:bg-accent focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
           >
-            <X aria-hidden="true" data-slot="tag-remove-icon" className="h-3 w-3 opacity-70" />
+            <X
+              aria-hidden="true"
+              data-slot="tag-remove-icon"
+              className="h-3 w-3 opacity-70"
+            />
           </button>
         </div>
       );
@@ -165,7 +173,12 @@ export const Tag = React.forwardRef<HTMLButtonElement, TagProps>(
         data-value={value}
         data-category={category}
         aria-pressed={interactive ? selected : undefined}
-        aria-label={ariaLabel ?? (interactive ? `${selected ? "Quitar filtro" : "Filtrar por"} ${displayLabel}` : displayLabel)}
+        aria-label={
+          ariaLabel ??
+          (interactive
+            ? `${selected ? "Quitar filtro" : "Filtrar por"} ${displayLabel}`
+            : displayLabel)
+        }
         tabIndex={interactive ? 0 : undefined}
         role={interactive && Comp === "span" ? "button" : undefined}
         onClick={interactive ? handleClick : undefined}
@@ -197,7 +210,12 @@ export interface TagGroupProps extends React.ComponentProps<"fieldset"> {
   label: string;
 }
 
-export function TagGroup({ label, className, children, ...props }: TagGroupProps) {
+export function TagGroup({
+  label,
+  className,
+  children,
+  ...props
+}: TagGroupProps) {
   return (
     <fieldset
       aria-label={label}

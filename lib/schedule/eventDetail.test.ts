@@ -39,12 +39,48 @@ function makeEvent(partial: Partial<ConferenceEvent>): ConferenceEvent {
 const self = makeEvent({ id: "e1" });
 const events: ConferenceEvent[] = [
   self,
-  makeEvent({ id: "e2", startTime: "09:00", venueKey: "sala-1", venueLabel: "Sala 1 · Centro de Convenciones", thematicAxis: "Género" }), // 4+2=6
-  makeEvent({ id: "e3", startTime: "09:00", venueKey: "sala-2", venueLabel: "Sala 2 · Audiovisual", thematicAxis: "Violencia" }),        // 4+1=5
-  makeEvent({ id: "e4", startTime: "10:00", venueKey: "sala-1", venueLabel: "Sala 1 · Centro de Convenciones", thematicAxis: "Género" }), // 2
-  makeEvent({ id: "e5", startTime: "11:00", venueKey: "sala-2", venueLabel: "Sala 2 · Audiovisual", thematicAxis: "Educación" }),        // 0 → excluded
-  makeEvent({ id: "e6", startTime: "09:00", venueKey: "sala-1", venueLabel: "Sala 1 · Centro de Convenciones", thematicAxis: "Salud" }),  // 4+2=6
-  makeEvent({ id: "e7", date: "2026-09-24", startTime: "09:00", venueKey: "sala-1", venueLabel: "Sala 1 · Centro de Convenciones" }),    // other day → excluded
+  makeEvent({
+    id: "e2",
+    startTime: "09:00",
+    venueKey: "sala-1",
+    venueLabel: "Sala 1 · Centro de Convenciones",
+    thematicAxis: "Género",
+  }), // 4+2=6
+  makeEvent({
+    id: "e3",
+    startTime: "09:00",
+    venueKey: "sala-2",
+    venueLabel: "Sala 2 · Audiovisual",
+    thematicAxis: "Violencia",
+  }), // 4+1=5
+  makeEvent({
+    id: "e4",
+    startTime: "10:00",
+    venueKey: "sala-1",
+    venueLabel: "Sala 1 · Centro de Convenciones",
+    thematicAxis: "Género",
+  }), // 2
+  makeEvent({
+    id: "e5",
+    startTime: "11:00",
+    venueKey: "sala-2",
+    venueLabel: "Sala 2 · Audiovisual",
+    thematicAxis: "Educación",
+  }), // 0 → excluded
+  makeEvent({
+    id: "e6",
+    startTime: "09:00",
+    venueKey: "sala-1",
+    venueLabel: "Sala 1 · Centro de Convenciones",
+    thematicAxis: "Salud",
+  }), // 4+2=6
+  makeEvent({
+    id: "e7",
+    date: "2026-09-24",
+    startTime: "09:00",
+    venueKey: "sala-1",
+    venueLabel: "Sala 1 · Centro de Convenciones",
+  }), // other day → excluded
 ];
 
 describe("parseEventParam", () => {
@@ -54,7 +90,9 @@ describe("parseEventParam", () => {
   });
 
   it("parses alongside other params", () => {
-    expect(parseEventParam("?date=2026-09-23&event=e2", ["e1", "e2"])).toBe("e2");
+    expect(parseEventParam("?date=2026-09-23&event=e2", ["e1", "e2"])).toBe(
+      "e2",
+    );
   });
 
   it("rejects unknown, empty, or junk input", () => {

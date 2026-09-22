@@ -16,8 +16,8 @@
  * data-slot: filter-group | filter-group-header | filter-group-count
  */
 
-import * as React from "react";
 import { X } from "lucide-react";
+import type * as React from "react";
 
 import { Button } from "@/components/ui/button";
 import type { TagCategory } from "@/lib/schedule/types";

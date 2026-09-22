@@ -1,7 +1,7 @@
-import { describe, expect, it, vi } from "vitest";
-import * as React from "react";
 import { render, screen } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
+import * as React from "react";
+import { describe, expect, it, vi } from "vitest";
 
 import { FilterSidebar } from "@/components/schedule/filter/FilterSidebar";
 import { EMPTY_FILTERS, type ScheduleFilters } from "@/lib/schedule/filter";
@@ -45,7 +45,9 @@ describe("FilterSidebar", () => {
   it("renders one group per category with Spanish headers", () => {
     renderSidebar();
     expect(screen.getByRole("group", { name: "Temas" })).toBeInTheDocument();
-    expect(screen.getByRole("group", { name: "Ubicaciones" })).toBeInTheDocument();
+    expect(
+      screen.getByRole("group", { name: "Ubicaciones" }),
+    ).toBeInTheDocument();
   });
 
   it("nests facets under the right category group", () => {
@@ -73,7 +75,9 @@ describe("FilterSidebar", () => {
     renderSidebar({ venues: ["sala-1"] });
 
     const clearTopic = screen.getByRole("button", { name: "Limpiar Temas" });
-    const clearLocation = screen.getByRole("button", { name: "Limpiar Ubicaciones" });
+    const clearLocation = screen.getByRole("button", {
+      name: "Limpiar Ubicaciones",
+    });
     expect(clearTopic).toBeDisabled();
     expect(clearLocation).toBeEnabled();
 
@@ -109,7 +113,9 @@ describe("FilterSidebar", () => {
 
   it("marks rendered tags with their category (data-category contract)", () => {
     renderSidebar();
-    const salud = screen.getByRole("button", { name: "Filtrar por etiqueta Salud" });
+    const salud = screen.getByRole("button", {
+      name: "Filtrar por etiqueta Salud",
+    });
     expect(salud).toHaveAttribute("data-category", "topic");
     const sala = screen.getByRole("button", { name: /Filtrar por sala/ });
     expect(sala).toHaveAttribute("data-category", "location");

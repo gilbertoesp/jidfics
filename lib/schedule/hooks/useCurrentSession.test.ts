@@ -1,5 +1,5 @@
-import { describe, expect, it, vi, beforeEach, afterEach } from "vitest";
-import { renderHook, act } from "@testing-library/react";
+import { act, renderHook } from "@testing-library/react";
+import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 import { useCurrentSession } from "@/lib/schedule/hooks/useCurrentSession";
 import type { ConferenceEvent } from "@/lib/schedule/types";
 
@@ -140,7 +140,10 @@ describe("useCurrentSession", () => {
     ];
     // Actually evt-2 starts at 10:00, so only evt-1 is live
     const { result } = renderHook(() =>
-      useCurrentSession({ events: eventsWithOverlap, initialTime: duringMultiple }),
+      useCurrentSession({
+        events: eventsWithOverlap,
+        initialTime: duringMultiple,
+      }),
     );
 
     expect(result.current.liveByHall["Hall 1"]).toHaveLength(1);
@@ -165,7 +168,10 @@ describe("useCurrentSession", () => {
 
   it("exits time-travel when setTimeTravel(null)", () => {
     const { result } = renderHook(() =>
-      useCurrentSession({ events: mockEvents, initialTime: new Date("2026-09-23T09:30:00") }),
+      useCurrentSession({
+        events: mockEvents,
+        initialTime: new Date("2026-09-23T09:30:00"),
+      }),
     );
 
     act(() => {
@@ -177,7 +183,10 @@ describe("useCurrentSession", () => {
 
   it("advanceMinutes moves time forward in time-travel mode", () => {
     const { result } = renderHook(() =>
-      useCurrentSession({ events: mockEvents, initialTime: new Date("2026-09-23T08:45:00") }),
+      useCurrentSession({
+        events: mockEvents,
+        initialTime: new Date("2026-09-23T08:45:00"),
+      }),
     );
 
     act(() => {
@@ -195,7 +204,10 @@ describe("useCurrentSession", () => {
 
   it("jumpToEvent sets time to event start", () => {
     const { result } = renderHook(() =>
-      useCurrentSession({ events: mockEvents, initialTime: new Date("2026-09-20T12:00:00") }),
+      useCurrentSession({
+        events: mockEvents,
+        initialTime: new Date("2026-09-20T12:00:00"),
+      }),
     );
 
     act(() => {

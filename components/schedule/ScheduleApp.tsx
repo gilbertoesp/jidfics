@@ -1,25 +1,39 @@
 "use client";
 
-import { useState, useCallback, useEffect, useMemo, useRef } from "react";
-import React from "react";
-import { CalendarDays, LayoutGrid, Timer, X, Filter, ChevronLeft } from "lucide-react";
-
-import { Button } from "@/components/ui/button";
-import { Tag } from "@/components/schedule/Tag";
-import { cn } from "@/lib/utils";
+import {
+  CalendarDays,
+  ChevronLeft,
+  Filter,
+  LayoutGrid,
+  Timer,
+  X,
+} from "lucide-react";
+import React, {
+  useCallback,
+  useEffect,
+  useMemo,
+  useRef,
+  useState,
+} from "react";
+import { BuildingTimelines } from "@/components/schedule/BuildingTimelines";
 import { EventCard } from "@/components/schedule/EventCard";
 import { EventDetailSheet } from "@/components/schedule/EventDetailSheet";
-import { BuildingTimelines } from "@/components/schedule/BuildingTimelines";
 import { FloatingSessionBar } from "@/components/schedule/FloatingSessionBar";
-import { LiveChatSheet } from "@/components/schedule/LiveChatSheet";
 import { FilterSidebar } from "@/components/schedule/filter/FilterSidebar";
+import { LiveChatSheet } from "@/components/schedule/LiveChatSheet";
+import { Tag } from "@/components/schedule/Tag";
+import { Button } from "@/components/ui/button";
 import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { clearCategory } from "@/lib/schedule/tags";
 import { findRelatedEvents } from "@/lib/schedule/eventDetail";
-import {
-  useScheduleApp,
-} from "@/lib/schedule/hooks";
-import type { ConferenceEvent, ConferenceMeta, ScheduleDerived, TagCategory } from "@/lib/schedule/types";
+import { useScheduleApp } from "@/lib/schedule/hooks";
+import { clearCategory } from "@/lib/schedule/tags";
+import type {
+  ConferenceEvent,
+  ConferenceMeta,
+  ScheduleDerived,
+  TagCategory,
+} from "@/lib/schedule/types";
+import { cn } from "@/lib/utils";
 
 interface ScheduleAppProps {
   events: ConferenceEvent[];
@@ -51,7 +65,8 @@ function ActiveFiltersBar({
   onClearAll: () => void;
   resultCount: number;
 }) {
-  const hasActive = tags.length + buildings.length + venues.length + activityTypes.length > 0;
+  const hasActive =
+    tags.length + buildings.length + venues.length + activityTypes.length > 0;
 
   if (!hasActive) return null;
 
@@ -62,8 +77,10 @@ function ActiveFiltersBar({
       className="flex flex-wrap items-center gap-3 rounded-xl border bg-muted/50 p-3 text-sm"
       data-slot="active-filters-bar"
     >
-      <span className="font-medium text-muted-foreground">Filtros activos:</span>
-      
+      <span className="font-medium text-muted-foreground">
+        Filtros activos:
+      </span>
+
       <div className="flex flex-wrap gap-2" data-slot="active-tags">
         {tags.map((tag) => (
           <Tag
@@ -120,11 +137,11 @@ function ActiveFiltersBar({
       </div>
 
       <div className="flex-1" />
-      
+
       <span className="text-xs text-muted-foreground">
         {resultCount} {resultCount === 1 ? "sesión" : "sesiones"}
       </span>
-      
+
       <Button
         type="button"
         variant="ghost"
@@ -141,9 +158,18 @@ function ActiveFiltersBar({
 }
 
 /** View Switcher */
-function ViewSwitcher({ view, onViewChange }: { view: "grid" | "timeline"; onViewChange: (view: "grid" | "timeline") => void }) {
+function ViewSwitcher({
+  view,
+  onViewChange,
+}: {
+  view: "grid" | "timeline";
+  onViewChange: (view: "grid" | "timeline") => void;
+}) {
   return (
-    <fieldset aria-label="Cambiar vista del programa" className="inline-flex items-center gap-1 rounded-lg bg-muted p-1">
+    <fieldset
+      aria-label="Cambiar vista del programa"
+      className="inline-flex items-center gap-1 rounded-lg bg-muted p-1"
+    >
       <Button
         type="button"
         size="sm"
@@ -171,27 +197,36 @@ function ViewSwitcher({ view, onViewChange }: { view: "grid" | "timeline"; onVie
 }
 
 /** Date Switcher */
-function DateSwitcher({ 
-  days, 
-  selectedDate, 
-  onDateChange 
-}: { 
+function DateSwitcher({
+  days,
+  selectedDate,
+  onDateChange,
+}: {
   days: { date: string; dayName: string }[];
   selectedDate: string;
   onDateChange: (date: string) => void;
 }) {
   return (
     <Tabs value={selectedDate} onValueChange={onDateChange}>
-      <TabsList className="grid w-full grid-cols-2 sm:w-auto" role="tablist" aria-label="Seleccionar día">
+      <TabsList
+        className="grid w-full grid-cols-2 sm:w-auto"
+        role="tablist"
+        aria-label="Seleccionar día"
+      >
         {days.map((day) => (
-          <TabsTrigger 
-            key={day.date} 
-            value={day.date} 
+          <TabsTrigger
+            key={day.date}
+            value={day.date}
             className="gap-2"
             role="tab"
           >
-            <CalendarDays className="h-4 w-4 text-muted-foreground" aria-hidden="true" />
-            <span>{day.dayName} {day.date.slice(8)}</span>
+            <CalendarDays
+              className="h-4 w-4 text-muted-foreground"
+              aria-hidden="true"
+            />
+            <span>
+              {day.dayName} {day.date.slice(8)}
+            </span>
           </TabsTrigger>
         ))}
       </TabsList>
@@ -200,24 +235,25 @@ function DateSwitcher({
 }
 
 /** Mobile Sidebar Trigger */
-const MobileSidebarTrigger = React.forwardRef<HTMLButtonElement, { onOpen: () => void }>(
-  ({ onOpen }, ref) => {
-    return (
-      <Button
-        ref={ref}
-        type="button"
-        variant="outline"
-        size="icon"
-        onClick={onOpen}
-        aria-label="Abrir filtros"
-        className="lg:hidden"
-      >
-        <Filter className="h-4 w-4" aria-hidden="true" />
-        <span className="sr-only">Abrir filtros</span>
-      </Button>
-    );
-  }
-);
+const MobileSidebarTrigger = React.forwardRef<
+  HTMLButtonElement,
+  { onOpen: () => void }
+>(({ onOpen }, ref) => {
+  return (
+    <Button
+      ref={ref}
+      type="button"
+      variant="outline"
+      size="icon"
+      onClick={onOpen}
+      aria-label="Abrir filtros"
+      className="lg:hidden"
+    >
+      <Filter className="h-4 w-4" aria-hidden="true" />
+      <span className="sr-only">Abrir filtros</span>
+    </Button>
+  );
+});
 MobileSidebarTrigger.displayName = "MobileSidebarTrigger";
 
 /** Mobile Sidebar - simple fixed position overlay with focus trap */
@@ -249,8 +285,8 @@ function MobileSidebar({
     // Focus first focusable element in sidebar
     const focusableElements = Array.from(
       sidebarRef.current.querySelectorAll<HTMLElement>(
-        'button, [href], input, select, textarea, [tabindex]:not([tabindex="-1"])'
-      )
+        'button, [href], input, select, textarea, [tabindex]:not([tabindex="-1"])',
+      ),
     );
     if (focusableElements.length > 0) {
       focusableElements[0].focus();
@@ -283,14 +319,17 @@ function MobileSidebar({
       document.removeEventListener("keydown", handleKeyDown);
       document.body.style.overflow = "";
       // Restore focus to trigger button
-      if (previousActiveElement.current && previousActiveElement.current !== document.body) {
+      if (
+        previousActiveElement.current &&
+        previousActiveElement.current !== document.body
+      ) {
         previousActiveElement.current.focus();
       } else if (trigger) {
         trigger.focus();
       }
     };
-  // eslint-disable-next-line react-hooks/exhaustive-deps
-}, [isOpen, onClose]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [isOpen, onClose]);
 
   if (!isOpen) return null;
 
@@ -307,7 +346,7 @@ function MobileSidebar({
         ref={sidebarRef}
         className={cn(
           "fixed inset-y-0 left-0 z-50 w-full max-w-sm bg-background border-r shadow-xl lg:hidden",
-          isOpen ? "animate-slide-in-from-left" : "animate-slide-out-to-left"
+          isOpen ? "animate-slide-in-from-left" : "animate-slide-out-to-left",
         )}
         role="dialog"
         aria-modal="true"
@@ -333,9 +372,7 @@ function MobileSidebar({
               <ChevronLeft className="h-5 w-5" aria-hidden="true" />
             </Button>
           </div>
-          <div className="flex-1 overflow-y-auto p-4">
-            {children}
-          </div>
+          <div className="flex-1 overflow-y-auto p-4">{children}</div>
         </div>
       </aside>
     </>
@@ -380,14 +417,20 @@ export function ScheduleApp({ events, meta, derived }: ScheduleAppProps) {
   const mobileSidebarTriggerRef = useRef<HTMLButtonElement>(null);
 
   // Handle search input with debounced suggestions
-  const handleSearchChange = useCallback((query: string) => {
-    setSearchQuery(query);
-  }, [setSearchQuery]);
+  const handleSearchChange = useCallback(
+    (query: string) => {
+      setSearchQuery(query);
+    },
+    [setSearchQuery],
+  );
 
   // Handle tag click from EventCard/BuildingTimeline
-  const handleTagClick = useCallback((tag: string) => {
-    toggleTag(tag);
-  }, [toggleTag]);
+  const handleTagClick = useCallback(
+    (tag: string) => {
+      toggleTag(tag);
+    },
+    [toggleTag],
+  );
 
   // Related sessions for the open detail sheet (pure ranking, same day)
   const relatedEvents = useMemo(
@@ -396,9 +439,12 @@ export function ScheduleApp({ events, meta, derived }: ScheduleAppProps) {
   );
 
   // Per-category clear (pure reducer from lib/schedule/tags.ts)
-  const handleClearCategory = useCallback((category: TagCategory) => {
-    setFilters((prev) => clearCategory(category, prev));
-  }, [setFilters]);
+  const handleClearCategory = useCallback(
+    (category: TagCategory) => {
+      setFilters((prev) => clearCategory(category, prev));
+    },
+    [setFilters],
+  );
 
   // Single sidebar definition shared by desktop (persistent) and mobile (overlay)
   const sidebar = (
@@ -418,7 +464,10 @@ export function ScheduleApp({ events, meta, derived }: ScheduleAppProps) {
 
   // Render event grid
   const renderGrid = () => (
-    <ul className="grid grid-cols-1 gap-4 lg:grid-cols-2" aria-label={`Sesiones del ${activeDay?.dayName || "día"}`}>
+    <ul
+      className="grid grid-cols-1 gap-4 lg:grid-cols-2"
+      aria-label={`Sesiones del ${activeDay?.dayName || "día"}`}
+    >
       {filteredEvents.map((event) => (
         <li key={event.id} id={event.id} className="h-full">
           <EventCard
@@ -438,7 +487,8 @@ export function ScheduleApp({ events, meta, derived }: ScheduleAppProps) {
   const renderTimeline = () => (
     <section className="flex flex-col gap-4" aria-label="Timeline por edificio">
       <p className="text-sm text-muted-foreground">
-        Vista cronológica por edificio — haz clic en cualquier etiqueta para filtrar
+        Vista cronológica por edificio — haz clic en cualquier etiqueta para
+        filtrar
       </p>
       <BuildingTimelines
         events={filteredEvents}
@@ -467,10 +517,17 @@ export function ScheduleApp({ events, meta, derived }: ScheduleAppProps) {
     <div className="mx-auto flex w-full max-w-5xl flex-col gap-6 px-4 py-8 sm:px-6 pb-24">
       {/* Header: Date + View Switcher + Mobile Sidebar Trigger */}
       <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
-        <DateSwitcher days={meta.days} selectedDate={filters.date} onDateChange={setDate} />
+        <DateSwitcher
+          days={meta.days}
+          selectedDate={filters.date}
+          onDateChange={setDate}
+        />
         <div className="flex items-center gap-2">
           <ViewSwitcher view={view} onViewChange={setView} />
-          <MobileSidebarTrigger ref={mobileSidebarTriggerRef} onOpen={() => setMobileSidebarOpen(true)} />
+          <MobileSidebarTrigger
+            ref={mobileSidebarTriggerRef}
+            onOpen={() => setMobileSidebarOpen(true)}
+          />
         </div>
       </div>
 
@@ -508,7 +565,11 @@ export function ScheduleApp({ events, meta, derived }: ScheduleAppProps) {
 
           {/* Results */}
           <section aria-label={`Sesiones del ${activeDay?.dayName || "día"}`}>
-            {filteredEvents.length === 0 ? renderEmpty() : view === "grid" ? renderGrid() : renderTimeline()}
+            {filteredEvents.length === 0
+              ? renderEmpty()
+              : view === "grid"
+                ? renderGrid()
+                : renderTimeline()}
           </section>
         </main>
       </div>

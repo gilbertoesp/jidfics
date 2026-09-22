@@ -14,9 +14,9 @@
  * data-slot: event-detail-content | event-detail-header/body/footer
  */
 
-import { useState } from "react";
 import { FileText, Link2, MessagesSquare, Users } from "lucide-react";
-
+import { useState } from "react";
+import { Tag } from "@/components/schedule/Tag";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import {
@@ -24,7 +24,6 @@ import {
   SheetHeader,
   SheetTitle,
 } from "@/components/ui/sheet";
-import { Tag } from "@/components/schedule/Tag";
 import { colorFor } from "@/lib/schedule/colors";
 import { buildShareUrl } from "@/lib/schedule/eventDetail";
 import { categorizeTag } from "@/lib/schedule/tags";
@@ -87,7 +86,10 @@ export function EventDetailContent({
         data-slot="event-detail-header"
         className="gap-2 border-b p-4 pr-12 text-left"
       >
-        <Badge variant="outline" className={cn("gap-1.5 border", activityColor.badge)}>
+        <Badge
+          variant="outline"
+          className={cn("gap-1.5 border", activityColor.badge)}
+        >
           <span
             aria-hidden="true"
             className={cn("h-1.5 w-1.5 rounded-full", activityColor.dot)}
@@ -105,9 +107,7 @@ export function EventDetailContent({
           </time>
           <span aria-hidden="true"> · </span>
           {event.venueLabel}
-          {event.building !== "Unknown" && (
-            <span aria-hidden="true"> · </span>
-          )}
+          {event.building !== "Unknown" && <span aria-hidden="true"> · </span>}
           {event.building !== "Unknown" && event.building}
         </SheetDescription>
       </SheetHeader>
@@ -118,7 +118,10 @@ export function EventDetailContent({
         className="flex flex-1 flex-col gap-5 overflow-y-auto p-4"
       >
         {/* Etiquetas (actionable, categorized) */}
-        <section aria-label="Etiquetas de la sesión" className="flex flex-col gap-2">
+        <section
+          aria-label="Etiquetas de la sesión"
+          className="flex flex-col gap-2"
+        >
           <SectionTitle>Etiquetas</SectionTitle>
           <div className="flex flex-wrap gap-2">
             {displayTags.map((tag) => {
@@ -145,7 +148,9 @@ export function EventDetailContent({
         {/* Ponentes */}
         {event.speakers.length > 0 && (
           <section aria-label="Ponentes" className="flex flex-col gap-2">
-            <SectionTitle icon={<Users className="h-3.5 w-3.5" aria-hidden="true" />}>
+            <SectionTitle
+              icon={<Users className="h-3.5 w-3.5" aria-hidden="true" />}
+            >
               Ponentes
             </SectionTitle>
             <ul className="flex flex-col gap-1.5">
@@ -166,7 +171,9 @@ export function EventDetailContent({
         {/* Ponencias */}
         {event.papers.length > 0 && (
           <section aria-label="Ponencias" className="flex flex-col gap-2">
-            <SectionTitle icon={<FileText className="h-3.5 w-3.5" aria-hidden="true" />}>
+            <SectionTitle
+              icon={<FileText className="h-3.5 w-3.5" aria-hidden="true" />}
+            >
               Ponencias ({event.papers.length})
             </SectionTitle>
             <ul className="flex flex-col gap-3">
@@ -201,7 +208,10 @@ export function EventDetailContent({
         )}
 
         {/* Sesiones relacionadas */}
-        <section aria-label="Sesiones relacionadas" className="flex flex-col gap-2">
+        <section
+          aria-label="Sesiones relacionadas"
+          className="flex flex-col gap-2"
+        >
           <SectionTitle>Sesiones relacionadas</SectionTitle>
           {related.length === 0 ? (
             <p className="text-sm text-muted-foreground">

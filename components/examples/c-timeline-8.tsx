@@ -7,7 +7,7 @@ import {
   TimelineItem,
   TimelineSeparator,
   TimelineTitle,
-} from "@/components/reui/timeline"
+} from "@/components/reui/timeline";
 
 const releaseCycle = [
   {
@@ -28,7 +28,7 @@ const releaseCycle = [
     title: "Development",
     description: "Core features implementation.",
   },
-]
+];
 
 export function Pattern() {
   return (
@@ -49,5 +49,5 @@ export function Pattern() {
         </TimelineItem>
       ))}
     </Timeline>
-  )
+  );
 }

@@ -1,6 +1,6 @@
-import { describe, expect, it, vi, afterEach } from "vitest";
 import { render, screen } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
+import { afterEach, describe, expect, it, vi } from "vitest";
 
 import {
   EventDetailSheet,
@@ -144,7 +144,9 @@ describe("EventDetailSheet", () => {
     );
     expect(onTagClick).toHaveBeenCalledWith("Violencia");
 
-    const tech = screen.getByRole("button", { name: /Filtrar por etiqueta Tecnología/ });
+    const tech = screen.getByRole("button", {
+      name: /Filtrar por etiqueta Tecnología/,
+    });
     expect(tech).toHaveAttribute("data-category", "topic");
   });
 

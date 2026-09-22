@@ -1,12 +1,12 @@
 import { ScheduleApp } from "@/components/schedule/ScheduleApp";
 import { ThemeSwitcher } from "@/components/theme-switcher";
+import rawCalendario from "@/lib/schedule/calendario_vii_jidfics.json";
 import {
   deriveFilters,
   normalizeEvents,
   normalizeMeta,
 } from "@/lib/schedule/normalize";
 import type { RawCalendario } from "@/lib/schedule/types";
-import rawCalendario from "@/lib/schedule/calendario_vii_jidfics.json";
 
 const calendario = rawCalendario as RawCalendario;
 

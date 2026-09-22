@@ -1,5 +1,6 @@
 import { describe, expect, it } from "vitest";
-
+import rawCalendario from "@/lib/schedule/calendario_vii_jidfics.json";
+import { EMPTY_FILTERS, type ScheduleFilters } from "@/lib/schedule/filter";
 import { deriveFilters, normalizeEvents } from "@/lib/schedule/normalize";
 import {
   categorizeDerived,
@@ -7,13 +8,10 @@ import {
   clearCategory,
   countSelectedCategory,
   splitTagsByCategory,
-  toTagOptions,
   type TagCategory,
+  toTagOptions,
 } from "@/lib/schedule/tags";
-import { EMPTY_FILTERS, type ScheduleFilters } from "@/lib/schedule/filter";
-import type { ScheduleDerived } from "@/lib/schedule/types";
-import rawCalendario from "@/lib/schedule/calendario_vii_jidfics.json";
-import type { RawCalendario } from "@/lib/schedule/types";
+import type { RawCalendario, ScheduleDerived } from "@/lib/schedule/types";
 
 /* ------------------------------------------------------------------ */
 /* Fixtures                                                            */
@@ -74,9 +72,7 @@ describe("categorizeTag", () => {
     const overrides: Record<string, TagCategory> = {
       "centro de convenciones": "location",
     };
-    expect(categorizeTag("Centro de Convenciones", overrides)).toBe(
-      "location",
-    );
+    expect(categorizeTag("Centro de Convenciones", overrides)).toBe("location");
     // and with no override, keyword rules apply as usual
     expect(categorizeTag("Sala Grande")).toBe("location");
   });
@@ -129,14 +125,19 @@ describe("toTagOptions", () => {
   it("label defaults to value; label map is honored", () => {
     const [plain] = toTagOptions(["abc"]);
     expect(plain.label).toBe("abc");
-    const [mapped] = toTagOptions([{ value: "3B", label: "Centro de Convenciones (Edificio 3B)" }]);
+    const [mapped] = toTagOptions([
+      { value: "3B", label: "Centro de Convenciones (Edificio 3B)" },
+    ]);
     expect(mapped.label).toBe("Centro de Convenciones (Edificio 3B)");
   });
 });
 
 describe("category sorting", () => {
   it("topics sort alphabetically (es locale)", () => {
-    const sorted = toTagOptions(["Violencia", "Educación", "Bienestar"], "topic");
+    const sorted = toTagOptions(
+      ["Violencia", "Educación", "Bienestar"],
+      "topic",
+    );
     expect(sorted.map((o) => o.value)).toEqual([
       "Bienestar",
       "Educación",
@@ -173,11 +174,16 @@ describe("categorizeDerived", () => {
         tags: ["Salud", "Violencia"],
         activityTypes: ["Conferencia Magistral"],
         venues: [{ key: "sala-1", label: "Sala 1 · Centro" }],
-        buildings: [{ key: "3B", label: "Centro de Convenciones (Edificio 3B)" }],
+        buildings: [
+          { key: "3B", label: "Centro de Convenciones (Edificio 3B)" },
+        ],
       }),
     );
 
-    expect(derived.topic.tags.map((o) => o.value)).toEqual(["Salud", "Violencia"]);
+    expect(derived.topic.tags.map((o) => o.value)).toEqual([
+      "Salud",
+      "Violencia",
+    ]);
     expect(derived.topic.activityTypes.map((o) => o.value)).toEqual([
       "Conferencia Magistral",
     ]);
@@ -191,7 +197,9 @@ describe("categorizeDerived", () => {
   it("venue options keep the human label as display label", () => {
     const derived = categorizeDerived(
       makeDerived({
-        venues: [{ key: "sala-de-danza", label: "Sala de Danza · Edificio 1E" }],
+        venues: [
+          { key: "sala-de-danza", label: "Sala de Danza · Edificio 1E" },
+        ],
       }),
     );
     const [venue] = derived.location.venues;

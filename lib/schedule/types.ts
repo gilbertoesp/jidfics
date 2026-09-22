@@ -155,8 +155,18 @@ export interface TagOption {
 export function dayLabel(dayName: string, date: string): string {
   const [, month, day] = date.split("-");
   const monthNames = [
-    "enero", "febrero", "marzo", "abril", "mayo", "junio",
-    "julio", "agosto", "septiembre", "octubre", "noviembre", "diciembre",
+    "enero",
+    "febrero",
+    "marzo",
+    "abril",
+    "mayo",
+    "junio",
+    "julio",
+    "agosto",
+    "septiembre",
+    "octubre",
+    "noviembre",
+    "diciembre",
   ];
   return `${dayName} ${Number(day)} de ${monthNames[Number(month) - 1]}`;
 }

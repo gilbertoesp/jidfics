@@ -1,7 +1,7 @@
 "use client";
 
-import { useEffect, useRef, useState } from "react";
 import { MessagesSquare, Send } from "lucide-react";
+import { useEffect, useRef, useState } from "react";
 
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -13,7 +13,7 @@ import {
   SheetHeader,
   SheetTitle,
 } from "@/components/ui/sheet";
-import { type ConferenceEvent } from "@/lib/schedule/types";
+import type { ConferenceEvent } from "@/lib/schedule/types";
 import { cn } from "@/lib/utils";
 
 interface ChatMessage {
@@ -106,7 +106,10 @@ export function LiveChatSheet({ event, onOpenChange }: LiveChatSheetProps) {
         if (!open) setDraft("");
       }}
     >
-      <SheetContent side="right" className="flex w-full flex-col gap-0 p-0 sm:max-w-md">
+      <SheetContent
+        side="right"
+        className="flex w-full flex-col gap-0 p-0 sm:max-w-md"
+      >
         <SheetHeader className="border-b p-4 pr-12 text-left">
           <SheetTitle className="flex items-center gap-2">
             <MessagesSquare className="h-4 w-4" aria-hidden="true" />

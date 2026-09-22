@@ -1,4 +1,4 @@
-import { type ConferenceEvent } from "@/lib/schedule/types";
+import type { ConferenceEvent } from "@/lib/schedule/types";
 
 export interface ScheduleFilters {
   date: string; // YYYY-MM-DD
@@ -37,11 +37,7 @@ function matchSearch(event: ConferenceEvent, query: string): boolean {
     event.building ?? "",
     ...(event.tags ?? []),
     ...event.speakers.flatMap((s) => [s.name, s.institution]),
-    ...event.papers.flatMap((p) => [
-      p.title,
-      p.institution,
-      ...p.authors,
-    ]),
+    ...event.papers.flatMap((p) => [p.title, p.institution, ...p.authors]),
   ];
 
   return haystack.some((value) => normalize(value).includes(q));
@@ -63,10 +59,7 @@ export function filterEvents(
     if (event.date !== date) return false;
     if (!matchSearch(event, filters.searchQuery)) return false;
     if (axes.length > 0 && !axes.includes(event.thematicAxis)) return false;
-    if (
-      tags.length > 0 &&
-      !(event.tags ?? []).some((t) => tags.includes(t))
-    )
+    if (tags.length > 0 && !(event.tags ?? []).some((t) => tags.includes(t)))
       return false;
     if (activityTypes.length > 0 && !activityTypes.includes(event.activityType))
       return false;

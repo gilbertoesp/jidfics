@@ -24,9 +24,7 @@
           "edificio": "3B",
           "ponentes": [],
           "eje_tematico": "General",
-          "tags": [
-            "General"
-          ]
+          "tags": ["General"]
         },
         {
           "id": "WED-002",
@@ -39,9 +37,7 @@
           "edificio": "3B",
           "ponentes": [],
           "eje_tematico": "General",
-          "tags": [
-            "General"
-          ]
+          "tags": ["General"]
         },
         {
           "id": "WED-003",
@@ -59,10 +55,7 @@
             }
           ],
           "eje_tematico": "Salud / Psicología",
-          "tags": [
-            "Salud",
-            "Psicología"
-          ]
+          "tags": ["Salud", "Psicología"]
         },
         {
           "id": "WED-004",
@@ -80,10 +73,7 @@
             }
           ],
           "eje_tematico": "Salud / Psicología",
-          "tags": [
-            "Salud",
-            "Psicología"
-          ]
+          "tags": ["Salud", "Psicología"]
         },
         {
           "id": "WED-005",
@@ -101,10 +91,7 @@
             }
           ],
           "eje_tematico": "Migración / Comunicación",
-          "tags": [
-            "Migración",
-            "Comunicación"
-          ]
+          "tags": ["Migración", "Comunicación"]
         },
         {
           "id": "WED-MESA-1",
@@ -138,16 +125,12 @@
             },
             {
               "titulo": "Mujeres sordas, comunicación y violencia obstétrica",
-              "autores": [
-                "Gabriel Tolentino Tapia"
-              ],
+              "autores": ["Gabriel Tolentino Tapia"],
               "institucion": "Instituto de Investigaciones y Estudios de la Comisión de Derechos Humanos del Estado de Puebla"
             },
             {
               "titulo": "Reflexiones sobre la apología del delito en los corridos tumbados, bélicos y narcocorridos: ¿Libertad de expresión o legitimación de la violencia simbólica en México?",
-              "autores": [
-                "Alan Jair García Flores"
-              ],
+              "autores": ["Alan Jair García Flores"],
               "institucion": "Centro de Estudios sobre Derecho, Globalización y Seguridad de la Universidad Veracruzana"
             },
             {
@@ -170,9 +153,7 @@
               "institucion": "Universidad de Sonora"
             }
           ],
-          "tags": [
-            "Violencia"
-          ]
+          "tags": ["Violencia"]
         },
         {
           "id": "WED-MESA-2",
@@ -187,9 +168,7 @@
           "ponencias": [
             {
               "titulo": "Trabajadoras de la agroexportación: Desigualdades de género en las cadenas globales agrícolas",
-              "autores": [
-                "José Luis Saldaña Contreras"
-              ],
+              "autores": ["José Luis Saldaña Contreras"],
               "institucion": "Universidad de Guadalajara"
             },
             {
@@ -214,9 +193,7 @@
             },
             {
               "titulo": "El cuerpo y el placer en las mujeres normalistas: abordaje teórico",
-              "autores": [
-                "Yocelin Citlalli Martínez Cámara"
-              ],
+              "autores": ["Yocelin Citlalli Martínez Cámara"],
               "institucion": "Universidad Autónoma de San Luis Potosí"
             },
             {
@@ -232,23 +209,16 @@
             },
             {
               "titulo": "Repensar el género a partir de los procesos de significación. 'Un estudio sobre mujeres en el noroeste de México'",
-              "autores": [
-                "Daniel Rojas Méndez",
-                "Alicia Monzalvo Curiel"
-              ],
+              "autores": ["Daniel Rojas Méndez", "Alicia Monzalvo Curiel"],
               "institucion": "Universidad Estatal de Sonora"
             },
             {
               "titulo": "Desmontando el techo de cristal en la ciencia mexicana: Un análisis Interseccional de las Mujeres Científicas, Maternidad y Economía del Cuidado en la Academia",
-              "autores": [
-                "Susana Herrera Guerra"
-              ],
+              "autores": ["Susana Herrera Guerra"],
               "institucion": "Universidad de Sonora"
             }
           ],
-          "tags": [
-            "Género"
-          ]
+          "tags": ["Género"]
         },
         {
           "id": "WED-MESA-3",
@@ -261,9 +231,7 @@
           "sala": "Sala 4",
           "edificio": "1G",
           "ponencias": [],
-          "tags": [
-            "Educación"
-          ]
+          "tags": ["Educación"]
         },
         {
           "id": "WED-MESA-4",
@@ -276,9 +244,7 @@
           "sala": "Sala 1",
           "edificio": "3B",
           "ponencias": [],
-          "tags": [
-            "Derecho"
-          ]
+          "tags": ["Derecho"]
         },
         {
           "id": "WED-MESA-5",
@@ -335,9 +301,7 @@
             },
             {
               "titulo": "La formación en Metodología de la Investigación en los estudiantes de la Universidad del Golfo de California",
-              "autores": [
-                "Mayre Barceló Hidalgo"
-              ],
+              "autores": ["Mayre Barceló Hidalgo"],
               "institucion": "Universidad de Cienfuegos, Universidad del Golfo de California"
             },
             {
@@ -368,9 +332,7 @@
               "institucion": "Universidad de Sonora, UNAD"
             }
           ],
-          "tags": [
-            "Educación"
-          ]
+          "tags": ["Educación"]
         },
         {
           "id": "WED-MESA-7",
@@ -385,23 +347,16 @@
           "ponencias": [
             {
               "titulo": "Gobernanza del Gobierno Municipal y la Asamblea General en la coordinación de las actividades ecoturísticas de los municipios de Santa María Yavesía y Santa Catarina Lachatao, Oaxaca",
-              "autores": [
-                "Gabriel Adán Durán Gálvez"
-              ],
+              "autores": ["Gabriel Adán Durán Gálvez"],
               "institucion": "Universidad de la Sierra Sur"
             },
             {
               "titulo": "Política pública transversal sin evaluación territorial: el caso del Programa Transversal de Igualdad de Género 2016-2021 en Sonora",
-              "autores": [
-                "Ivan Eduardo Andrade Rembau"
-              ],
+              "autores": ["Ivan Eduardo Andrade Rembau"],
               "institucion": "Universidad de Sonora"
             }
           ],
-          "tags": [
-            "Desarrollo Regional",
-            "Migración"
-          ]
+          "tags": ["Desarrollo Regional", "Migración"]
         },
         {
           "id": "WED-MESA-8",
@@ -435,16 +390,11 @@
             },
             {
               "titulo": "El impacto social que tiene la violencia familiar en el municipio de Caborca",
-              "autores": [
-                "Alva Irey Murrieta",
-                "Edgar Isaac Ortega Méndez"
-              ],
+              "autores": ["Alva Irey Murrieta", "Edgar Isaac Ortega Méndez"],
               "institucion": "Universidad de Sonora"
             }
           ],
-          "tags": [
-            "Violencia"
-          ]
+          "tags": ["Violencia"]
         },
         {
           "id": "WED-MESA-9",
@@ -459,9 +409,7 @@
           "ponencias": [
             {
               "titulo": "El rol de los géneros y las edades en los relatos históricos escolares post-ESI: Entre la norma legal y la tensión académica",
-              "autores": [
-                "María Inés Rivas"
-              ],
+              "autores": ["María Inés Rivas"],
               "institucion": "Universidad Nacional del Centro de la Provincia de Buenos Aires"
             },
             {
@@ -475,15 +423,11 @@
             },
             {
               "titulo": "Flexibilidad para cuidar, precariedad para trabajar: mujeres en plataformas digitales en la Ciudad de México",
-              "autores": [
-                "Aurora Rebeca de la Rosa Zapata"
-              ],
+              "autores": ["Aurora Rebeca de la Rosa Zapata"],
               "institucion": "El Colegio de México"
             }
           ],
-          "tags": [
-            "Género"
-          ]
+          "tags": ["Género"]
         },
         {
           "id": "WED-CONV-1",
@@ -501,9 +445,7 @@
             }
           ],
           "eje_tematico": "Educación",
-          "tags": [
-            "Educación"
-          ]
+          "tags": ["Educación"]
         },
         {
           "id": "WED-006",
@@ -521,10 +463,7 @@
             }
           ],
           "eje_tematico": "Desarrollo Regional / Política",
-          "tags": [
-            "Desarrollo Regional",
-            "Política"
-          ]
+          "tags": ["Desarrollo Regional", "Política"]
         },
         {
           "id": "WED-MESA-10",
@@ -564,9 +503,7 @@
               "institucion": "Universidad de Sonora"
             }
           ],
-          "tags": [
-            "Educación"
-          ]
+          "tags": ["Educación"]
         },
         {
           "id": "WED-MESA-11",
@@ -581,9 +518,7 @@
           "ponencias": [
             {
               "titulo": "¿Escuchar o Co-crear? Rompiendo el adultocentrismo judicial a través de la mediación familiar inclusiva en México",
-              "autores": [
-                "Carlos Franco Castellanos"
-              ],
+              "autores": ["Carlos Franco Castellanos"],
               "institucion": "Universidad Autónoma de Nuevo León"
             },
             {
@@ -603,9 +538,7 @@
               "institucion": "UNAD, Universidad de Sonora"
             }
           ],
-          "tags": [
-            "Derecho"
-          ]
+          "tags": ["Derecho"]
         },
         {
           "id": "WED-MESA-12",
@@ -620,9 +553,7 @@
           "ponencias": [
             {
               "titulo": "Una propuesta neuropsicoanalítica para el tratamiento de las adicciones",
-              "autores": [
-                "Jesús Enrique Mercado Chan"
-              ],
+              "autores": ["Jesús Enrique Mercado Chan"],
               "institucion": "Universidad de Sonora"
             },
             {
@@ -662,9 +593,7 @@
             },
             {
               "titulo": "Identidad cultural alimentaria en estudiantes universitarios",
-              "autores": [
-                "Jesús Alberto Méndez Morales"
-              ],
+              "autores": ["Jesús Alberto Méndez Morales"],
               "institucion": "Universidad de Sonora"
             },
             {
@@ -685,9 +614,7 @@
             },
             {
               "titulo": "Consumo cannábico en la Universidad de Sonora, Campus Hermosillo: Caso Ciencias de la Comunicación",
-              "autores": [
-                "Wilbert Eduardo Lara Peñaloza"
-              ],
+              "autores": ["Wilbert Eduardo Lara Peñaloza"],
               "institucion": "Universidad de Sonora"
             },
             {
@@ -700,9 +627,7 @@
               "institucion": "Universidad de Sonora, Instituto Superior de Estudios de Occidente"
             }
           ],
-          "tags": [
-            "Salud"
-          ]
+          "tags": ["Salud"]
         },
         {
           "id": "WED-007",
@@ -720,10 +645,7 @@
             }
           ],
           "eje_tematico": "Salud / Psicología",
-          "tags": [
-            "Salud",
-            "Psicología"
-          ]
+          "tags": ["Salud", "Psicología"]
         },
         {
           "id": "WED-MESA-13",
@@ -748,16 +670,12 @@
             },
             {
               "titulo": "El procedimiento de expropiación de bienes ejidales y comunales establecido en la legislación agraria",
-              "autores": [
-                "Rosario Adalberto Mondaca Corral"
-              ],
+              "autores": ["Rosario Adalberto Mondaca Corral"],
               "institucion": "Universidad de Sonora"
             },
             {
               "titulo": "Los jueces penales en México y su compromiso con la justicia",
-              "autores": [
-                "Noé Bustamante Zamora"
-              ],
+              "autores": ["Noé Bustamante Zamora"],
               "institucion": "Universidad de Sonora"
             },
             {
@@ -770,9 +688,7 @@
               "institucion": "Universidad de Sonora"
             }
           ],
-          "tags": [
-            "Derecho"
-          ]
+          "tags": ["Derecho"]
         },
         {
           "id": "WED-SIMP-1",
@@ -802,10 +718,7 @@
             }
           ],
           "eje_tematico": "Psicología / Sociedad",
-          "tags": [
-            "Psicología",
-            "Sociedad"
-          ]
+          "tags": ["Psicología", "Sociedad"]
         },
         {
           "id": "WED-YOGA",
@@ -823,10 +736,7 @@
             }
           ],
           "eje_tematico": "Salud / Bienestar",
-          "tags": [
-            "Salud",
-            "Bienestar"
-          ]
+          "tags": ["Salud", "Bienestar"]
         },
         {
           "id": "WED-PODCAST",
@@ -844,9 +754,7 @@
             }
           ],
           "eje_tematico": "Comunicación Científica",
-          "tags": [
-            "Comunicación Científica"
-          ]
+          "tags": ["Comunicación Científica"]
         },
         {
           "id": "WED-SIMP-ESP",
@@ -884,9 +792,7 @@
             }
           ],
           "eje_tematico": "Psicología",
-          "tags": [
-            "Psicología"
-          ]
+          "tags": ["Psicología"]
         },
         {
           "id": "WED-MESA-14",
@@ -899,9 +805,7 @@
           "sala": "Sala 2",
           "edificio": "1E",
           "ponencias": [],
-          "tags": [
-            "Educación"
-          ]
+          "tags": ["Educación"]
         },
         {
           "id": "WED-MESA-15",
@@ -941,9 +845,7 @@
               "institucion": "Universidad Veracruzana"
             }
           ],
-          "tags": [
-            "Desarrollo Regional"
-          ]
+          "tags": ["Desarrollo Regional"]
         },
         {
           "id": "WED-CENA",
@@ -956,9 +858,7 @@
           "edificio": "1I",
           "ponentes": [],
           "eje_tematico": "General",
-          "tags": [
-            "General"
-          ]
+          "tags": ["General"]
         }
       ]
     },
@@ -982,10 +882,7 @@
             }
           ],
           "eje_tematico": "Educación / Tecnología",
-          "tags": [
-            "Educación",
-            "Tecnología"
-          ]
+          "tags": ["Educación", "Tecnología"]
         },
         {
           "id": "THU-SIMP-1",
@@ -1011,10 +908,7 @@
             }
           ],
           "eje_tematico": "Migración / Derecho",
-          "tags": [
-            "Migración",
-            "Derecho"
-          ]
+          "tags": ["Migración", "Derecho"]
         },
         {
           "id": "THU-002",
@@ -1032,10 +926,7 @@
             }
           ],
           "eje_tematico": "Educación / Derecho",
-          "tags": [
-            "Educación",
-            "Derecho"
-          ]
+          "tags": ["Educación", "Derecho"]
         },
         {
           "id": "THU-MESA-16",
@@ -1060,9 +951,7 @@
             },
             {
               "titulo": "De las notas a los datos, el nuevo seguimiento escolar con Google Workspace",
-              "autores": [
-                "Claudia Berenice Olivares Robles"
-              ],
+              "autores": ["Claudia Berenice Olivares Robles"],
               "institucion": "Universidad de Guadalajara"
             },
             {
@@ -1083,9 +972,7 @@
             },
             {
               "titulo": "Ciudadanía infantil y apropiación del espacio público: Estudio de la percepción socioambiental de las infancias en el Centro Ecológico de Sonora",
-              "autores": [
-                "Saúl Enrique Rojas Beltrán"
-              ],
+              "autores": ["Saúl Enrique Rojas Beltrán"],
               "institucion": "Universidad de Sonora"
             },
             {
@@ -1108,9 +995,7 @@
               "institucion": "Universidad de Sonora"
             }
           ],
-          "tags": [
-            "Educación"
-          ]
+          "tags": ["Educación"]
         },
         {
           "id": "THU-POSGRADOS",
@@ -1147,9 +1032,7 @@
               "institucion": "Universidad de Sonora"
             }
           ],
-          "tags": [
-            "General"
-          ]
+          "tags": ["General"]
         },
         {
           "id": "THU-CARTELES-VIRTUALES",
@@ -1190,31 +1073,22 @@
             },
             {
               "titulo": "Impacto de las Pensiones no Contributivas en el Bienestar y la Exclusión Social de los Adultos Mayores de Hermosillo (2020-2026), desde una perspectiva interdisciplinar",
-              "autores": [
-                "Marco Antonio García Herrera"
-              ],
+              "autores": ["Marco Antonio García Herrera"],
               "institucion": "Universidad de Sonora"
             },
             {
               "titulo": "El espejo algorítmico: perfiles digitales y aprendizaje mediado por inteligencia artificial generativa en la formación universitaria",
-              "autores": [
-                "Guillermina Cipriano Piñeiro",
-                "Paula Arroyo"
-              ],
+              "autores": ["Guillermina Cipriano Piñeiro", "Paula Arroyo"],
               "institucion": "Universidad Nacional Guillermo Brown, Universidad Abierta Interamericana"
             },
             {
               "titulo": "Las series de ficción pueden impactar la identidad personal y construir interacciones sociales",
-              "autores": [
-                "David Alejandro Esqueda Villegas"
-              ],
+              "autores": ["David Alejandro Esqueda Villegas"],
               "institucion": "Universidad de Sonora"
             },
             {
               "titulo": "Proyectos de vida de las personas en situación de calle en Hermosillo, Sonora, México",
-              "autores": [
-                "Orlando Rafael Córdova Contreras"
-              ],
+              "autores": ["Orlando Rafael Córdova Contreras"],
               "institucion": "Universidad de Sonora"
             },
             {
@@ -1264,15 +1138,11 @@
             },
             {
               "titulo": "Tensiones Éticas y Reconfiguración de la Identidad Profesional ante la Inteligencia Artificial Generativa",
-              "autores": [
-                "Luis Ángel Gavotto Rojas"
-              ],
+              "autores": ["Luis Ángel Gavotto Rojas"],
               "institucion": "Universidad de Sonora"
             }
           ],
-          "tags": [
-            "General"
-          ]
+          "tags": ["General"]
         },
         {
           "id": "THU-MESA-17",
@@ -1287,16 +1157,12 @@
           "ponencias": [
             {
               "titulo": "Modelo de Bienestar Digital IIAA: una propuesta interdisciplinaria para la investigación, intervención, alfabetización y activismo digital",
-              "autores": [
-                "Mariel Michessedett Montes Castillo"
-              ],
+              "autores": ["Mariel Michessedett Montes Castillo"],
               "institucion": "Universidad de Sonora"
             },
             {
               "titulo": "Estudio del envejecimiento activo laboral en la Comisión Federal de Electricidad, zona de Distribución, División Centro-Oriente, zona Puebla; visto el umbral de la vejez como una etapa de ociosidad laboral en los trabajadores eventuales, desde los años 2022 al 2025",
-              "autores": [
-                "Alejandro Herrera Rodríguez"
-              ],
+              "autores": ["Alejandro Herrera Rodríguez"],
               "institucion": "Benemérita Universidad Autónoma de Puebla"
             },
             {
@@ -1330,9 +1196,7 @@
             },
             {
               "titulo": "La igualdad se aprende desde la infancia: comunicación educativa para transformar estereotipos de género",
-              "autores": [
-                "Anna Ivette Rodríguez Navarro"
-              ],
+              "autores": ["Anna Ivette Rodríguez Navarro"],
               "institucion": "Universidad de Sonora"
             },
             {
@@ -1369,9 +1233,7 @@
               "institucion": "Universidad Insurgentes"
             }
           ],
-          "tags": [
-            "Educación"
-          ]
+          "tags": ["Educación"]
         },
         {
           "id": "THU-003",
@@ -1389,10 +1251,7 @@
             }
           ],
           "eje_tematico": "Economía / Desarrollo Regional",
-          "tags": [
-            "Economía",
-            "Desarrollo Regional"
-          ]
+          "tags": ["Economía", "Desarrollo Regional"]
         },
         {
           "id": "THU-MESA-18",
@@ -1407,24 +1266,17 @@
           "ponencias": [
             {
               "titulo": "Migración y justicia transformativa: ¿un enfoque pertinente para las nuevas movilidades?",
-              "autores": [
-                "Arturo Lutz Ley"
-              ],
+              "autores": ["Arturo Lutz Ley"],
               "institucion": "Universidad de Sonora"
             },
             {
               "titulo": "Imaginarios sobre la ciudad de Hermosillo en las trayectorias de vida de migrantes internacionales con residencia legal",
-              "autores": [
-                "Bárbara Romero Cota"
-              ],
+              "autores": ["Bárbara Romero Cota"],
               "institucion": "Universidad de Sonora"
             },
             {
               "titulo": "Hábitos de salud de la población de Nicaragua, Venezuela y Haití: antes y después de migrar a cinco ciudades latinoamericanas",
-              "autores": [
-                "Salvador Cobo",
-                "Josefina Franzoni"
-              ],
+              "autores": ["Salvador Cobo", "Josefina Franzoni"],
               "institucion": "Instituto Politécnico Nacional"
             },
             {
@@ -1438,10 +1290,7 @@
             },
             {
               "titulo": "Motivos de salida de académicas de origen cubano e inserción en instituciones de educación superior en el noroeste de México",
-              "autores": [
-                "Susana Hernández Galindo",
-                "Emilia Ochoa Castillo"
-              ],
+              "autores": ["Susana Hernández Galindo", "Emilia Ochoa Castillo"],
               "institucion": "Universidad de Sonora"
             },
             {
@@ -1454,15 +1303,11 @@
             },
             {
               "titulo": "Fútbol, identidad y cultura. Estado del arte para su estudio en la complejidad fronteriza del norte de México",
-              "autores": [
-                "Enrique Rivera Guerrero"
-              ],
+              "autores": ["Enrique Rivera Guerrero"],
               "institucion": "Universidad de Sonora"
             }
           ],
-          "tags": [
-            "Migración"
-          ]
+          "tags": ["Migración"]
         },
         {
           "id": "THU-MESA-19",
@@ -1487,22 +1332,16 @@
             },
             {
               "titulo": "An Educational Innovation Model to Address the Digital Divide among Students with Disabilities in Higher Education",
-              "autores": [
-                "Martín Romero Cruz"
-              ],
+              "autores": ["Martín Romero Cruz"],
               "institucion": "Universidad de Sonora"
             },
             {
               "titulo": "Implementación de cursos de alfabetización digital y evaluación de aprendizajes de adultos participantes: Universidad de Sonora",
-              "autores": [
-                "David Adrián Vásquez Robles"
-              ],
+              "autores": ["David Adrián Vásquez Robles"],
               "institucion": "Universidad de Sonora"
             }
           ],
-          "tags": [
-            "Educación"
-          ]
+          "tags": ["Educación"]
         },
         {
           "id": "THU-004",
@@ -1520,10 +1359,7 @@
             }
           ],
           "eje_tematico": "Educación / Movilidad",
-          "tags": [
-            "Educación",
-            "Movilidad"
-          ]
+          "tags": ["Educación", "Movilidad"]
         },
         {
           "id": "THU-005",
@@ -1541,9 +1377,7 @@
             }
           ],
           "eje_tematico": "Derecho",
-          "tags": [
-            "Derecho"
-          ]
+          "tags": ["Derecho"]
         },
         {
           "id": "THU-CONV-1",
@@ -1561,9 +1395,7 @@
             }
           ],
           "eje_tematico": "Psicología",
-          "tags": [
-            "Psicología"
-          ]
+          "tags": ["Psicología"]
         },
         {
           "id": "THU-CARTELES-PRESENCIALES",
@@ -1641,15 +1473,11 @@
             },
             {
               "titulo": "Regulación emocional en adolescentes de educación secundaria",
-              "autores": [
-                "Vica María Mange Ripalda"
-              ],
+              "autores": ["Vica María Mange Ripalda"],
               "institucion": "Universidad de Sonora"
             }
           ],
-          "tags": [
-            "General"
-          ]
+          "tags": ["General"]
         },
         {
           "id": "THU-MESA-20",
@@ -1673,9 +1501,7 @@
             },
             {
               "titulo": "Análisis de desempeño en evaluación externa del aprendizaje en Educación Superior. Caso: EGEL PLUS COMUNICA, período 2023-2026",
-              "autores": [
-                "Lisset Aracely Oliveros Rodríguez"
-              ],
+              "autores": ["Lisset Aracely Oliveros Rodríguez"],
               "institucion": "Universidad de Sonora"
             },
             {
@@ -1688,29 +1514,21 @@
             },
             {
               "titulo": "Análisis y evaluación de condiciones de educatividad en cursos de alfabetización digital de adultos, a través de la vinculación social universitaria",
-              "autores": [
-                "Izlia Maheli Lerma Moreno"
-              ],
+              "autores": ["Izlia Maheli Lerma Moreno"],
               "institucion": "Universidad de Sonora"
             },
             {
               "titulo": "Comunicación en el contexto familiar y educativo como una herramienta de influencia en la construcción del autoconcepto y desempeño académico en estudiantes de secundaria en México",
-              "autores": [
-                "Mariana Guadalupe Acosta Campa"
-              ],
+              "autores": ["Mariana Guadalupe Acosta Campa"],
               "institucion": "Universidad de Sonora"
             },
             {
               "titulo": "Identificación de los estilos de aprendizaje en adultos asistentes al taller MADAUS de la Universidad de Sonora",
-              "autores": [
-                "Jimena Olguín Trujillo"
-              ],
+              "autores": ["Jimena Olguín Trujillo"],
               "institucion": "Universidad de Sonora"
             }
           ],
-          "tags": [
-            "Educación"
-          ]
+          "tags": ["Educación"]
         },
         {
           "id": "THU-MESA-21",
@@ -1725,9 +1543,7 @@
           "ponencias": [
             {
               "titulo": "Gobernanza territorial, diversidad y desarrollo regional en Chile y América Latina",
-              "autores": [
-                "María Fernanda Herrera Acuña"
-              ],
+              "autores": ["María Fernanda Herrera Acuña"],
               "institucion": "Universidad Bernardo O'Higgins, Chile"
             },
             {
@@ -1759,9 +1575,7 @@
               "institucion": "Centro de Investigación en Alimentación y Desarrollo (CIAD)"
             }
           ],
-          "tags": [
-            "Desarrollo Regional"
-          ]
+          "tags": ["Desarrollo Regional"]
         },
         {
           "id": "THU-PANEL",
@@ -1774,10 +1588,7 @@
           "edificio": "3B",
           "ponentes": [],
           "eje_tematico": "Metodología / Ciencias Sociales",
-          "tags": [
-            "Metodología",
-            "Ciencias Sociales"
-          ]
+          "tags": ["Metodología", "Ciencias Sociales"]
         },
         {
           "id": "THU-CLAUSURA",
@@ -1790,9 +1601,7 @@
           "edificio": "3B",
           "ponentes": [],
           "eje_tematico": "General",
-          "tags": [
-            "General"
-          ]
+          "tags": ["General"]
         }
       ]
     }

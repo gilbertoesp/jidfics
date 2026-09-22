@@ -1,9 +1,9 @@
 "use client";
 
+import { ChevronDown, ChevronUp, Radio, X } from "lucide-react";
 import { useState } from "react";
-import { ChevronUp, ChevronDown, X, Radio } from "lucide-react";
-import { cn } from "@/lib/utils";
 import type { ConferenceEvent } from "@/lib/schedule/types";
+import { cn } from "@/lib/utils";
 
 interface FloatingSessionBarProps {
   liveByHall: Record<string, ConferenceEvent[]>;
@@ -15,7 +15,7 @@ interface FloatingSessionBarProps {
 const HALLS = ["Hall 1", "Hall 2", "Hall 3", "Hall 4"] as const;
 const OTROS_HALL = "Otras";
 
-function formatTime(date: string, time: string): string {
+function formatTime(_date: string, time: string): string {
   return time;
 }
 
@@ -33,7 +33,9 @@ export function FloatingSessionBar({
 
   // Compute visibility during render to avoid flash
   const hasLiveEvents = Object.values(liveByHall).some((arr) => arr.length > 0);
-  const hasUpNextEvents = Object.values(upNextByHall).some((arr) => arr.length > 0);
+  const hasUpNextEvents = Object.values(upNextByHall).some(
+    (arr) => arr.length > 0,
+  );
   const isVisible = hasLiveEvents || hasUpNextEvents;
 
   if (!isVisible) return null;
@@ -93,8 +95,13 @@ export function FloatingSessionBar({
               )}
               aria-label={`Ir a ${event.title}, en vivo`}
             >
-              <span className="flex h-1.5 w-1.5 rounded-full bg-green-500 animate-ping" aria-hidden="true" />
-              <span className="truncate font-medium text-green-800 dark:text-green-200">{event.title}</span>
+              <span
+                className="flex h-1.5 w-1.5 rounded-full bg-green-500 animate-ping"
+                aria-hidden="true"
+              />
+              <span className="truncate font-medium text-green-800 dark:text-green-200">
+                {event.title}
+              </span>
               <span className="text-green-600 dark:text-green-400 whitespace-nowrap text-[10px]">
                 {formatTime(event.date, event.startTime)}
               </span>
@@ -112,8 +119,13 @@ export function FloatingSessionBar({
               )}
               aria-label={`Ir a ${event.title}, proxima a iniciar`}
             >
-              <span className="flex h-1.5 w-1.5 rounded-full bg-yellow-500" aria-hidden="true" />
-              <span className="truncate font-medium text-yellow-800 dark:text-yellow-200">{event.title}</span>
+              <span
+                className="flex h-1.5 w-1.5 rounded-full bg-yellow-500"
+                aria-hidden="true"
+              />
+              <span className="truncate font-medium text-yellow-800 dark:text-yellow-200">
+                {event.title}
+              </span>
               <span className="text-yellow-600 dark:text-yellow-400 whitespace-nowrap text-[10px]">
                 {formatTime(event.date, event.startTime)}
               </span>
@@ -125,10 +137,7 @@ export function FloatingSessionBar({
   };
 
   // Collect all halls that have events
-  const allHalls = [
-    ...HALLS,
-    OTROS_HALL,
-  ].filter((hall) => {
+  const allHalls = [...HALLS, OTROS_HALL].filter((hall) => {
     const live = liveByHall[hall] ?? [];
     const upNext = upNextByHall[hall] ?? [];
     return live.length > 0 || upNext.length > 0;
@@ -150,10 +159,18 @@ export function FloatingSessionBar({
           "absolute -top-2 right-4 mx-auto max-w-5xl flex h-8 w-8 items-center justify-center rounded-full bg-background border shadow-lg",
           "hover:bg-accent transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring",
         )}
-        aria-label={isExpanded ? "Contraer barra de sesiones" : "Expandir barra de sesiones"}
+        aria-label={
+          isExpanded
+            ? "Contraer barra de sesiones"
+            : "Expandir barra de sesiones"
+        }
         aria-expanded={isExpanded}
       >
-        {isExpanded ? <ChevronUp className="h-4 w-4" /> : <ChevronDown className="h-4 w-4" />}
+        {isExpanded ? (
+          <ChevronUp className="h-4 w-4" />
+        ) : (
+          <ChevronDown className="h-4 w-4" />
+        )}
       </button>
 
       {onDismiss && (
@@ -167,9 +184,20 @@ export function FloatingSessionBar({
         </button>
       )}
 
-      <div className={cn("px-4 py-3 transition-all duration-300 overflow-hidden", isExpanded ? "max-h-96 opacity-100" : "max-h-0 opacity-0")}>
+      <div
+        className={cn(
+          "px-4 py-3 transition-all duration-300 overflow-hidden",
+          isExpanded ? "max-h-96 opacity-100" : "max-h-0 opacity-0",
+        )}
+      >
         <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-5">
-          {allHalls.map((hall) => renderHallSection(hall, liveByHall[hall] ?? [], upNextByHall[hall] ?? []))}
+          {allHalls.map((hall) =>
+            renderHallSection(
+              hall,
+              liveByHall[hall] ?? [],
+              upNextByHall[hall] ?? [],
+            ),
+          )}
         </div>
       </div>
     </section>

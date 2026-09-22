@@ -63,16 +63,21 @@ export function findRelatedEvents(
   limit = 4,
 ): ConferenceEvent[] {
   return events
-    .filter((candidate) => candidate.id !== event.id && candidate.date === event.date)
+    .filter(
+      (candidate) => candidate.id !== event.id && candidate.date === event.date,
+    )
     .map((candidate) => {
       let score = 0;
       if (candidate.startTime === event.startTime) score += WEIGHT_SAME_TIME;
       if (candidate.venueKey === event.venueKey) score += WEIGHT_SAME_VENUE;
-      if (candidate.thematicAxis === event.thematicAxis) score += WEIGHT_SAME_AXIS;
+      if (candidate.thematicAxis === event.thematicAxis)
+        score += WEIGHT_SAME_AXIS;
       return { candidate, score };
     })
     .filter((row) => row.score > 0)
-    .sort((a, b) => b.score - a.score || scheduleSorter(a.candidate, b.candidate))
+    .sort(
+      (a, b) => b.score - a.score || scheduleSorter(a.candidate, b.candidate),
+    )
     .slice(0, limit)
     .map((row) => row.candidate);
 }

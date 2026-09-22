@@ -13,7 +13,11 @@
  */
 
 import { Clock, MapPin, MessagesSquare, Users } from "lucide-react";
-
+import {
+  LiveIndicatorBadge,
+  type LiveStatus,
+} from "@/components/schedule/LiveIndicatorBadge";
+import { Tag } from "@/components/schedule/Tag";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import {
@@ -24,9 +28,7 @@ import {
   CardTitle,
 } from "@/components/ui/card";
 import { colorFor } from "@/lib/schedule/colors";
-import { LiveIndicatorBadge, type LiveStatus } from "@/components/schedule/LiveIndicatorBadge";
-import { Tag } from "@/components/schedule/Tag";
-import { type ConferenceEvent } from "@/lib/schedule/types";
+import type { ConferenceEvent } from "@/lib/schedule/types";
 import { cn } from "@/lib/utils";
 
 interface EventCardProps {
@@ -57,10 +59,17 @@ export function EventCard({
       {/* Time rail */}
       <div className="flex flex-wrap items-center gap-x-3 gap-y-1 border-b bg-muted/40 px-5 py-2.5 text-sm text-foreground">
         <span className="inline-flex items-center gap-1.5 font-semibold tabular-nums">
-          <Clock className="h-3.5 w-3.5 text-muted-foreground" aria-hidden="true" />
-          <time dateTime={`${event.date}T${event.startTime}`}>{event.startTime}</time>
+          <Clock
+            className="h-3.5 w-3.5 text-muted-foreground"
+            aria-hidden="true"
+          />
+          <time dateTime={`${event.date}T${event.startTime}`}>
+            {event.startTime}
+          </time>
           <span aria-hidden="true">–</span>
-          <time dateTime={`${event.date}T${event.endTime}`}>{event.endTime}</time>
+          <time dateTime={`${event.date}T${event.endTime}`}>
+            {event.endTime}
+          </time>
         </span>
         <span className="inline-flex items-center gap-1.5 text-muted-foreground">
           <MapPin className="h-3.5 w-3.5" aria-hidden="true" />
@@ -74,7 +83,10 @@ export function EventCard({
 
       <CardHeader className="gap-2 pb-3">
         <div className="flex flex-wrap gap-2">
-          <Badge variant="outline" className={cn("gap-1.5 border", activityColor.badge)}>
+          <Badge
+            variant="outline"
+            className={cn("gap-1.5 border", activityColor.badge)}
+          >
             <span
               aria-hidden="true"
               className={cn("h-1.5 w-1.5 rounded-full", activityColor.dot)}
@@ -104,7 +116,9 @@ export function EventCard({
         {event.speakers.length > 0 && (
           <CardDescription className="flex flex-wrap items-center gap-1">
             <Users className="h-3.5 w-3.5" aria-hidden="true" />
-            <span>{event.speakers.map((speaker) => speaker.name).join(", ")}</span>
+            <span>
+              {event.speakers.map((speaker) => speaker.name).join(", ")}
+            </span>
           </CardDescription>
         )}
       </CardHeader>
