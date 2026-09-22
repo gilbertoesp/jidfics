@@ -1,8 +1,11 @@
-# VII JIDFICS — Programa Interactivo
+# VII JIDFICS — Programa Interativo
 
 Sitio web oficial de la **VII Jornadas Internacionales de Docencia e Investigación en Ciencias Sociales** (JIDFICS), celebrada en la **Universidad de Sonora, Campus Caborca** los días **23 y 24 de septiembre de 2026**.
 
-> **Estado**: Programa interactivo desplegado — búsqueda full-text con índice invertido, filtrado por día/eje/tipo/sala/edificio, vista timeline por edificio, tarjetas expandibles, hoja lateral de discusión en vivo (UI lista para Supabase Realtime).
+> **Estado (v1.1)**: búsqueda full-text con índice invertido · filtros **agrupados por categoría** (Temas / Ubicaciones) con conteo y limpieza por grupo · vista timeline por edificio · **hoja de detalle de sesión** (panel derecho en escritorio, bottom sheet en móvil, deep-link `?event=<id>`) · discusión en vivo (UI, backend-ready).
+
+> ℹ️ Este README tiene dos contextos separados:
+> **Contenido (es)** — información del evento y del sitio · **Guía técnica (en)** — documentation for builders.
 
 ---
 
@@ -12,209 +15,202 @@ Sitio web oficial de la **VII Jornadas Internacionales de Docencia e Investigaci
 
 ---
 
+# Contenido (es)
+
 ## ✨ Características
 
-- **Búsqueda inteligente (nuevo)** — índice invertido + fuzzy matching (Levenshtein ≤ 2) + ranking ponderado (título > ponente > etiquetas > ponencias > sala > edificio). Maneja tildes y typos: "violncia" → "Violencia", "educacion" → "Educación".
+- **Búsqueda inteligente** — índice invertido + fuzzy matching (Levenshtein ≤ 2) + ranking ponderado (título > ponente > etiquetas > ponencias > sala > edificio). Maneja tildes y typos: "violncia" → "Violencia", "educacion" → "Educación".
 - **Programa normalizado desde JSON real** — 45+ sesiones, 2 días, 6 edificios, 10+ ejes temáticos, 15+ tipos de actividad.
-- **Filtrado multifacético** — busca por título, ponente, autor, institución, etiqueta, edificio, sala; combina facetas con lógica AND/OR.
+- **Filtros agrupados por categoría (nuevo)** — dos grupos con encabezado, contador `seleccionados/total` y limpieza por grupo: **Temas** (etiquetas + tipos de actividad, orden alfabético `es`) y **Ubicaciones** (salas + edificios, orden numérico-aware). Clasificación por palabras clave con mapa de excepciones (`lib/schedule/tags.ts`).
+- **Filtrado multifacético** — título, ponente, autor, institución, etiqueta, edificio, sala; facetas combinadas con lógica AND/OR.
+- **Hoja de detalle de sesión (nuevo)** — al pulsar "Detalles de la sesión" en cualquier tarjeta: ponentes, ponencias completas, etiquetas accionables, **sesiones relacionadas** (mismo día, ranking hora → sala → eje), copiar enlace compartible. Panel derecho en escritorio (≈448 px), bottom sheet en móvil; deep-link `?event=<id>` valida el id antes de abrir.
 - **Vista Timeline por edificio** — pestañas por edificio con contador de sesiones, timeline vertical cronológico.
-- **Tarjetas de sesión expandibles** — detalle de ponentes + lista de ponencias con autores e instituciones; etiquetas accionables (click → filtra).
 - **Filtros activos visibles** — barra de chips removibles con contador de resultados.
-- **Discusión en vivo (UI)** — hoja lateral por sesión (`LiveChatSheet`), backend-ready para Supabase Realtime.
+- **Discusión en vivo (UI)** — hoja lateral por sesión (`LiveChatSheet`), backend-ready para Supabase Realtime. *Autenticación de participantes para comentar: considerada, pendiente (ver tabla de TODOs).*
 - **Seguimiento en tiempo real** — barra flotante con sesiones LIVE NOW / UP NEXT (30 min) agrupadas por sala.
-- **Modo "Time Travel" (dev)** — simula hora del evento para probar estados live/up-next.
-- **Accesibilidad (a11y)** — ARIA roles, foco visible, navegación por teclado, etiquetas en español.
+- **Accesibilidad (a11y)** — ARIA roles, focus trap en diálogos, Escape para cerrar, foco devuelto al disparador, navegación por teclado, etiquetas en español.
 - **Tema claro/oscuro** — `next-themes` con persistencia en `localStorage`.
-- **Stack moderno** — Next.js 16 (App Router, Turbopack), React 19, Tailwind CSS v4, shadcn/ui, TypeScript estricto.
-- **Auth preparada** — Supabase SSR (`@supabase/ssr`) con `proxy.ts` (Next 16), cookies HttpOnly, refresco automático de sesión.
 - **CI/CD** — GitHub Actions: lint + typecheck + tests + build en cada push/PR.
-- **Tests (TDD)** — 93 tests Vitest: búsqueda (53), filtrado, normalización, integridad de datos, live sessions, smoke test Supabase.
+- **Tests (TDD)** — **142 tests Vitest** en 11 suites (ver Guía técnica).
+
+## 📌 Archivos con TODOs
+
+El trabajo pendiente vive **en el código** como comentarios `TODO(área)`. Índice rápido:
+
+| Archivo | Marcadores |
+|---|---|
+| `components/schedule/LiveChatSheet.tsx` | `TODO(auth)` acceso de participantes (OAuth 1-click + caché cifrada, considerado) · `TODO(realtime)` canal Supabase Realtime |
+| `components/schedule/EventDetailContent.tsx` | `TODO(calendar)` exportar a calendario (ICS/Google) · `TODO(directions)` indicaciones en mapa · `TODO(auth)` habilitar Comentar con sesión |
+| `lib/schedule/hooks.ts` | `TODO(backlog)` mis sesiones · notificaciones · vista multi-día · perfiles de ponentes |
+| `lib/supabase/proxy.ts` | `TODO(auth)` lista de rutas públicas antes de producción |
+| `lib/schedule/tags.ts` | `TODO(data)` excepciones de clasificación de etiquetas |
+
+Listarlos todos: `grep -rn 'TODO(' app components lib`
 
 ---
 
-## 🗂️ Estructura del proyecto
+# Guía técnica (en)
+
+## 🗂️ Project structure
 
 ```
 jidfics/
 ├── app/
-│   ├── page.tsx                 # Página principal (Server Component) — usa ScheduleApp
-│   ├── layout.tsx               # Root layout + providers
-│   └── globals.css              # Estilos globales + variables CSS
+│   ├── page.tsx                  # Server Component — runs normalize*() at build time
+│   ├── layout.tsx                # Root layout + providers
+│   └── globals.css               # Global styles + CSS variables
 ├── components/
 │   ├── schedule/
-│   │   ├── ScheduleApp.tsx      # Componente monolítico principal (filtros + grid + timeline + live)
-│   │   ├── ScheduleHeader.tsx   # Cabecera con metadata del evento
-│   │   ├── EventCard.tsx        # Tarjeta de sesión expandible (etiquetas accionables)
-│   │   ├── BuildingTimeline.tsx # Timeline vertical por edificio
-│   │   ├── BuildingTimelines.tsx# Pestañas por edificio con contadores
-│   │   ├── FilterPanel.tsx      # Panel de filtros (usa TagGroup)
-│   │   ├── Tag.tsx              # Primitiva Tag + TagGroup + ActiveFiltersBar
-│   │   ├── LiveIndicatorBadge.tsx
-│   │   ├── FloatingSessionBar.tsx
-│   │   ├── LiveChatSheet.tsx
-│   │   └── TimeTravelDevPanel.tsx
-│   ├── ui/                      # Primitivas shadcn/ui (Button, Input, Tabs, Accordion…)
-│   └── theme-switcher.tsx       # Toggle claro/oscuro
+│   │   ├── ScheduleApp.tsx       # Orchestrator: header, sidebars, grid, timeline, sheets
+│   │   ├── filter/               # Composable filter block
+│   │   │   ├── FilterSidebar.tsx # Block: two category groups (topic | location)
+│   │   │   ├── FilterGroup.tsx   # Component: header + count + per-group clear
+│   │   │   └── FilterSidebar.test.tsx
+│   │   ├── EventCard.tsx         # Card → opens detail sheet (aria-haspopup) + chat
+│   │   ├── EventDetailSheet.tsx  # Block: Radix Sheet, responsive side (data-side)
+│   │   ├── EventDetailContent.tsx# Compound: Header / Body / Footer
+│   │   ├── EventDetailSheet.test.tsx
+│   │   ├── BuildingTimeline.tsx / BuildingTimelines.tsx
+│   │   ├── LiveChatSheet.tsx     # Chat UI (TODO(auth) + TODO(realtime))
+│   │   ├── FloatingSessionBar.tsx / LiveIndicatorBadge.tsx
+│   │   ├── ScheduleHeader.tsx
+│   │   └── Tag.tsx               # Tag primitive + TagGroup (data-slot/data-state/data-category)
+│   ├── ui/                       # shadcn/Radix primitives (Sheet, Button, Tabs, Accordion…)
+│   └── theme-switcher.tsx        # Light/dark toggle
 ├── lib/
 │   ├── schedule/
-│   │   ├── types.ts             # Tipos TS: Raw* (JSON) + normalizados
-│   │   ├── normalize.ts         # Pipeline: JSON → eventos planos + meta + filtros derivados
-│   │   ├── filter.ts            # Motor de filtrado puro (sin efectos)
-│   │   ├── search.ts            # **NUEVO**: SearchEngine (índice invertido + fuzzy + ranking)
-│   │   ├── hooks.ts             # **NUEVO**: hooks compuestos (useScheduleApp, useSearch, etc.)
-│   │   ├── hooks/               # Hooks atómicos
-│   │   │   └── useCurrentSession.ts  # Seguimiento live/up-next + time travel
-│   │   ├── colors.ts            # Paleta hash-determinista (FNV-1a → 10 colores Tailwind)
-│   │   ├── calendario_vii_jidfics.json   # Dataset real (fuente única)
-│   │   ├── *.test.ts            # Tests unitarios + integridad de datos
+│   │   ├── types.ts              # Raw* (JSON) + normalized types + TagCategory/TagOption
+│   │   ├── normalize.ts          # Pipeline: JSON → flat events + derived facets
+│   │   ├── filter.ts             # Pure filter engine (AND across facets, OR within)
+│   │   ├── search.ts             # SearchEngine (inverted index + fuzzy + ranking)
+│   │   ├── tags.ts               # Categorization, per-category sorting, counts/clear (pure)
+│   │   ├── tags.test.ts
+│   │   ├── eventDetail.ts        # ?event param parsing + related-sessions ranking (pure)
+│   │   ├── eventDetail.test.ts
+│   │   ├── hooks.ts              # Composite hooks (useScheduleApp, useSearch…)
+│   │   ├── hooks/
+│   │   │   ├── useCurrentSession.ts  # live/up-next + time travel (dev)
+│   │   │   └── useEventDetails.ts    # URL-driven detail sheet state
+│   │   ├── colors.ts             # Deterministic FNV-1a → Tailwind palette
+│   │   ├── calendario_vii_jidfics.json  # Real dataset (single source of truth)
+│   │   └── *.test.ts
 │   ├── supabase/
-│   │   ├── proxy.ts             # updateSession() para proxy.ts (Next 16)
-│   │   ├── server.ts            # createClient() para Server Components
-│   │   └── client.ts            # createClient() para Client Components
-│   └── utils.ts                 # cn(), hasEnvVars
-├── proxy.ts                     # Next 16 proxy (reemplaza middleware.ts)
-├── src/test/                    # Tests de integración + búsqueda
-│   └── search.test.ts           # 53 tests TDD del SearchEngine
-├── .github/workflows/ci.yml     # CI: lint + typecheck + test + build
-├── vitest.config.ts             # Config Vitest (alias @, node env, jsdom)
-├── tailwind.config.ts           # Animaciones accordion + plugin animate
-├── tsconfig.json                # TS estricto + paths @/*
-└── README.md                    # Este archivo
+│   │   ├── proxy.ts              # updateSession() for Next 16 proxy
+│   │   ├── server.ts             # createClient() for Server Components
+│   │   └── client.ts             # createClient() for Browser
+│   └── utils.ts                  # cn(), hasEnvVars
+├── proxy.ts                      # Next 16 proxy (replaces middleware.ts)
+├── src/test/search.test.ts       # 53 TDD tests for SearchEngine
+├── .github/workflows/ci.yml      # CI: lint + typecheck + test + build
+├── vitest.config.ts / vitest.setup.ts  # jsdom + RTL + jest-dom matchers
+├── tsconfig.json                 # strict TS + paths @/*
+└── README.md                     # This file
 ```
 
----
+## 🛠️ Local development
 
-## 🛠️ Desarrollo local
+### Requirements
 
-### Requisitos
+- **bun** ≥ 1.1 (package manager + runtime — `npm` fails with `ERESOLVE` in this repo)
+- Node.js ≥ 20
 
-- **bun** ≥ 1.1 (gestor de paquetes y runtime — `npm` falla con `ERESOLVE` en este repo)
-- Node.js ≥ 20 (para `bun` y herramientas)
-
-### Instalación
+### Setup
 
 ```bash
-# Clonar
 git clone git@github.com:gilbertoesp/jidfics.git
 cd jidfics
-
-# Instalar dependencias
 bun install
-
-# Variables de entorno (copia y edita)
-cp .env.example .env
-# Edita .env con tus credenciales de Supabase (ver abajo)
-
-# Servidor de desarrollo (Turbopack)
-bun run dev
+cp .env.example .env   # add Supabase credentials (optional, see below)
+bun run dev            # Turbopack dev server
 ```
 
-Abre [http://localhost:3000](http://localhost:3000) — el programa interactivo carga en `/`.
+Open [http://localhost:3000](http://localhost:3000).
 
-### Variables de entorno
+### Environment variables
 
-| Variable | Descripción | Requerida |
+| Variable | Description | Required |
 |---|---|---|
-| `NEXT_PUBLIC_SUPABASE_URL` | URL del proyecto Supabase (ej. `https://xxxxx.supabase.co`) | Sí (para auth/Realtime) |
-| `NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY` | Clave pública (anon/publishable) de Supabase | Sí (para auth/Realtime) |
+| `NEXT_PUBLIC_SUPABASE_URL` | Supabase project URL | Yes (auth/Realtime) |
+| `NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY` | Supabase publishable/anon key | Yes (auth/Realtime) |
 
-> **Nota**: El programa funciona **sin Supabase** (modo solo lectura) si omites las variables. El `proxy.ts` tiene un guard `hasEnvVars` que salta la verificación de sesión en desarrollo sin credenciales.
+> The schedule works **without Supabase** (read-only mode). `proxy.ts` skips session checks via the `hasEnvVars` guard when credentials are missing.
 
----
-
-## 🧪 Tests
+## 🧪 Testing (TDD)
 
 ```bash
-# Todas las suites (vitest con jsdom)
-bunx vitest run
-
-# Solo unitarias (rápido, sin jsdom)
-bun test lib/schedule/
-
-# Tests de búsqueda (TDD - 53 tests)
-bunx vitest run src/test/search.test.ts
+bunx vitest run                     # all suites (jsdom)
+bunx vitest run lib/schedule/       # pure units only
+bunx vitest run components/         # component tests (RTL + user-event)
+bun tsc --noEmit                    # typecheck
+bun run lint                        # eslint
 ```
 
-**Suites incluidas**:
-- `src/test/search.test.ts` — **53 tests TDD** del SearchEngine: índice invertido, fuzzy matching (Levenshtein), prefix matching, ranking ponderado, highlighting, sugerencias, filtros combinados, español (tildes/ñ).
-- `lib/schedule/normalize.test.ts` — normalización JSON → UI shape (7 tests).
-- `lib/schedule/filter.test.ts` — motor de filtrado puro: fecha, búsqueda, facetas AND/OR (12 tests).
-- `lib/schedule/data-integrity.test.ts` — guards sobre JSON real: IDs únicos, tiempos válidos, campos requeridos, **snapshot de 3 colisiones conocidas de sala/hora en jueves** (8 tests).
-- `lib/schedule/hooks/useCurrentSession.test.ts` — live/up-next, agrupación por sala, time travel, límites de conferencia (10 tests).
-- `tests/integration/supabase.test.ts` — conectividad real a Supabase (se salta sin credenciales).
+**Suites — 142 tests total (140 + 2 integration skipped without credentials):**
 
----
+| Suite | Tests | Covers |
+|---|---|---|
+| `src/test/search.test.ts` | 53 | inverted index, fuzzy (Levenshtein), prefix, ranking, highlights, Spanish diacritics |
+| `lib/schedule/tags.test.ts` | 19 | keyword classification, overrides, per-category sorting, counts/clear, real dataset |
+| `lib/schedule/eventDetail.test.ts` | 12 | `?event` strict parsing, share URL, related-session ranking |
+| `lib/schedule/filter.test.ts` | 12 | date/search/facets AND-OR |
+| `lib/schedule/data-integrity.test.ts` | 8 | real JSON guards + known room/time collision snapshot |
+| `lib/schedule/normalize.test.ts` | 7 | JSON → UI shape |
+| `lib/schedule/hooks/useCurrentSession.test.ts` | 10 | live/up-next, grouping, time travel |
+| `lib/schedule/hooks/useEventDetails.test.ts` | 4 | URL-driven sheet state (replaceState, deep link) |
+| `components/schedule/filter/FilterSidebar.test.tsx` | 7 | grouped sidebar block: counts, per-group clear, data-category |
+| `components/schedule/EventDetailSheet.test.tsx` | 7 | details rendering, Escape, clipboard, related, responsive `data-side` |
+| `tests/integration/supabase.test.ts` | 3* | real connectivity (*2 skip without credentials) |
 
-## 📦 Build y deploy
+### TDD workflow (failsafe branches)
+
+1. Branch from `main`: `feat/phase-N-<scope>`.
+2. **RED** commit: tests only (fails).
+3. **GREEN** commit: minimal implementation (passes).
+4. Gates before merge: `bunx tsc --noEmit && bun run lint && bunx vitest run && bun run build`.
+5. Merge via PR; `main` never carries half-finished work.
+
+## 📦 Build & deploy
 
 ```bash
-# Build de producción (typecheck + lint + compile)
-bun run build
-
-# Preview local del build
-bun run start
+bun run build   # typecheck + lint + compile + static generation
+bun run start   # preview production build
 ```
 
-### Deploy a Vercel (producción)
+### Vercel
 
-1. **Vercel CLI** (ya instalado globalmente):
-   ```bash
-   vercel login          # OAuth device flow
-   vercel link           # Vincula repo → proyecto Vercel
-   vercel env add NEXT_PUBLIC_SUPABASE_URL production
-   vercel env add NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY production
-   vercel deploy --prod
-   ```
+```bash
+vercel login
+vercel link
+vercel env add NEXT_PUBLIC_SUPABASE_URL production
+vercel env add NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY production
+vercel deploy --prod
+```
 
-2. **O bien: GitHub → Vercel Integration** (recomendado para CI/CD)
-   - En Vercel: *Add New Project* → Importa `gilbertoesp/jidfics`
-   - Vercel detecta Next.js automáticamente
-   - En *Settings → Environment Variables*: añade `NEXT_PUBLIC_SUPABASE_URL` y `NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY` (target: **Production**, **Preview**, **Development**)
-   - Push a `main` → deploy automático a producción
+Or connect `gilbertoesp/jidfics` via the GitHub integration (push to `main` → deploy). In Supabase (*Authentication → URL Configuration*): Site URL `https://jidfics.vercel.app` and the Vercel preview pattern as redirect URLs.
 
-### Supabase Vercel Integration (sincroniza env vars + URLs de auth)
+## 🔐 Auth — current state
 
-1. En Vercel: *Project → Settings → Integrations → Supabase* → *Connect*
-2. Selecciona tu proyecto Supabase → Vercel inyecta automáticamente:
-   - `NEXT_PUBLIC_SUPABASE_URL`
-   - `NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY`
-   - `NEXT_PUBLIC_SUPABASE_ANON_KEY` (legacy, opcional)
-3. **Auth URLs en Supabase Dashboard** (*Authentication → URL Configuration*):
-   - **Site URL**: `https://jidfics.vercel.app` (tu dominio de prod)
-   - **Redirect URLs**: añade también `https://jidfics-git-main-gilbertoesp.vercel.app/**` (previews de Vercel)
-   - Esto permite login/OAuth en producción y previews.
+- **Proxy SSR** (`proxy.ts` + `lib/supabase/proxy.ts`): refreshes the session per request, validates the JWT with `getClaims()`.
+- **Renders**: `/` (schedule) is **public, no login**. Future protected routes (`/dashboard`, `/admin`) redirect to `/auth/login`.
+- **Pending**: replace the single `pathname !== "/"` check with an explicit public-paths list — tracked as `TODO(auth)` in `lib/supabase/proxy.ts`.
+- **Chat auth (considered, NOT built)**: lightweight participant sign-in to comment; evolution path is one-click OAuth (Google / LinkedIn) with a **localStorage-encrypted profile cache** (WebCrypto AES-GCM, per-session key). That cache is a UX optimization only — **never an auth boundary**; the real session stays in the HttpOnly cookie handled by `proxy.ts`. Typing strategy: generated Supabase DB types. Design notes live in `TODO(auth)` at `components/schedule/LiveChatSheet.tsx`.
 
----
+## 🧱 Architecture decisions
 
-## 🔐 Auth — Estado actual
-
-- **Proxy SSR** (`proxy.ts` + `lib/supabase/proxy.ts`): refresca sesión en cada request, valida JWT con `getClaims()`.
-- **Server Components**: `lib/supabase/server.ts` → `createClient()` usa `cookies()` de `next/headers`.
-- **Client Components**: `lib/supabase/client.ts` → `createBrowserClient()`.
-- **Rutas públicas**: `/` (programa) — **NO requiere login**.
-- **Rutas protegidas (futuro)**: `/dashboard`, `/admin`, etc. — el proxy redirige a `/auth/login` si no hay sesión.
-
-> ⚠️ **Ajuste pendiente antes de prod**: en `lib/supabase/proxy.ts` líneas 50-60, la condición `pathname !== "/"` bloquea el programa para usuarios no autenticados. Cambiar a:
-> ```ts
-> const publicPaths = ["/", "/auth", "/login"];
-> if (!publicPaths.some(p => request.nextUrl.pathname.startsWith(p)) && !user) { ... }
-> ```
-
----
-
-## 🧱 Decisiones de arquitectura
-
-| Área | Decisión | Rationale |
+| Area | Decision | Rationale |
 |---|---|---|
-| **Normalización en build** | `normalizeEvents()` corre en `page.tsx` (Server Component) | Cero runtime cost; datos tipados en cliente |
-| **Filtros dinámicos** | `deriveFilters()` extrae opciones del dataset | Sin unions hardcodeadas; admite nuevos ejes/tipos/salas sin tocar código |
-| **Búsqueda (nuevo)** | `SearchEngine` con índice invertido + Levenshtein + ranking ponderado | Encuentra charlas por título/ponente/autor/institución/etiqueta/edificio/sala; tolera typos; <50ms |
-| **Componente monolítico** | `ScheduleApp` unifica filtros, grid, timeline, live bar | Menos archivos, flujo de datos claro, fácil de mantener |
-| **Hooks compuestos** | `useScheduleApp` orquesta search + filters + live + view + chat | Separación de concerns; testable; reutilizable |
-| **Colores** | FNV-1a hash → 10 colores Tailwind (clase literal) | Determinista, sin colisiones, funciona en dark mode, tree-shakeable |
-| **Venue keys** | `slugify(label)` (minúsculas, sin diacríticas, `-` como separador) | Dedupe "Sala de Usos Múltiples" / "sala de usos multiples" |
-| **Next 16 proxy** | `export function proxy` en `proxy.ts` (no `middleware.ts`) | Convención oficial Next 16; build muestra `ƒ Proxy (Middleware)` |
-| **Tests snapshot** | Colisiones conocidas de sala/hora en jueves fijadas en test | Detecta regresiones de integridad sin luchar contra datos editoriales |
+| Normalization at build | `normalizeEvents()` runs in `page.tsx` (Server Component) | Zero runtime cost, typed data on the client |
+| Dynamic facets | `deriveFilters()` extracts options from the dataset | No hardcoded unions; new axes/types/venues need no code change |
+| Search | `SearchEngine` (inverted index + Levenshtein + weighted ranking) | Tolerates typos, <50ms |
+| **Tag categories** | Pure classifier + override map in `lib/schedule/tags.ts`; **presentation-only grouping** (filters schema unchanged) | Single ordering authority; no filter-serialization breakage; edge cases data-driven via `TODO(data)` |
+| **Detail sheet** | shadcn/Radix Sheet (Dialog primitive) + `data-side` responsive switch | No new dependency; focus trap/Escape/focus-return free from Radix |
+| **URL state** | `history.replaceState` (no router, no `useSearchParams`) | No Suspense requirement, no history spam, still deep-linkable |
+| Composite hooks | `useScheduleApp` orchestrates search + filters + live + view + chat + details | Separation of concerns, testable |
+| Colors | FNV-1a hash → 10 Tailwind colors (literal classes) | Deterministic, dark-mode safe, tree-shakeable |
+| Venue keys | `slugify(label)` (lowercase, diacritics stripped, `-` separator) | Dedupe "Sala de Usos Múltiples" / "sala de usos multiples" |
+| Next 16 proxy | `export function proxy` in `proxy.ts` (not `middleware.ts`) | Official Next 16 convention |
+| Snapshot tests | Known Thursday room/time collisions fixed in a test | Catches data regressions without fighting editorial data |
+| Component taxonomy | primitive (Radix) → component (`Tag`, `FilterGroup`) → block (`FilterSidebar`, `EventDetailSheet`) → utility (`tags.ts`, `eventDetail.ts`) | building-components skill: composition, `data-slot`/`data-state` contracts, code = documentation |
 
 ---
 
@@ -224,15 +220,11 @@ Código del sitio: **MIT** — libre para usar, modificar y distribuir.
 
 Datos del programa (JSON): **propiedad de los organizadores de JIDFICS** — uso autorizado para este sitio.
 
----
-
 ## 🤝 Créditos
 
 - **Organización**: VII JIDFICS — Universidad de Sonora, Campus Caborca
 - **Desarrollo**: Gilberto Espinoza ([@gilbertoesp](https://github.com/gilbertoesp))
 - **Stack**: Next.js, Supabase, Tailwind CSS, shadcn/ui, Vitest, Vercel
-
----
 
 ## 📞 Contacto
 
