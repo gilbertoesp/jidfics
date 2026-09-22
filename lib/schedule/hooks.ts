@@ -14,6 +14,7 @@ import {
   type ConferenceMeta,
 } from "@/lib/schedule/types";
 import { useCurrentSession } from "@/lib/schedule/hooks/useCurrentSession";
+import { useEventDetails } from "@/lib/schedule/hooks/useEventDetails";
 
 /** Hook for search functionality */
 export function useSearch(events: ConferenceEvent[]) {
@@ -173,12 +174,20 @@ export function useFloatingBar() {
 }
 
 /** Main schedule logic hook - combines everything */
+/* TODO(backlog): next iterations —
+ *   TODO(sessions): personal schedule ("Mis sesiones", localStorage/Supabase)
+ *   TODO(notifications): per-session reminders before start time
+ *   TODO(multi-day): cross-day view + day range navigation
+ *   TODO(speakers): speaker profile pages (aggregated from papers/speakers)
+ * Tracked TODO markers are listed in README › "Files with TODOs".
+ */
 export function useScheduleApp(events: ConferenceEvent[], meta: ConferenceMeta) {
   const filtersHook = useScheduleFilters(meta);
   const liveHook = useLiveSessions(events);
   const viewHook = useScheduleView();
   const chatHook = useChatState();
   const barHook = useFloatingBar();
+  const detailsHook = useEventDetails(events); // URL-synced ?event=<id> detail sheet
 
   // Combine search with filters
   const searchHook = useSearch(events);
@@ -220,6 +229,9 @@ export function useScheduleApp(events: ConferenceEvent[], meta: ConferenceMeta) 
     barDismissed: barHook.dismissed,
     activeDay,
     filteredEvents,
+
+    // Detail sheet (URL-driven)
+    ...detailsHook,
 
     // Actions
     setFilters: filtersHook.setFilters,

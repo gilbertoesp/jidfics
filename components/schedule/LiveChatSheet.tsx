@@ -44,6 +44,19 @@ interface LiveChatSheetProps {
   onOpenChange: (open: boolean) => void;
 }
 
+/* TODO(auth): commenting requires a lightweight participant sign-in
+ * (Supabase session gate on the composer; read-only viewing stays public).
+ * Considered, NOT built yet — evolution path:
+ *   1. one-click OAuth (google | linkedin_oidc) via supabase.auth.signInWithOAuth
+ *   2. profile cache in localStorage encrypted with WebCrypto (AES-GCM),
+ *      key per-session — UX cache ONLY, never an auth boundary: the real
+ *      session stays in the HttpOnly cookie managed by proxy.ts
+ *   3. strong typing from generated Supabase DB types
+ * TODO(realtime): replace DEMO_MESSAGES with a Supabase Realtime channel
+ * (postgres_changes/insert on messages where session_id = event.id).
+ * See README › "Files with TODOs".
+ */
+
 export function LiveChatSheet({ event, onOpenChange }: LiveChatSheetProps) {
   const [messages, setMessages] = useState<ChatMessage[]>(DEMO_MESSAGES);
   const [draft, setDraft] = useState("");

@@ -47,6 +47,12 @@ export async function updateSession(request: NextRequest) {
   const { data } = await supabase.auth.getClaims();
   const user = data?.claims;
 
+  // TODO(auth): replace the single pathname check with an explicit public
+  // path list so "/" (program) stays reachable for anonymous visitors while
+  // future protected routes (/dashboard, /admin) still redirect:
+  //   const publicPaths = ["/", "/auth", "/login"];
+  //   if (!publicPaths.some((p) => pathname.startsWith(p)) && !user) { … }
+  // See README › "Files with TODOs".
   if (
     request.nextUrl.pathname !== "/" &&
     !user &&
