@@ -21,10 +21,10 @@ jobs:
       - name: Install dependencies
         run: bun install --frozen-lockfile
 
-      - name: Lint (Biome: format + organizeImports + general lint)
+      - name: "Lint (Biome: format + organizeImports + general lint)"
         run: bun run lint:biome
 
-      - name: Lint (ESLint 9: React/Next rules)
+      - name: "Lint (ESLint 9: React/Next rules)"
         run: bun run lint:eslint
 
       - name: Typecheck
