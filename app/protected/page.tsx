@@ -1,21 +1,36 @@
 import { InfoIcon } from "lucide-react";
-import { redirect } from "next/navigation";
 import { Suspense } from "react";
+import { auth } from "@/auth";
+import { SignOutButton } from "@/components/sign-out-button";
 import { FetchDataSteps } from "@/components/tutorial/fetch-data-steps";
-import { createClient } from "@/lib/supabase/server";
+
+// Force dynamic rendering since auth() accesses cookies
+export const dynamic = "force-dynamic" as const;
 
 async function UserDetails() {
-  const supabase = await createClient();
-  const { data, error } = await supabase.auth.getClaims();
-
-  if (error || !data?.claims) {
-    redirect("/auth/login");
+  const session = await auth();
+  if (!session?.user) {
+    return null;
   }
-
-  return JSON.stringify(data.claims, null, 2);
+  return JSON.stringify(session.user, null, 2);
 }
 
-export default function ProtectedPage() {
+export default async function ProtectedPage() {
+  const session = await auth();
+
+  if (!session?.user) {
+    return (
+      <div className="flex-1 w-full flex flex-col gap-12 items-center justify-center">
+        <div className="text-center">
+          <h2 className="font-bold text-2xl mb-4">Not authenticated</h2>
+          <p className="text-gray-500 dark:text-gray-400">
+            Please sign in to access this page.
+          </p>
+        </div>
+      </div>
+    );
+  }
+
   return (
     <div className="flex-1 w-full flex flex-col gap-12">
       <div className="w-full">
@@ -26,8 +41,11 @@ export default function ProtectedPage() {
         </div>
       </div>
       <div className="flex flex-col gap-2 items-start">
-        <h2 className="font-bold text-2xl mb-4">Your user details</h2>
-        <pre className="text-xs font-mono p-3 rounded border max-h-32 overflow-auto">
+        <div className="flex items-center justify-between w-full">
+          <h2 className="font-bold text-2xl mb-4">Your user details</h2>
+          <SignOutButton />
+        </div>
+        <pre className="text-xs font-mono p-3 rounded border max-h-32 overflow-auto w-full">
           <Suspense>
             <UserDetails />
           </Suspense>
