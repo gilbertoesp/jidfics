@@ -193,7 +193,7 @@ vercel env add NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY production
 vercel deploy --prod
 ```
 
-Or connect `gilbertoesp/jidfics` via the GitHub integration (push to `main` → deploy). In Supabase (*Authentication → URL Configuration*): Site URL `https://jidfics.vercel.app` and the Vercel preview pattern as redirect URLs.
+Push to `main` auto-deploys to production (PRs get previews) via the Vercel GitHub integration — no Actions deployer. Manual fallback: the CLI flow above. In Supabase (*Authentication → URL Configuration*): Site URL `https://jidfics.vercel.app` and the Vercel preview pattern as redirect URLs.
 
 ## 🔐 Auth — current state
 
