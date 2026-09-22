@@ -29,7 +29,7 @@ jobs:
         run: npm install -g vercel@latest
 
       - name: Link project (non-interactive)
-        run: vercel link --yes --non-interactive --team "$VERCEL_ORG_ID" --project "$VERCEL_PROJECT_ID"
+        run: vercel link --yes --non-interactive --scope "$VERCEL_ORG_ID" --project "$VERCEL_PROJECT_ID"
 
       - name: Pull Vercel Environment
         run: vercel pull --yes --environment=preview --non-interactive
@@ -74,7 +74,7 @@ jobs:
         run: npm install -g vercel@latest
 
       - name: Link project (non-interactive)
-        run: vercel link --yes --non-interactive --team "$VERCEL_ORG_ID" --project "$VERCEL_PROJECT_ID"
+        run: vercel link --yes --non-interactive --scope "$VERCEL_ORG_ID" --project "$VERCEL_PROJECT_ID"
 
       - name: Pull Vercel Environment
         run: vercel pull --yes --environment=production --non-interactive
