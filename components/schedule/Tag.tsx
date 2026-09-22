@@ -6,6 +6,7 @@ import { X } from "lucide-react";
 
 import { cn } from "@/lib/utils";
 import { colorFor } from "@/lib/schedule/colors";
+import type { TagCategory } from "@/lib/schedule/types";
 
 // ------------------------------------------------------------------
 // Primitive: Tag — actionable, accessible, composable
@@ -28,6 +29,8 @@ export interface TagProps extends Omit<React.ComponentProps<"button">, "value"> 
   onTagToggle?: (value: string) => void;
   /** Called when remove icon is clicked (separate from toggle for ActiveFilters) */
   onRemove?: (value: string) => void;
+  /** Facet category — exposed as data-category for grouped/styled rendering */
+  category?: TagCategory;
   /** asChild polymorphism — render as child element via Slot */
   asChild?: boolean;
 }
@@ -50,6 +53,7 @@ export const Tag = React.forwardRef<HTMLButtonElement, TagProps>(
       removable = false,
       onTagToggle,
       onRemove,
+      category,
       asChild = false,
       className,
       children,
@@ -124,6 +128,7 @@ export const Tag = React.forwardRef<HTMLButtonElement, TagProps>(
           data-state="selected"
           data-interactive="true"
           data-value={value}
+          data-category={category}
           data-removable="true"
           className={baseClassName}
         >
@@ -168,6 +173,7 @@ export const Tag = React.forwardRef<HTMLButtonElement, TagProps>(
         data-state={selected ? "selected" : "default"}
         data-interactive={interactive ? "true" : undefined}
         data-value={value}
+        data-category={category}
         aria-pressed={interactive ? selected : undefined}
         aria-label={ariaLabel ?? (interactive ? `${selected ? "Quitar filtro" : "Filtrar por"} ${displayLabel}` : displayLabel)}
         tabIndex={interactive ? 0 : undefined}

@@ -9,7 +9,6 @@ import {
   splitTagsByCategory,
   toTagOptions,
   type TagCategory,
-  type TagOption,
 } from "@/lib/schedule/tags";
 import { EMPTY_FILTERS, type ScheduleFilters } from "@/lib/schedule/filter";
 import type { ScheduleDerived } from "@/lib/schedule/types";
@@ -62,10 +61,10 @@ describe("categorizeTag", () => {
 
   it("manual overrides win over keyword heuristics", () => {
     // Overrides are injectable so edge cases stay testable & data-driven.
-    expect(categorizeTag("Módulo E", {}, { "módulo e": "location" })).toBe(
+    expect(categorizeTag("Módulo E", { "módulo e": "location" })).toBe(
       "location",
     );
-    expect(categorizeTag("Sala Abierta", {}, { "sala abierta": "topic" })).toBe(
+    expect(categorizeTag("Sala Abierta", { "sala abierta": "topic" })).toBe(
       "topic",
     );
   });
@@ -75,11 +74,11 @@ describe("categorizeTag", () => {
     const overrides: Record<string, TagCategory> = {
       "centro de convenciones": "location",
     };
-    expect(categorizeTag("Centro de Convenciones", {}, overrides)).toBe(
+    expect(categorizeTag("Centro de Convenciones", overrides)).toBe(
       "location",
     );
     // and with no override, keyword rules apply as usual
-    expect(categorizeTag("Sala Grande", {})).toBe("location");
+    expect(categorizeTag("Sala Grande")).toBe("location");
   });
 });
 

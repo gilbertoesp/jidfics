@@ -58,12 +58,10 @@ function normalizeForMatch(value: string): string {
 /**
  * Classify a tag as "location" or "topic".
  * @param tag Raw tag/label text (Spanish content).
- * @param _options Reserved for future tuning (e.g. extra keywords).
  * @param overrides Normalized-key override map; defaults to TAG_CATEGORY_OVERRIDES.
  */
 export function categorizeTag(
   tag: string,
-  _options: Record<string, never> = {},
   overrides: Record<string, TagCategory> = TAG_CATEGORY_OVERRIDES,
 ): TagCategory {
   const normalized = normalizeForMatch(tag);

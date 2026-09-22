@@ -1,4 +1,5 @@
 import { describe, expect, it, vi } from "vitest";
+import * as React from "react";
 import { render, screen } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 
@@ -82,13 +83,28 @@ describe("FilterSidebar", () => {
 
   it("forwards search input and global clear", async () => {
     const user = userEvent.setup();
-    renderSidebar();
+    // Controlled harness: mirrors real usage where the parent owns the value.
+    function SearchHarness() {
+      const [query, setQuery] = React.useState("");
+      return (
+        <FilterSidebar
+          {...baseProps}
+          filters={{ ...EMPTY_FILTERS, searchQuery: query }}
+          onSearchChange={(value) => {
+            setQuery(value);
+            baseProps.onSearchChange(value);
+          }}
+        />
+      );
+    }
+    render(<SearchHarness />);
 
     await user.type(screen.getByPlaceholderText(/Buscar por título/), "viol");
-    expect(baseProps.onSearchChange).toHaveBeenCalledWith("viol");
+    expect(baseProps.onSearchChange).toHaveBeenLastCalledWith("viol");
 
+    // A non-empty query counts as an active filter → global clear enables.
     const globalClear = screen.getByRole("button", { name: "Limpiar filtros" });
-    expect(globalClear).toBeDisabled();
+    expect(globalClear).toBeEnabled();
   });
 
   it("marks rendered tags with their category (data-category contract)", () => {
