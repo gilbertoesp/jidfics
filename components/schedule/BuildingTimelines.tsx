@@ -1,9 +1,9 @@
 "use client";
 
 import { BuildingTimeline } from "@/components/schedule/BuildingTimeline";
+import type { LiveStatus } from "@/components/schedule/LiveIndicatorBadge";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import type { ConferenceEvent, ScheduleDerived } from "@/lib/schedule/types";
-import type { LiveStatus } from "@/components/schedule/LiveIndicatorBadge";
 
 export interface BuildingTimelinesProps {
   events: ConferenceEvent[];
@@ -45,10 +45,15 @@ export function BuildingTimelines({
 
   // Counts per building for clear UX — delivers value: user sees where sessions are
   const counts = new Map<string, number>();
-  for (const e of events) counts.set(e.building, (counts.get(e.building) ?? 0) + 1);
+  for (const e of events)
+    counts.set(e.building, (counts.get(e.building) ?? 0) + 1);
 
   return (
-    <Tabs defaultValue={defaultValue} className="w-full" data-slot="building-timelines">
+    <Tabs
+      defaultValue={defaultValue}
+      className="w-full"
+      data-slot="building-timelines"
+    >
       <TabsList
         aria-label="Seleccionar edificio"
         data-slot="building-timelines-list"

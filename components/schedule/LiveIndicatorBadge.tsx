@@ -1,6 +1,6 @@
 "use client";
 
-import { Circle, AlertCircle } from "lucide-react";
+import { AlertCircle, Circle } from "lucide-react";
 import { cn } from "@/lib/utils";
 
 export type LiveStatus = "live" | "up-next" | "idle";
@@ -11,7 +11,11 @@ interface LiveIndicatorBadgeProps {
   showLabel?: boolean;
 }
 
-export function LiveIndicatorBadge({ status, className, showLabel = true }: LiveIndicatorBadgeProps) {
+export function LiveIndicatorBadge({
+  status,
+  className,
+  showLabel = true,
+}: LiveIndicatorBadgeProps) {
   if (status === "idle") return null;
 
   const isLive = status === "live";
@@ -39,8 +43,14 @@ export function LiveIndicatorBadge({ status, className, showLabel = true }: Live
       >
         {isLive && (
           <>
-            <span className="absolute h-full w-full rounded-full bg-current opacity-75 animate-ping" aria-hidden="true" />
-            <Circle className="relative h-2 w-2 rounded-full bg-current" aria-hidden="true" />
+            <span
+              className="absolute h-full w-full rounded-full bg-current opacity-75 animate-ping"
+              aria-hidden="true"
+            />
+            <Circle
+              className="relative h-2 w-2 rounded-full bg-current"
+              aria-hidden="true"
+            />
           </>
         )}
         {!isLive && <AlertCircle className="h-3 w-3" aria-hidden="true" />}

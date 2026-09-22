@@ -1,7 +1,7 @@
 import { CalendarDays, GraduationCap, MapPin } from "lucide-react";
 
 import { Badge } from "@/components/ui/badge";
-import { type ConferenceMeta } from "@/lib/schedule/types";
+import type { ConferenceMeta } from "@/lib/schedule/types";
 
 interface ScheduleHeaderProps {
   meta: ConferenceMeta;
@@ -31,24 +31,31 @@ export function ScheduleHeader({ meta }: ScheduleHeaderProps) {
           <span className="inline-flex items-center gap-2">
             <CalendarDays className="h-4 w-4" aria-hidden="true" />
             <time dateTime={meta.startDate}>
-              {new Date(`${meta.startDate}T12:00:00`).toLocaleDateString("es-MX", {
-                day: "numeric",
-                month: "long",
-                year: "numeric",
-              })}
+              {new Date(`${meta.startDate}T12:00:00`).toLocaleDateString(
+                "es-MX",
+                {
+                  day: "numeric",
+                  month: "long",
+                  year: "numeric",
+                },
+              )}
             </time>
             <span aria-hidden="true">–</span>
             <time dateTime={meta.endDate}>
-              {new Date(`${meta.endDate}T12:00:00`).toLocaleDateString("es-MX", {
-                day: "numeric",
-                month: "long",
-                year: "numeric",
-              })}
+              {new Date(`${meta.endDate}T12:00:00`).toLocaleDateString(
+                "es-MX",
+                {
+                  day: "numeric",
+                  month: "long",
+                  year: "numeric",
+                },
+              )}
             </time>
           </span>
           <span className="inline-flex items-center gap-2">
             <MapPin className="h-4 w-4" aria-hidden="true" />
-            {meta.venueInstitution}, Campus {meta.venueCampus} · {meta.venueLocation}
+            {meta.venueInstitution}, Campus {meta.venueCampus} ·{" "}
+            {meta.venueLocation}
           </span>
         </div>
       </div>

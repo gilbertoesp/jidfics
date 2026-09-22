@@ -17,7 +17,7 @@ export function levenshteinDistance(a: string, b: string): number {
 
   // Initialize matrix with first row (0..a.length) and first column (0..b.length)
   const matrix = Array.from({ length: b.length + 1 }, (_, i) =>
-    Array.from({ length: a.length + 1 }, (_, j) => (i === 0 ? j : i))
+    Array.from({ length: a.length + 1 }, (_, j) => (i === 0 ? j : i)),
   );
 
   for (let i = 1; i <= b.length; i++) {
@@ -33,9 +33,9 @@ export function levenshteinDistance(a: string, b: string): number {
         matrix[i][j] = matrix[i - 1][j - 1];
       } else {
         matrix[i][j] = Math.min(
-          matrix[i - 1][j] + 1,     // deletion
-          matrix[i][j - 1] + 1,     // insertion
-          matrix[i - 1][j - 1] + 1  // substitution
+          matrix[i - 1][j] + 1, // deletion
+          matrix[i][j - 1] + 1, // insertion
+          matrix[i - 1][j - 1] + 1, // substitution
         );
       }
     }
@@ -93,7 +93,7 @@ export class SearchEngine {
 
   constructor(events: ConferenceEvent[]) {
     this.events = events;
-    this.eventMap = new Map(events.map(e => [e.id, e]));
+    this.eventMap = new Map(events.map((e) => [e.id, e]));
     this.buildIndex();
     this.allTerms = Array.from(this.index.keys()).sort();
   }
@@ -185,8 +185,8 @@ export class SearchEngine {
   private tokenize(text: string): string[] {
     return text
       .split(/[\s\p{Punctuation}]+/u)
-      .map(w => w.trim())
-      .filter(w => w.length >= 2); // Skip very short tokens
+      .map((w) => w.trim())
+      .filter((w) => w.length >= 2); // Skip very short tokens
   }
 
   /** Get index statistics */
@@ -210,7 +210,7 @@ export class SearchEngine {
 
     if (!normalizedQuery) {
       // Empty query - return all events (filtered by date if specified)
-      return this.applyFilters(this.events, filters).map(event => ({
+      return this.applyFilters(this.events, filters).map((event) => ({
         event,
         score: 1,
         highlights: [],
@@ -220,7 +220,7 @@ export class SearchEngine {
 
     const queryTerms = this.tokenize(normalizedQuery);
     if (queryTerms.length === 0) {
-      return this.applyFilters(this.events, filters).map(event => ({
+      return this.applyFilters(this.events, filters).map((event) => ({
         event,
         score: 1,
         highlights: [],
@@ -242,7 +242,10 @@ export class SearchEngine {
             candidateScores.set(eventId, eventFields);
           }
           for (const [field, count] of fields) {
-            eventFields.set(field, (eventFields.get(field) ?? 0) + count * FIELD_WEIGHTS[field]);
+            eventFields.set(
+              field,
+              (eventFields.get(field) ?? 0) + count * FIELD_WEIGHTS[field],
+            );
           }
         }
       }
@@ -263,7 +266,8 @@ export class SearchEngine {
               for (const [field, count] of fields) {
                 eventFields.set(
                   field,
-                  (eventFields.get(field) ?? 0) + count * FIELD_WEIGHTS[field] * fuzzyWeight
+                  (eventFields.get(field) ?? 0) +
+                    count * FIELD_WEIGHTS[field] * fuzzyWeight,
                 );
               }
             }
@@ -284,7 +288,8 @@ export class SearchEngine {
             for (const [field, count] of fields) {
               eventFields.set(
                 field,
-                (eventFields.get(field) ?? 0) + count * FIELD_WEIGHTS[field] * prefixWeight
+                (eventFields.get(field) ?? 0) +
+                  count * FIELD_WEIGHTS[field] * prefixWeight,
               );
             }
           }
@@ -314,7 +319,11 @@ export class SearchEngine {
       const normalizedScore = Math.min(1, totalScore / 50);
 
       // Generate highlights
-      const highlights = this.generateHighlights(event, queryTerms, matchedFields);
+      const highlights = this.generateHighlights(
+        event,
+        queryTerms,
+        matchedFields,
+      );
 
       results.push({
         event,
@@ -331,25 +340,44 @@ export class SearchEngine {
   }
 
   /** Check if event matches filters */
-  private matchesFilters(event: ConferenceEvent, filters: SearchFilters): boolean {
+  private matchesFilters(
+    event: ConferenceEvent,
+    filters: SearchFilters,
+  ): boolean {
     if (filters.date && event.date !== filters.date) return false;
-    if (filters.tags?.length && !filters.tags.some(t => event.tags.includes(t))) return false;
-    if (filters.buildings?.length && !filters.buildings.includes(event.building)) return false;
-    if (filters.activityTypes?.length && !filters.activityTypes.includes(event.activityType)) return false;
-    if (filters.venues?.length && !filters.venues.includes(event.venueKey)) return false;
+    if (
+      filters.tags?.length &&
+      !filters.tags.some((t) => event.tags.includes(t))
+    )
+      return false;
+    if (
+      filters.buildings?.length &&
+      !filters.buildings.includes(event.building)
+    )
+      return false;
+    if (
+      filters.activityTypes?.length &&
+      !filters.activityTypes.includes(event.activityType)
+    )
+      return false;
+    if (filters.venues?.length && !filters.venues.includes(event.venueKey))
+      return false;
     return true;
   }
 
   /** Apply filters without search */
-  private applyFilters(events: ConferenceEvent[], filters: SearchFilters): ConferenceEvent[] {
-    return events.filter(e => this.matchesFilters(e, filters));
+  private applyFilters(
+    events: ConferenceEvent[],
+    filters: SearchFilters,
+  ): ConferenceEvent[] {
+    return events.filter((e) => this.matchesFilters(e, filters));
   }
 
   /** Generate highlighted snippets for matched terms */
   private generateHighlights(
     event: ConferenceEvent,
     queryTerms: string[],
-    matchedFields: FieldName[]
+    matchedFields: FieldName[],
   ): string[] {
     const highlights: string[] = [];
     const allQueryTerms = new Set(queryTerms);
@@ -358,7 +386,9 @@ export class SearchEngine {
     const highlightText = (text: string, maxLen = 120): string => {
       let result = text;
       // Sort terms by length descending to avoid partial replacements
-      const sortedTerms = [...allQueryTerms].sort((a, b) => b.length - a.length);
+      const sortedTerms = [...allQueryTerms].sort(
+        (a, b) => b.length - a.length,
+      );
       for (const term of sortedTerms) {
         const regex = new RegExp(`(${term})`, "gi");
         result = result.replace(regex, "**$1**");
@@ -368,9 +398,9 @@ export class SearchEngine {
         const firstMark = result.indexOf("**");
         if (firstMark >= 0) {
           const start = Math.max(0, firstMark - 40);
-          result = "..." + result.slice(start, start + maxLen) + "...";
+          result = `...${result.slice(start, start + maxLen)}...`;
         } else {
-          result = result.slice(0, maxLen) + "...";
+          result = `${result.slice(0, maxLen)}...`;
         }
       }
       return result;
@@ -382,32 +412,41 @@ export class SearchEngine {
     }
 
     // Speaker highlights
-    if (matchedFields.includes("speakerName") || matchedFields.includes("speakerInstitution")) {
+    if (
+      matchedFields.includes("speakerName") ||
+      matchedFields.includes("speakerInstitution")
+    ) {
       for (const speaker of event.speakers) {
         const speakerText = `${speaker.name} (${speaker.institution})`;
-        if (queryTerms.some(t => normalizeSpanish(speakerText).includes(t))) {
+        if (queryTerms.some((t) => normalizeSpanish(speakerText).includes(t))) {
           highlights.push(`Ponente: ${highlightText(speakerText)}`);
         }
       }
     }
 
     // Tag highlights
-    if (matchedFields.includes("tag") || matchedFields.includes("thematicAxis")) {
+    if (
+      matchedFields.includes("tag") ||
+      matchedFields.includes("thematicAxis")
+    ) {
       const tagText = event.tags.join(", ");
-      if (queryTerms.some(t => normalizeSpanish(tagText).includes(t))) {
+      if (queryTerms.some((t) => normalizeSpanish(tagText).includes(t))) {
         highlights.push(`Etiquetas: ${highlightText(tagText)}`);
       }
       const axisText = event.thematicAxis;
-      if (queryTerms.some(t => normalizeSpanish(axisText).includes(t))) {
+      if (queryTerms.some((t) => normalizeSpanish(axisText).includes(t))) {
         highlights.push(`Eje: ${highlightText(axisText)}`);
       }
     }
 
     // Paper highlights
-    if (matchedFields.includes("paperTitle") || matchedFields.includes("paperAuthor")) {
+    if (
+      matchedFields.includes("paperTitle") ||
+      matchedFields.includes("paperAuthor")
+    ) {
       for (const paper of event.papers) {
         const paperText = `${paper.title} - ${paper.authors.join(", ")}`;
-        if (queryTerms.some(t => normalizeSpanish(paperText).includes(t))) {
+        if (queryTerms.some((t) => normalizeSpanish(paperText).includes(t))) {
           highlights.push(`Ponencia: ${highlightText(paperText)}`);
         }
       }
@@ -416,7 +455,7 @@ export class SearchEngine {
     // Venue/Building highlights
     if (matchedFields.includes("venue") || matchedFields.includes("building")) {
       const locText = `${event.venueLabel} · ${event.building}`;
-      if (queryTerms.some(t => normalizeSpanish(locText).includes(t))) {
+      if (queryTerms.some((t) => normalizeSpanish(locText).includes(t))) {
         highlights.push(`Lugar: ${highlightText(locText)}`);
       }
     }
@@ -441,7 +480,7 @@ export class SearchEngine {
 
   /** Get all events for a date (for empty query) */
   getEventsForDate(date: string): ConferenceEvent[] {
-    return this.events.filter(e => e.date === date);
+    return this.events.filter((e) => e.date === date);
   }
 }
 

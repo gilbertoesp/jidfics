@@ -1,7 +1,7 @@
 "use client";
 
-import { useMemo } from "react";
 import { Clock, MapPin } from "lucide-react";
+import { useMemo } from "react";
 
 import {
   Timeline,
@@ -13,13 +13,13 @@ import {
   TimelineSeparator,
   TimelineTitle,
 } from "@/components/reui/timeline";
+import type { LiveStatus } from "@/components/schedule/LiveIndicatorBadge";
+import { Tag } from "@/components/schedule/Tag";
 import { Badge } from "@/components/ui/badge";
 import { colorFor } from "@/lib/schedule/colors";
 import { scheduleSorter } from "@/lib/schedule/filter";
 import type { ConferenceEvent } from "@/lib/schedule/types";
 import { cn } from "@/lib/utils";
-import type { LiveStatus } from "@/components/schedule/LiveIndicatorBadge";
-import { Tag } from "@/components/schedule/Tag";
 
 export interface BuildingTimelineProps {
   building: { key: string; label: string };
@@ -85,7 +85,8 @@ export function BuildingTimeline({
         role="status"
         className="rounded-xl border border-dashed p-8 text-center text-sm text-muted-foreground"
       >
-        No hay sesiones programadas en <span className="font-medium">{building.label}</span>.
+        No hay sesiones programadas en{" "}
+        <span className="font-medium">{building.label}</span>.
       </p>
     );
   }
@@ -106,11 +107,7 @@ export function BuildingTimeline({
           const activityColor = colorFor(event.activityType);
 
           return (
-            <TimelineItem
-              key={event.id}
-              step={index + 1}
-              className="gap-1"
-            >
+            <TimelineItem key={event.id} step={index + 1} className="gap-1">
               <TimelineHeader>
                 <TimelineSeparator />
                 <TimelineDate dateTime={`${event.date}T${event.startTime}`}>
@@ -161,11 +158,17 @@ export function BuildingTimeline({
                   <div className="flex flex-wrap gap-1.5">
                     <Badge
                       variant="outline"
-                      className={cn("gap-1.5 border text-[11px]", activityColor.badge)}
+                      className={cn(
+                        "gap-1.5 border text-[11px]",
+                        activityColor.badge,
+                      )}
                     >
                       <span
                         aria-hidden="true"
-                        className={cn("h-1.5 w-1.5 rounded-full", activityColor.dot)}
+                        className={cn(
+                          "h-1.5 w-1.5 rounded-full",
+                          activityColor.dot,
+                        )}
                       />
                       {event.activityType}
                     </Badge>

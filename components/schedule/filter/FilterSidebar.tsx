@@ -18,16 +18,14 @@
  * data-slot: filter-sidebar
  */
 
-import * as React from "react";
-import { useMemo } from "react";
 import { Search, X } from "lucide-react";
-
+import { useMemo } from "react";
+import { FilterGroup } from "@/components/schedule/filter/FilterGroup";
+import { Tag, TagGroup } from "@/components/schedule/Tag";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Separator } from "@/components/ui/separator";
-import { FilterGroup } from "@/components/schedule/filter/FilterGroup";
-import { Tag, TagGroup } from "@/components/schedule/Tag";
 import { hasActiveFilters, type ScheduleFilters } from "@/lib/schedule/filter";
 import { categorizeDerived, countSelectedCategory } from "@/lib/schedule/tags";
 import type {

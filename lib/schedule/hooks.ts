@@ -1,20 +1,17 @@
 "use client";
 
-import { useState, useCallback, useMemo } from "react";
-import { createSearchEngine, type SearchResult } from "@/lib/schedule/search";
+import { useCallback, useMemo, useState } from "react";
 import {
   EMPTY_FILTERS,
   filterEvents,
   hasActiveFilters,
-  scheduleSorter,
   type ScheduleFilters,
+  scheduleSorter,
 } from "@/lib/schedule/filter";
-import {
-  type ConferenceEvent,
-  type ConferenceMeta,
-} from "@/lib/schedule/types";
 import { useCurrentSession } from "@/lib/schedule/hooks/useCurrentSession";
 import { useEventDetails } from "@/lib/schedule/hooks/useEventDetails";
+import { createSearchEngine, type SearchResult } from "@/lib/schedule/search";
+import type { ConferenceEvent, ConferenceMeta } from "@/lib/schedule/types";
 
 /** Hook for search functionality */
 export function useSearch(events: ConferenceEvent[]) {
@@ -64,7 +61,9 @@ export function useScheduleFilters(meta: ConferenceMeta) {
 
   const toggleValue = useCallback(
     (selected: string[], value: string): string[] =>
-      selected.includes(value) ? selected.filter((v) => v !== value) : [...selected, value],
+      selected.includes(value)
+        ? selected.filter((v) => v !== value)
+        : [...selected, value],
     [],
   );
 
@@ -76,29 +75,56 @@ export function useScheduleFilters(meta: ConferenceMeta) {
     setFilters({ ...EMPTY_FILTERS, date: filters.date });
   }, [filters.date]);
 
-  const toggleTag = useCallback((tag: string) => {
-    setFilters((prev) => ({ ...prev, tags: toggleValue(prev.tags, tag) }));
-  }, [toggleValue]);
+  const toggleTag = useCallback(
+    (tag: string) => {
+      setFilters((prev) => ({ ...prev, tags: toggleValue(prev.tags, tag) }));
+    },
+    [toggleValue],
+  );
 
-  const toggleBuilding = useCallback((building: string) => {
-    setFilters((prev) => ({ ...prev, buildings: toggleValue(prev.buildings, building) }));
-  }, [toggleValue]);
+  const toggleBuilding = useCallback(
+    (building: string) => {
+      setFilters((prev) => ({
+        ...prev,
+        buildings: toggleValue(prev.buildings, building),
+      }));
+    },
+    [toggleValue],
+  );
 
-  const toggleVenue = useCallback((venue: string) => {
-    setFilters((prev) => ({ ...prev, venues: toggleValue(prev.venues, venue) }));
-  }, [toggleValue]);
+  const toggleVenue = useCallback(
+    (venue: string) => {
+      setFilters((prev) => ({
+        ...prev,
+        venues: toggleValue(prev.venues, venue),
+      }));
+    },
+    [toggleValue],
+  );
 
-  const toggleActivityType = useCallback((type: string) => {
-    setFilters((prev) => ({ ...prev, activityTypes: toggleValue(prev.activityTypes, type) }));
-  }, [toggleValue]);
+  const toggleActivityType = useCallback(
+    (type: string) => {
+      setFilters((prev) => ({
+        ...prev,
+        activityTypes: toggleValue(prev.activityTypes, type),
+      }));
+    },
+    [toggleValue],
+  );
 
-  const setDate = useCallback((date: string) => {
-    update({ date });
-  }, [update]);
+  const setDate = useCallback(
+    (date: string) => {
+      update({ date });
+    },
+    [update],
+  );
 
-  const setSearchQuery = useCallback((searchQuery: string) => {
-    update({ searchQuery });
-  }, [update]);
+  const setSearchQuery = useCallback(
+    (searchQuery: string) => {
+      update({ searchQuery });
+    },
+    [update],
+  );
 
   return {
     filters,
@@ -161,7 +187,10 @@ export function useScheduleView() {
 /** Hook for chat/sidebar state */
 export function useChatState() {
   const [chatEvent, setChatEvent] = useState<ConferenceEvent | null>(null);
-  const openChat = useCallback((event: ConferenceEvent) => setChatEvent(event), []);
+  const openChat = useCallback(
+    (event: ConferenceEvent) => setChatEvent(event),
+    [],
+  );
   const closeChat = useCallback(() => setChatEvent(null), []);
   return { chatEvent, openChat, closeChat };
 }
@@ -181,7 +210,10 @@ export function useFloatingBar() {
  *   TODO(speakers): speaker profile pages (aggregated from papers/speakers)
  * Tracked TODO markers are listed in README › "Files with TODOs".
  */
-export function useScheduleApp(events: ConferenceEvent[], meta: ConferenceMeta) {
+export function useScheduleApp(
+  events: ConferenceEvent[],
+  meta: ConferenceMeta,
+) {
   const filtersHook = useScheduleFilters(meta);
   const liveHook = useLiveSessions(events);
   const viewHook = useScheduleView();
@@ -210,7 +242,9 @@ export function useScheduleApp(events: ConferenceEvent[], meta: ConferenceMeta) 
     return filterEvents(events, filtersHook.filters).sort(scheduleSorter);
   }, [events, filtersHook.filters, searchHook.searchEngine]);
 
-  const activeDay = meta.days.find((day) => day.date === filtersHook.filters.date);
+  const activeDay = meta.days.find(
+    (day) => day.date === filtersHook.filters.date,
+  );
 
   // Scroll to event helper
   const scrollToEvent = useCallback((eventId: string) => {

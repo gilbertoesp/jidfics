@@ -4,10 +4,10 @@ import {
   EMPTY_FILTERS,
   filterEvents,
   hasActiveFilters,
-  scheduleSorter,
   type ScheduleFilters,
+  scheduleSorter,
 } from "@/lib/schedule/filter";
-import { type ConferenceEvent } from "@/lib/schedule/types";
+import type { ConferenceEvent } from "@/lib/schedule/types";
 
 function makeEvent(partial: Partial<ConferenceEvent>): ConferenceEvent {
   return {
@@ -75,7 +75,10 @@ const events: ConferenceEvent[] = [
 
 describe("filterEvents", () => {
   it("keeps only events on the selected date", () => {
-    const result = filterEvents(events, { ...EMPTY_FILTERS, date: "2026-09-23" });
+    const result = filterEvents(events, {
+      ...EMPTY_FILTERS,
+      date: "2026-09-23",
+    });
     expect(result.map((e) => e.id)).toEqual(["a", "b"]);
   });
 
@@ -138,12 +141,12 @@ describe("hasActiveFilters", () => {
   });
 
   it("is true when any facet has values", () => {
-    expect(
-      hasActiveFilters({ ...EMPTY_FILTERS, axes: ["Violencia"] }),
-    ).toBe(true);
-    expect(
-      hasActiveFilters({ ...EMPTY_FILTERS, searchQuery: "mesa" }),
-    ).toBe(true);
+    expect(hasActiveFilters({ ...EMPTY_FILTERS, axes: ["Violencia"] })).toBe(
+      true,
+    );
+    expect(hasActiveFilters({ ...EMPTY_FILTERS, searchQuery: "mesa" })).toBe(
+      true,
+    );
   });
 });
 
@@ -166,29 +169,51 @@ describe("EMPTY_FILTERS", () => {
 
 describe("tag and building filters", () => {
   it("filters by tags OR within facet", () => {
-    const viol = filterEvents(events, { ...EMPTY_FILTERS, tags: ["Violencia"] });
+    const viol = filterEvents(events, {
+      ...EMPTY_FILTERS,
+      tags: ["Violencia"],
+    });
     expect(viol.map((e) => e.id)).toEqual(["a"]);
-    const multi = filterEvents(events, { ...EMPTY_FILTERS, tags: ["Violencia", "Género"] });
+    const multi = filterEvents(events, {
+      ...EMPTY_FILTERS,
+      tags: ["Violencia", "Género"],
+    });
     expect(multi.map((e) => e.id).sort()).toEqual(["a", "b"]);
   });
 
   it("filters building AND tags", () => {
-    const both = filterEvents(events, { ...EMPTY_FILTERS, buildings: ["3B"], tags: ["Violencia"] });
+    const both = filterEvents(events, {
+      ...EMPTY_FILTERS,
+      buildings: ["3B"],
+      tags: ["Violencia"],
+    });
     expect(both.map((e) => e.id)).toEqual(["a"]);
-    const miss = filterEvents(events, { ...EMPTY_FILTERS, buildings: ["1E"], tags: ["Violencia"] });
+    const miss = filterEvents(events, {
+      ...EMPTY_FILTERS,
+      buildings: ["1E"],
+      tags: ["Violencia"],
+    });
     expect(miss).toEqual([]);
   });
 
   it("search matches tag and building", () => {
-    const byTag = filterEvents(events, { ...EMPTY_FILTERS, searchQuery: "violencia" });
+    const byTag = filterEvents(events, {
+      ...EMPTY_FILTERS,
+      searchQuery: "violencia",
+    });
     expect(byTag.map((e) => e.id)).toContain("a");
-    const byBuilding = filterEvents(events, { ...EMPTY_FILTERS, searchQuery: "1E" });
+    const byBuilding = filterEvents(events, {
+      ...EMPTY_FILTERS,
+      searchQuery: "1E",
+    });
     // b has building 1E, should match via building haystack
     expect(byBuilding.map((e) => e.id)).toContain("b");
   });
 
   it("hasActiveFilters true for tags/buildings", () => {
     expect(hasActiveFilters({ ...EMPTY_FILTERS, tags: ["Género"] })).toBe(true);
-    expect(hasActiveFilters({ ...EMPTY_FILTERS, buildings: ["3B"] })).toBe(true);
+    expect(hasActiveFilters({ ...EMPTY_FILTERS, buildings: ["3B"] })).toBe(
+      true,
+    );
   });
 });

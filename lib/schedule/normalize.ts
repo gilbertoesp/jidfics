@@ -1,9 +1,9 @@
-import {
-  type ConferenceEvent,
-  type ConferenceMeta,
-  type RawCalendario,
-  type RawEvento,
-  type ScheduleDerived,
+import type {
+  ConferenceEvent,
+  ConferenceMeta,
+  RawCalendario,
+  RawEvento,
+  ScheduleDerived,
 } from "@/lib/schedule/types";
 
 /** Lowercase without diacritics — used to derive stable venue keys. */
@@ -134,7 +134,10 @@ export function deriveFilters(events: ConferenceEvent[]): ScheduleDerived {
       venueMap.set(event.venueKey, event.venueLabel);
     }
   }
-  const venues = [...venueMap.entries()].map(([key, label]) => ({ key, label }));
+  const venues = [...venueMap.entries()].map(([key, label]) => ({
+    key,
+    label,
+  }));
 
   // Unique buildings — filter out Unknown to avoid "Edificio Unknown" tab
   const buildingMap = new Map<string, string>();
@@ -144,7 +147,10 @@ export function deriveFilters(events: ConferenceEvent[]): ScheduleDerived {
       buildingMap.set(event.building, buildingLabel(event.building));
     }
   }
-  const buildings = [...buildingMap.entries()].map(([key, label]) => ({ key, label }));
+  const buildings = [...buildingMap.entries()].map(([key, label]) => ({
+    key,
+    label,
+  }));
 
   return { axes, tags, activityTypes, venues, buildings };
 }

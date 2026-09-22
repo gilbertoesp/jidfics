@@ -1,12 +1,11 @@
 "use client";
 
-import * as React from "react";
 import { Slot } from "@radix-ui/react-slot";
 import { X } from "lucide-react";
-
-import { cn } from "@/lib/utils";
+import * as React from "react";
 import { colorFor } from "@/lib/schedule/colors";
 import type { TagCategory } from "@/lib/schedule/types";
+import { cn } from "@/lib/utils";
 
 // ------------------------------------------------------------------
 // Primitive: Tag — actionable, accessible, composable
@@ -14,7 +13,8 @@ import type { TagCategory } from "@/lib/schedule/types";
 // customizability (cn), lightweight, transparency.
 // ------------------------------------------------------------------
 
-export interface TagProps extends Omit<React.ComponentProps<"button">, "value"> {
+export interface TagProps
+  extends Omit<React.ComponentProps<"button">, "value"> {
   /** Tag value (e.g. "Salud") */
   value: string;
   /** Visual label, defaults to value */
@@ -66,11 +66,15 @@ export const Tag = React.forwardRef<HTMLButtonElement, TagProps>(
   ) => {
     const displayLabel = label ?? value;
     const colors = colorFor(value);
-    
+
     // When removable, we render a wrapper div with label + remove button as siblings
     // to avoid nested <button> elements (invalid HTML)
     const isRemovable = removable && selected;
-    const Comp = asChild ? Slot : interactive && !isRemovable ? "button" : "span";
+    const Comp = asChild
+      ? Slot
+      : interactive && !isRemovable
+        ? "button"
+        : "span";
 
     const handleClick = (e: React.MouseEvent<HTMLButtonElement>) => {
       if (!interactive || isRemovable) return;
@@ -92,19 +96,10 @@ export const Tag = React.forwardRef<HTMLButtonElement, TagProps>(
       onRemove?.(value);
     };
 
-    const handleLabelClick = (e: React.MouseEvent<HTMLDivElement>) => {
+    const handleLabelClick = (e: React.MouseEvent<HTMLButtonElement>) => {
       if (!interactive || !isRemovable) return;
       onTagToggle?.(value);
-      onClick?.(e as unknown as React.MouseEvent<HTMLButtonElement>);
-    };
-
-    const handleLabelKeyDown = (e: React.KeyboardEvent<HTMLDivElement>) => {
-      if (!interactive || !isRemovable) return;
-      if (e.key === "Enter" || e.key === " ") {
-        e.preventDefault();
-        onTagToggle?.(value);
-      }
-      onKeyDown?.(e as unknown as React.KeyboardEvent<HTMLButtonElement>);
+      onClick?.(e);
     };
 
     const baseClassName = cn(
@@ -140,18 +135,17 @@ export const Tag = React.forwardRef<HTMLButtonElement, TagProps>(
               "bg-current",
             )}
           />
-          <span
+          <button
+            type="button"
             data-slot="tag-label"
-            role="button"
-            tabIndex={0}
             aria-label={ariaLabel ?? `Quitar filtro ${displayLabel}`}
             aria-pressed={true}
             onClick={handleLabelClick}
-            onKeyDown={handleLabelKeyDown}
+            onKeyDown={onKeyDown}
             className="cursor-pointer select-none"
           >
             {children ?? displayLabel}
-          </span>
+          </button>
           <button
             type="button"
             onClick={handleRemoveClick}
@@ -159,7 +153,11 @@ export const Tag = React.forwardRef<HTMLButtonElement, TagProps>(
             data-slot="tag-remove"
             className="p-0.5 rounded hover:bg-accent focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
           >
-            <X aria-hidden="true" data-slot="tag-remove-icon" className="h-3 w-3 opacity-70" />
+            <X
+              aria-hidden="true"
+              data-slot="tag-remove-icon"
+              className="h-3 w-3 opacity-70"
+            />
           </button>
         </div>
       );
@@ -175,7 +173,12 @@ export const Tag = React.forwardRef<HTMLButtonElement, TagProps>(
         data-value={value}
         data-category={category}
         aria-pressed={interactive ? selected : undefined}
-        aria-label={ariaLabel ?? (interactive ? `${selected ? "Quitar filtro" : "Filtrar por"} ${displayLabel}` : displayLabel)}
+        aria-label={
+          ariaLabel ??
+          (interactive
+            ? `${selected ? "Quitar filtro" : "Filtrar por"} ${displayLabel}`
+            : displayLabel)
+        }
         tabIndex={interactive ? 0 : undefined}
         role={interactive && Comp === "span" ? "button" : undefined}
         onClick={interactive ? handleClick : undefined}
@@ -202,15 +205,19 @@ Tag.displayName = "Tag";
 // Compound: TagGroup — composable container for tags
 // ------------------------------------------------------------------
 
-export interface TagGroupProps extends React.ComponentProps<"div"> {
+export interface TagGroupProps extends React.ComponentProps<"fieldset"> {
   /** Accessible label for the group */
   label: string;
 }
 
-export function TagGroup({ label, className, children, ...props }: TagGroupProps) {
+export function TagGroup({
+  label,
+  className,
+  children,
+  ...props
+}: TagGroupProps) {
   return (
-    <div
-      role="group"
+    <fieldset
       aria-label={label}
       data-slot="tag-group"
       data-label={label}
@@ -219,6 +226,6 @@ export function TagGroup({ label, className, children, ...props }: TagGroupProps
     >
       <span className="sr-only">{label}</span>
       {children}
-    </div>
+    </fieldset>
   );
 }

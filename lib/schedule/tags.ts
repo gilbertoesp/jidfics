@@ -123,7 +123,8 @@ export function toTagOptions(
 ): TagOption[] {
   const options: TagOption[] = inputs.map((input) => {
     const value = typeof input === "string" ? input : input.value;
-    const label = (typeof input === "string" ? undefined : input.label) ?? value;
+    const label =
+      (typeof input === "string" ? undefined : input.label) ?? value;
     const resolved: TagCategory = category ?? categorizeTag(value);
     return { value, label, category: resolved, sortKey: sortKeyFor(label) };
   });
@@ -153,7 +154,9 @@ export interface CategorizedDerived {
 }
 
 /** Group + sort every derived facet by category (sidebar input). */
-export function categorizeDerived(derived: ScheduleDerived): CategorizedDerived {
+export function categorizeDerived(
+  derived: ScheduleDerived,
+): CategorizedDerived {
   const { topic: topicTags, location: locationTags } = splitTagsByCategory(
     derived.tags,
   );

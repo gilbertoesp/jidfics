@@ -1,7 +1,7 @@
 "use client";
 
-import { useEffect, useRef, useState } from "react";
 import { MessagesSquare, Send } from "lucide-react";
+import { useEffect, useRef, useState } from "react";
 
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -13,7 +13,7 @@ import {
   SheetHeader,
   SheetTitle,
 } from "@/components/ui/sheet";
-import { type ConferenceEvent } from "@/lib/schedule/types";
+import type { ConferenceEvent } from "@/lib/schedule/types";
 import { cn } from "@/lib/utils";
 
 interface ChatMessage {
@@ -64,6 +64,7 @@ export function LiveChatSheet({ event, onOpenChange }: LiveChatSheetProps) {
   const inputRef = useRef<HTMLInputElement>(null);
 
   // Reset transcript + focus input each time a new session opens.
+  // biome-ignore lint/correctness/useExhaustiveDependencies: keyed on event?.id only — re-running on other event fields would reset the transcript
   useEffect(() => {
     if (event) {
       setMessages([
@@ -81,6 +82,7 @@ export function LiveChatSheet({ event, onOpenChange }: LiveChatSheetProps) {
     }
   }, [event?.id]); // eslint-disable-line react-hooks/exhaustive-deps
 
+  // biome-ignore lint/correctness/useExhaustiveDependencies: re-run on every message change is the intent — scroll target read via ref
   useEffect(() => {
     bottomRef.current?.scrollIntoView({ behavior: "smooth", block: "end" });
   }, [messages]);
@@ -104,7 +106,10 @@ export function LiveChatSheet({ event, onOpenChange }: LiveChatSheetProps) {
         if (!open) setDraft("");
       }}
     >
-      <SheetContent side="right" className="flex w-full flex-col gap-0 p-0 sm:max-w-md">
+      <SheetContent
+        side="right"
+        className="flex w-full flex-col gap-0 p-0 sm:max-w-md"
+      >
         <SheetHeader className="border-b p-4 pr-12 text-left">
           <SheetTitle className="flex items-center gap-2">
             <MessagesSquare className="h-4 w-4" aria-hidden="true" />

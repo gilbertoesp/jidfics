@@ -1,8 +1,7 @@
 import { describe, expect, it } from "vitest";
-
+import rawCalendario from "@/lib/schedule/calendario_vii_jidfics.json";
 import { normalizeEvents, normalizeMeta } from "@/lib/schedule/normalize";
 import type { RawCalendario } from "@/lib/schedule/types";
-import rawCalendario from "@/lib/schedule/calendario_vii_jidfics.json";
 
 /**
  * Data-integrity guards over the REAL conference dataset.
@@ -40,7 +39,9 @@ describe("normalized events integrity", () => {
     for (const event of events) {
       expect(event.startTime, event.id).toMatch(TIME_RE);
       expect(event.endTime, event.id).toMatch(TIME_RE);
-      expect(event.startTime < event.endTime, `${event.id} time range`).toBe(true);
+      expect(event.startTime < event.endTime, `${event.id} time range`).toBe(
+        true,
+      );
     }
   });
 
