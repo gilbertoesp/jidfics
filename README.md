@@ -141,8 +141,9 @@ Open [http://localhost:3000](http://localhost:3000).
 bunx vitest run                     # all suites (jsdom)
 bunx vitest run lib/schedule/       # pure units only
 bunx vitest run components/         # component tests (RTL + user-event)
-bun tsc --noEmit                    # typecheck
-bun run lint                        # eslint
+bun run typecheck                   # tsc --noEmit
+bun run lint                        # biome check . && eslint .
+bun run format                      # biome autofix + format (write mode)
 ```
 
 **Suites — 142 tests total (140 + 2 integration skipped without credentials):**
@@ -166,13 +167,19 @@ bun run lint                        # eslint
 1. Branch from `main`: `feat/phase-N-<scope>`.
 2. **RED** commit: tests only (fails).
 3. **GREEN** commit: minimal implementation (passes).
-4. Gates before merge: `bunx tsc --noEmit && bun run lint && bunx vitest run && bun run build`.
+4. Gates before merge: `bun run typecheck && bun run lint && bunx vitest run && bun run build`.
 5. Merge via PR; `main` never carries half-finished work.
+
+### Lint & format (Biome + ESLint 9 hybrid)
+
+- **Split:** `biome.json` owns formatting, `organizeImports` and general lint; `eslint.config.mjs` (unchanged) owns React/Next correctness rules. No rule overlap.
+- **Pre-commit:** husky → lint-staged runs both linters on **staged files only** (fast; auto-fixes format, blocks real errors). CI re-runs the full `lint:biome` + `lint:eslint` + `typecheck` gates.
+- Intentional exceptions are documented inline as `// biome-ignore <rule>: <reason>` (or scoped `overrides` in `biome.json` for tests/`lib/supabase` non-null env assertions).
 
 ## 📦 Build & deploy
 
 ```bash
-bun run build   # typecheck + lint + compile + static generation
+bun run build   # typecheck + compile + static generation (Next 16: no lint here)
 bun run start   # preview production build
 ```
 
