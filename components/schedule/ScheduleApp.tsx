@@ -2,157 +2,27 @@
 
 import { useState, useCallback, useEffect, useRef } from "react";
 import React from "react";
-import { CalendarDays, LayoutGrid, Timer, Search, X, Filter, ChevronLeft } from "lucide-react";
+import { CalendarDays, LayoutGrid, Timer, X, Filter, ChevronLeft } from "lucide-react";
 
 import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
-import { Separator } from "@/components/ui/separator";
 import { Tag } from "@/components/schedule/Tag";
 import { cn } from "@/lib/utils";
-import { TagGroup } from "@/components/schedule/Tag";
 import { EventCard } from "@/components/schedule/EventCard";
 import { BuildingTimelines } from "@/components/schedule/BuildingTimelines";
 import { FloatingSessionBar } from "@/components/schedule/FloatingSessionBar";
 import { LiveChatSheet } from "@/components/schedule/LiveChatSheet";
+import { FilterSidebar } from "@/components/schedule/filter/FilterSidebar";
 import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { clearCategory } from "@/lib/schedule/tags";
 import {
   useScheduleApp,
-  type ScheduleFilters,
 } from "@/lib/schedule/hooks";
-import type { ConferenceEvent, ConferenceMeta, ScheduleDerived } from "@/lib/schedule/types";
+import type { ConferenceEvent, ConferenceMeta, ScheduleDerived, TagCategory } from "@/lib/schedule/types";
 
 interface ScheduleAppProps {
   events: ConferenceEvent[];
   meta: ConferenceMeta;
   derived: ScheduleDerived;
-}
-
-/** Filter section - extracted for readability */
-function FilterSection({
-  filters,
-  derived,
-  resultCount,
-  onSearchChange,
-  onToggleTag,
-  onToggleActivityType,
-  onToggleVenue,
-  onToggleBuilding,
-  onClear,
-  hasActive,
-}: {
-  filters: ScheduleFilters;
-  derived: ScheduleDerived;
-  resultCount: number;
-  onSearchChange: (query: string) => void;
-  onToggleTag: (tag: string) => void;
-  onToggleActivityType: (type: string) => void;
-  onToggleVenue: (venue: string) => void;
-  onToggleBuilding: (building: string) => void;
-  onClear: () => void;
-  hasActive: boolean;
-}) {
-  return (
-    <section aria-label="Filtros del programa" className="flex flex-col gap-5">
-      {/* Search */}
-      <div className="relative">
-        <Label htmlFor="schedule-search" className="sr-only">Buscar sesiones</Label>
-        <Search aria-hidden="true" className="pointer-events-none absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground" />
-        <Input
-          id="schedule-search"
-          type="search"
-          placeholder="Buscar por título, ponente, autor o institución…"
-          value={filters.searchQuery}
-          onChange={(e) => onSearchChange(e.target.value)}
-          className="pl-9"
-          autoComplete="off"
-          autoFocus
-        />
-      </div>
-
-      <Separator />
-
-      {/* Tags - using TagGroup */}
-      <div className="flex flex-col gap-2" data-slot="filter-tag-group">
-        <span className="text-xs font-semibold uppercase tracking-wide text-muted-foreground">Etiquetas</span>
-        <TagGroup label="Etiquetas">
-          {derived.tags.map((tag) => (
-            <Tag
-              key={tag}
-              value={tag}
-              selected={filters.tags.includes(tag)}
-              onTagToggle={onToggleTag}
-              aria-label={`${filters.tags.includes(tag) ? "Quitar filtro" : "Filtrar por etiqueta"} ${tag}`}
-              data-slot="filter-tag"
-              className="min-h-9 px-3 py-1.5 text-sm w-full justify-start"
-            />
-          ))}
-        </TagGroup>
-      </div>
-
-      {/* Activity Types */}
-      <TagGroup label="Tipo de actividad">
-        {derived.activityTypes.map((type) => (
-          <Tag
-            key={type}
-            value={type}
-            selected={filters.activityTypes.includes(type)}
-            onTagToggle={onToggleActivityType}
-            aria-label={`${filters.activityTypes.includes(type) ? "Quitar filtro" : "Filtrar por tipo"} ${type}`}
-            data-slot="filter-activity"
-            className="min-h-9 px-3 py-1.5 text-sm w-full justify-start"
-          />
-        ))}
-      </TagGroup>
-
-      {/* Venues */}
-      <TagGroup label="Sala / Lugar">
-        {derived.venues.map((venue) => (
-          <Tag
-            key={venue.key}
-            value={venue.key}
-            selected={filters.venues.includes(venue.key)}
-            onTagToggle={onToggleVenue}
-            aria-label={`${filters.venues.includes(venue.key) ? "Quitar filtro" : "Filtrar por sala"} ${venue.label}`}
-            data-slot="filter-venue"
-            className="min-h-9 px-3 py-1.5 text-sm w-full justify-start"
-          >
-            {venue.label}
-          </Tag>
-        ))}
-      </TagGroup>
-
-      {/* Buildings */}
-      <TagGroup label="Edificio">
-        {derived.buildings.map((building) => (
-          <Tag
-            key={building.key}
-            value={building.key}
-            selected={filters.buildings.includes(building.key)}
-            onTagToggle={onToggleBuilding}
-            aria-label={`${filters.buildings.includes(building.key) ? "Quitar filtro" : "Filtrar por edificio"} ${building.label}`}
-            data-slot="filter-building"
-            className="min-h-9 px-3 py-1.5 text-sm w-full justify-start"
-          >
-            {building.label}
-          </Tag>
-        ))}
-      </TagGroup>
-
-      <Separator />
-
-      {/* Results count + Clear */}
-      <div className="flex flex-wrap items-center justify-between gap-3">
-        <p aria-live="polite" role="status" className="text-sm text-muted-foreground">
-          {resultCount} {resultCount === 1 ? "sesión" : "sesiones"} encontradas
-        </p>
-        <Button type="button" variant="outline" size="sm" onClick={onClear} className="gap-1.5" disabled={!hasActive}>
-          <X className="h-3.5 w-3.5" aria-hidden="true" />
-          Limpiar filtros
-        </Button>
-      </div>
-    </section>
-  );
 }
 
 /** Active Filters Bar */
@@ -469,50 +339,11 @@ function MobileSidebar({
   );
 }
 
-/** Sidebar Content - shared between desktop (persistent) and mobile */
-function SidebarContent({
-  filters,
-  derived,
-  filteredEvents,
-  handleSearchChange,
-  toggleTag,
-  toggleActivityType,
-  toggleVenue,
-  toggleBuilding,
-  clearFilters,
-  hasActiveFilters,
-}: {
-  filters: ScheduleFilters;
-  derived: ScheduleDerived;
-  filteredEvents: ConferenceEvent[];
-  handleSearchChange: (query: string) => void;
-  toggleTag: (tag: string) => void;
-  toggleActivityType: (type: string) => void;
-  toggleVenue: (venue: string) => void;
-  toggleBuilding: (building: string) => void;
-  clearFilters: () => void;
-  hasActiveFilters: boolean;
-}) {
-  return (
-    <FilterSection
-      filters={filters}
-      derived={derived}
-      resultCount={filteredEvents.length}
-      onSearchChange={handleSearchChange}
-      onToggleTag={toggleTag}
-      onToggleActivityType={toggleActivityType}
-      onToggleVenue={toggleVenue}
-      onToggleBuilding={toggleBuilding}
-      onClear={clearFilters}
-      hasActive={hasActiveFilters}
-    />
-  );
-}
-
 /** Main ScheduleApp Component */
 export function ScheduleApp({ events, meta, derived }: ScheduleAppProps) {
   const {
     filters,
+    setFilters,
     view,
     chatEvent,
     barDismissed,
@@ -551,6 +382,27 @@ export function ScheduleApp({ events, meta, derived }: ScheduleAppProps) {
   const handleTagClick = useCallback((tag: string) => {
     toggleTag(tag);
   }, [toggleTag]);
+
+  // Per-category clear (pure reducer from lib/schedule/tags.ts)
+  const handleClearCategory = useCallback((category: TagCategory) => {
+    setFilters((prev) => clearCategory(category, prev));
+  }, [setFilters]);
+
+  // Single sidebar definition shared by desktop (persistent) and mobile (overlay)
+  const sidebar = (
+    <FilterSidebar
+      filters={filters}
+      derived={derived}
+      resultCount={filteredEvents.length}
+      onSearchChange={handleSearchChange}
+      onToggleTag={toggleTag}
+      onToggleActivityType={toggleActivityType}
+      onToggleVenue={toggleVenue}
+      onToggleBuilding={toggleBuilding}
+      onClear={clearFilters}
+      onClearCategory={handleClearCategory}
+    />
+  );
 
   // Render event grid
   const renderGrid = () => (
@@ -613,18 +465,7 @@ export function ScheduleApp({ events, meta, derived }: ScheduleAppProps) {
       <div className="flex flex-col lg:flex-row gap-6">
         {/* Desktop Sidebar - always visible on lg+ */}
         <aside className="hidden lg:block lg:w-80 flex-shrink-0">
-          <SidebarContent
-            filters={filters}
-            derived={derived}
-            filteredEvents={filteredEvents}
-            handleSearchChange={handleSearchChange}
-            toggleTag={toggleTag}
-            toggleActivityType={toggleActivityType}
-            toggleVenue={toggleVenue}
-            toggleBuilding={toggleBuilding}
-            clearFilters={clearFilters}
-            hasActiveFilters={hasActiveFilters}
-          />
+          {sidebar}
         </aside>
 
         {/* Mobile Sidebar - simple fixed overlay */}
@@ -633,18 +474,7 @@ export function ScheduleApp({ events, meta, derived }: ScheduleAppProps) {
           isOpen={mobileSidebarOpen}
           onClose={() => setMobileSidebarOpen(false)}
         >
-          <SidebarContent
-            filters={filters}
-            derived={derived}
-            filteredEvents={filteredEvents}
-            handleSearchChange={handleSearchChange}
-            toggleTag={toggleTag}
-            toggleActivityType={toggleActivityType}
-            toggleVenue={toggleVenue}
-            toggleBuilding={toggleBuilding}
-            clearFilters={clearFilters}
-            hasActiveFilters={hasActiveFilters}
-          />
+          {sidebar}
         </MobileSidebar>
 
         {/* Results */}
