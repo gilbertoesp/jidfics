@@ -1,13 +1,19 @@
 "use client";
 
-import { Clock, FileText, MapPin, MessagesSquare, Users } from "lucide-react";
+/**
+ * EventCard — styled COMPONENT: compact session card.
+ *
+ * Details moved to the EventDetailSheet (v1.1): this card keeps the time
+ * rail, actionable tag badges, speaker summary and two actions —
+ * "Detalles de la sesión" (opens the dialog, aria-haspopup) and
+ * "Discusión en vivo" (opens LiveChatSheet).
+ *
+ * Keyboard map: Enter/Space on tags (toggle filter) and action buttons.
+ * data-slot: event-card (+ event-tag on badges)
+ */
 
-import {
-  Accordion,
-  AccordionContent,
-  AccordionItem,
-  AccordionTrigger,
-} from "@/components/ui/accordion";
+import { Clock, MapPin, MessagesSquare, Users } from "lucide-react";
+
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import {
@@ -17,7 +23,6 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
-import { Separator } from "@/components/ui/separator";
 import { colorFor } from "@/lib/schedule/colors";
 import { LiveIndicatorBadge, type LiveStatus } from "@/components/schedule/LiveIndicatorBadge";
 import { Tag } from "@/components/schedule/Tag";
@@ -27,6 +32,8 @@ import { cn } from "@/lib/utils";
 interface EventCardProps {
   event: ConferenceEvent;
   onOpenChat: (event: ConferenceEvent) => void;
+  /** Opens the detail sheet (URL-synced dialog). */
+  onOpenDetail?: (event: ConferenceEvent) => void;
   liveStatus?: LiveStatus;
   /** Called when a tag/badget is clicked — delivers filtering value */
   onTagClick?: (tag: string) => void;
@@ -34,7 +41,14 @@ interface EventCardProps {
   selectedTags?: string[];
 }
 
-export function EventCard({ event, onOpenChat, liveStatus, onTagClick, selectedTags = [] }: EventCardProps) {
+export function EventCard({
+  event,
+  onOpenChat,
+  onOpenDetail,
+  liveStatus,
+  onTagClick,
+  selectedTags = [],
+}: EventCardProps) {
   const activityColor = colorFor(event.activityType);
   const displayTags = event.tags.length > 0 ? event.tags : [event.thematicAxis];
 
@@ -96,78 +110,18 @@ export function EventCard({ event, onOpenChat, liveStatus, onTagClick, selectedT
       </CardHeader>
 
       <CardContent className="flex flex-1 flex-col gap-4 pt-0">
-        <Accordion type="single" collapsible>
-          <AccordionItem value="details" className="border-b-0">
-            <AccordionTrigger className="justify-start gap-2 py-2 text-sm font-medium text-foreground no-underline data-[state=open]:no-underline hover:no-underline [&>svg]:ml-0">
-              Detalles de la sesión
-            </AccordionTrigger>
-            <AccordionContent>
-              <div className="flex flex-col gap-3">
-                {event.speakers.length > 0 && (
-                  <>
-                    <div className="flex flex-col gap-2">
-                      <h4 className="text-xs font-semibold uppercase tracking-wide text-muted-foreground">
-                        Ponentes
-                      </h4>
-                      <ul className="flex flex-col gap-1.5">
-                        {event.speakers.map((speaker) => (
-                          <li key={speaker.name} className="flex flex-col text-sm">
-                            <span className="font-medium text-foreground">
-                              {speaker.name}
-                            </span>
-                            <span className="text-muted-foreground">
-                              {speaker.institution}
-                            </span>
-                          </li>
-                        ))}
-                      </ul>
-                    </div>
-                    <Separator />
-                  </>
-                )}
-
-                {event.papers.length > 0 && (
-                  <div className="flex flex-col gap-2">
-                    <h4 className="inline-flex items-center gap-1.5 text-xs font-semibold uppercase tracking-wide text-muted-foreground">
-                      <FileText className="h-3.5 w-3.5" aria-hidden="true" />
-                      Ponencias ({event.papers.length})
-                    </h4>
-                    <ul className="flex flex-col gap-3">
-                      {event.papers.map((paper, index) => (
-                        <li
-                          key={`${paper.title}-${index}`}
-                          className="flex flex-col gap-1 rounded-lg border bg-muted/30 p-3 text-sm"
-                        >
-                          <span className="font-medium text-foreground">
-                            {paper.title}
-                          </span>
-                          {paper.authors.length > 0 && (
-                            <span className="text-muted-foreground">
-                              {paper.authors.join(", ")}
-                            </span>
-                          )}
-                          {paper.institution && (
-                            <span className="text-xs text-muted-foreground/90">
-                              {paper.institution}
-                            </span>
-                          )}
-                        </li>
-                      ))}
-                    </ul>
-                  </div>
-                )}
-
-                {event.speakers.length === 0 && event.papers.length === 0 && (
-                  <p className="text-sm text-muted-foreground">
-                    Información de la sesión no disponible.
-                  </p>
-                )}
-              </div>
-            </AccordionContent>
-          </AccordionItem>
-        </Accordion>
-
-        <div className="mt-auto flex items-center justify-end border-t pt-3">
+        {/* Full details (speakers, papers, related) live in EventDetailSheet */}
+        <div className="mt-auto flex flex-wrap items-center justify-end gap-2 border-t pt-3">
+          <Button
+            type="button"
+            size="sm"
+            variant="ghost"
+            aria-haspopup="dialog"
+            onClick={() => onOpenDetail?.(event)}
+            className="gap-1.5"
+          >
+            Detalles de la sesión
+          </Button>
           <Button
             type="button"
             size="sm"

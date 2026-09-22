@@ -14,6 +14,7 @@ import {
   type ConferenceMeta,
 } from "@/lib/schedule/types";
 import { useCurrentSession } from "@/lib/schedule/hooks/useCurrentSession";
+import { useEventDetails } from "@/lib/schedule/hooks/useEventDetails";
 
 /** Hook for search functionality */
 export function useSearch(events: ConferenceEvent[]) {
@@ -179,6 +180,7 @@ export function useScheduleApp(events: ConferenceEvent[], meta: ConferenceMeta) 
   const viewHook = useScheduleView();
   const chatHook = useChatState();
   const barHook = useFloatingBar();
+  const detailsHook = useEventDetails(events); // URL-synced ?event=<id> detail sheet
 
   // Combine search with filters
   const searchHook = useSearch(events);
@@ -220,6 +222,9 @@ export function useScheduleApp(events: ConferenceEvent[], meta: ConferenceMeta) 
     barDismissed: barHook.dismissed,
     activeDay,
     filteredEvents,
+
+    // Detail sheet (URL-driven)
+    ...detailsHook,
 
     // Actions
     setFilters: filtersHook.setFilters,

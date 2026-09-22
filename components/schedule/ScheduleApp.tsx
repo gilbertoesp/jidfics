@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useCallback, useEffect, useRef } from "react";
+import { useState, useCallback, useEffect, useMemo, useRef } from "react";
 import React from "react";
 import { CalendarDays, LayoutGrid, Timer, X, Filter, ChevronLeft } from "lucide-react";
 
@@ -8,12 +8,14 @@ import { Button } from "@/components/ui/button";
 import { Tag } from "@/components/schedule/Tag";
 import { cn } from "@/lib/utils";
 import { EventCard } from "@/components/schedule/EventCard";
+import { EventDetailSheet } from "@/components/schedule/EventDetailSheet";
 import { BuildingTimelines } from "@/components/schedule/BuildingTimelines";
 import { FloatingSessionBar } from "@/components/schedule/FloatingSessionBar";
 import { LiveChatSheet } from "@/components/schedule/LiveChatSheet";
 import { FilterSidebar } from "@/components/schedule/filter/FilterSidebar";
 import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { clearCategory } from "@/lib/schedule/tags";
+import { findRelatedEvents } from "@/lib/schedule/eventDetail";
 import {
   useScheduleApp,
 } from "@/lib/schedule/hooks";
@@ -346,6 +348,9 @@ export function ScheduleApp({ events, meta, derived }: ScheduleAppProps) {
     setFilters,
     view,
     chatEvent,
+    detailEvent,
+    openDetail,
+    closeDetail,
     barDismissed,
     activeDay,
     filteredEvents,
@@ -383,6 +388,12 @@ export function ScheduleApp({ events, meta, derived }: ScheduleAppProps) {
     toggleTag(tag);
   }, [toggleTag]);
 
+  // Related sessions for the open detail sheet (pure ranking, same day)
+  const relatedEvents = useMemo(
+    () => (detailEvent ? findRelatedEvents(events, detailEvent) : []),
+    [events, detailEvent],
+  );
+
   // Per-category clear (pure reducer from lib/schedule/tags.ts)
   const handleClearCategory = useCallback((category: TagCategory) => {
     setFilters((prev) => clearCategory(category, prev));
@@ -412,6 +423,7 @@ export function ScheduleApp({ events, meta, derived }: ScheduleAppProps) {
           <EventCard
             event={event}
             onOpenChat={openChat}
+            onOpenDetail={openDetail}
             liveStatus={getLiveStatus(event)}
             onTagClick={handleTagClick}
             selectedTags={filters.tags}
@@ -499,6 +511,18 @@ export function ScheduleApp({ events, meta, derived }: ScheduleAppProps) {
           </section>
         </main>
       </div>
+
+      {/* Event Detail Sheet (URL-synced: ?event=<id>) */}
+      <EventDetailSheet
+        event={detailEvent}
+        related={relatedEvents}
+        selectedTags={filters.tags}
+        onOpenChange={(open) => {
+          if (!open) closeDetail();
+        }}
+        onTagClick={handleTagClick}
+        onOpenRelated={openDetail}
+      />
 
       {/* Live Chat Sheet */}
       <LiveChatSheet event={chatEvent} onOpenChange={closeChat} />

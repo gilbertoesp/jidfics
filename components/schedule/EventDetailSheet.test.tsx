@@ -2,7 +2,10 @@ import { describe, expect, it, vi, afterEach } from "vitest";
 import { render, screen } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 
-import { EventDetailSheet } from "@/components/schedule/EventDetailSheet";
+import {
+  EventDetailSheet,
+  type EventDetailSheetProps,
+} from "@/components/schedule/EventDetailSheet";
 import type { ConferenceEvent } from "@/lib/schedule/types";
 
 /* Contract notes (builder context, en):
@@ -39,7 +42,7 @@ function makeEvent(partial: Partial<ConferenceEvent>): ConferenceEvent {
 const event = makeEvent({});
 const related = [makeEvent({ id: "e2", title: "Mesa 2 · Género" })];
 
-const baseProps = {
+const baseProps: EventDetailSheetProps = {
   event,
   related,
   selectedTags: [],
@@ -48,7 +51,7 @@ const baseProps = {
   onOpenRelated: vi.fn(),
 };
 
-function renderSheet(overrides: Partial<typeof baseProps> = {}) {
+function renderSheet(overrides: Partial<EventDetailSheetProps> = {}) {
   const props = { ...baseProps, ...overrides };
   return render(
     <EventDetailSheet
