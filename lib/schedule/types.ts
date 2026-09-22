@@ -133,6 +133,24 @@ export interface ScheduleDerived {
   buildings: { key: string; label: string }[];
 }
 
+/* ------------------------------------------------------------------ */
+/* Filter tag categorization (topic | location)                        */
+/* ------------------------------------------------------------------ */
+
+/** A filter option belongs to exactly one category (nested sidebar sections). */
+export type TagCategory = "topic" | "location";
+
+/** Classified + sortable filter option (see lib/schedule/tags.ts). */
+export interface TagOption {
+  /** Canonical value used by ScheduleFilters (tag text / venue key / building key). */
+  value: string;
+  /** Human label (Spanish content) — defaults to value. */
+  label: string;
+  category: TagCategory;
+  /** Precomputed per-category ordering key (numeric-aware for locations). */
+  sortKey: string;
+}
+
 /** Short human label for tab switcher (derived from day + date). */
 export function dayLabel(dayName: string, date: string): string {
   const [, month, day] = date.split("-");

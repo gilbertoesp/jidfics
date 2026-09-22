@@ -79,7 +79,7 @@ describe("categorizeTag", () => {
       "location",
     );
     // and with no override, keyword rules apply as usual
-    expect(categorizeTag("Centro de Convenciones", {})).toBe("location");
+    expect(categorizeTag("Sala Grande", {})).toBe("location");
   });
 });
 
