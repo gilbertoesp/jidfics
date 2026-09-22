@@ -144,7 +144,10 @@ export function useCurrentSession({
     const map: Record<string, ConferenceEvent[]> = {};
     for (const e of liveNow) {
       const hall = getHallLabel(e.venueKey);
-      (map[hall] ??= []).push(e);
+      if (!map[hall]) {
+        map[hall] = [];
+      }
+      map[hall].push(e);
     }
     return map;
   }, [liveNow]);
@@ -153,7 +156,10 @@ export function useCurrentSession({
     const map: Record<string, ConferenceEvent[]> = {};
     for (const e of upNext) {
       const hall = getHallLabel(e.venueKey);
-      (map[hall] ??= []).push(e);
+      if (!map[hall]) {
+        map[hall] = [];
+      }
+      map[hall].push(e);
     }
     return map;
   }, [upNext]);

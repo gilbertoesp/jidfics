@@ -135,12 +135,11 @@ export function FloatingSessionBar({
   });
 
   return (
-    <div
+    <section
       className={cn(
         "fixed bottom-0 left-0 right-0 z-50 mx-auto max-w-5xl border-t bg-background/95 backdrop-blur-sm shadow-lg transition-all duration-300",
         isExpanded ? "pb-0" : "pb-0",
       )}
-      role="region"
       aria-label="Sesiones en vivo y proximas"
       aria-live="polite"
     >
@@ -173,6 +172,6 @@ export function FloatingSessionBar({
           {allHalls.map((hall) => renderHallSection(hall, liveByHall[hall] ?? [], upNextByHall[hall] ?? []))}
         </div>
       </div>
-    </div>
+    </section>
   );
 }

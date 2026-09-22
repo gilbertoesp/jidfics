@@ -143,7 +143,7 @@ function ActiveFiltersBar({
 /** View Switcher */
 function ViewSwitcher({ view, onViewChange }: { view: "grid" | "timeline"; onViewChange: (view: "grid" | "timeline") => void }) {
   return (
-    <div role="group" aria-label="Cambiar vista del programa" className="inline-flex items-center gap-1 rounded-lg bg-muted p-1">
+    <fieldset aria-label="Cambiar vista del programa" className="inline-flex items-center gap-1 rounded-lg bg-muted p-1">
       <Button
         type="button"
         size="sm"
@@ -166,7 +166,7 @@ function ViewSwitcher({ view, onViewChange }: { view: "grid" | "timeline"; onVie
         <Timer className="h-4 w-4" aria-hidden="true" />
         Timeline
       </Button>
-    </div>
+    </fieldset>
   );
 }
 
@@ -236,6 +236,7 @@ function MobileSidebar({
   const previousActiveElement = useRef<HTMLElement | null>(null);
 
   // Focus trap effect
+  // biome-ignore lint/correctness/useExhaustiveDependencies: triggerRef.current read once at effect start — refs must not be reactive deps
   useEffect(() => {
     if (!isOpen || !sidebarRef.current) return;
 
@@ -417,7 +418,7 @@ export function ScheduleApp({ events, meta, derived }: ScheduleAppProps) {
 
   // Render event grid
   const renderGrid = () => (
-    <ul className="grid grid-cols-1 gap-4 lg:grid-cols-2" role="list" aria-label={`Sesiones del ${activeDay?.dayName || "día"}`}>
+    <ul className="grid grid-cols-1 gap-4 lg:grid-cols-2" aria-label={`Sesiones del ${activeDay?.dayName || "día"}`}>
       {filteredEvents.map((event) => (
         <li key={event.id} id={event.id} className="h-full">
           <EventCard
@@ -435,7 +436,7 @@ export function ScheduleApp({ events, meta, derived }: ScheduleAppProps) {
 
   // Render timeline view
   const renderTimeline = () => (
-    <div className="flex flex-col gap-4" role="region" aria-label="Timeline por edificio">
+    <section className="flex flex-col gap-4" aria-label="Timeline por edificio">
       <p className="text-sm text-muted-foreground">
         Vista cronológica por edificio — haz clic en cualquier etiqueta para filtrar
       </p>
@@ -446,7 +447,7 @@ export function ScheduleApp({ events, meta, derived }: ScheduleAppProps) {
         onTagClick={handleTagClick}
         selectedTags={filters.tags}
       />
-    </div>
+    </section>
   );
 
   // Empty state

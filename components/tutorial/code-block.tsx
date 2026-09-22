@@ -5,6 +5,7 @@ import { Button } from "../ui/button";
 
 const CopyIcon = () => (
   <svg
+    aria-hidden="true"
     xmlns="http://www.w3.org/2000/svg"
     width="20"
     height="20"
@@ -22,6 +23,7 @@ const CopyIcon = () => (
 
 const CheckIcon = () => (
   <svg
+    aria-hidden="true"
     xmlns="http://www.w3.org/2000/svg"
     width="20"
     height="20"
@@ -51,6 +53,7 @@ export function CodeBlock({ code }: { code: string }) {
         size="icon"
         onClick={copy}
         variant={"outline"}
+        aria-label="Copiar código"
         className="absolute right-2 top-2"
       >
         {icon}

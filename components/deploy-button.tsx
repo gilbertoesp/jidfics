@@ -10,6 +10,7 @@ export function DeployButton() {
       >
         <Button className="flex items-center gap-2" size="sm">
           <svg
+            aria-hidden="true"
             className="h-3 w-3"
             viewBox="0 0 76 65"
             fill="hsl(var(--background)/1)"

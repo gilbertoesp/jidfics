@@ -170,9 +170,9 @@ export function EventDetailContent({
               Ponencias ({event.papers.length})
             </SectionTitle>
             <ul className="flex flex-col gap-3">
-              {event.papers.map((paper, index) => (
+              {event.papers.map((paper) => (
                 <li
-                  key={`${paper.title}-${index}`}
+                  key={`${paper.title}-${paper.authors.join(",")}-${paper.institution}`}
                   className="flex flex-col gap-1 rounded-lg border bg-muted/30 p-3 text-sm"
                 >
                   <span className="font-medium text-foreground">

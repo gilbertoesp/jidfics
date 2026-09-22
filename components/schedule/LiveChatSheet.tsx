@@ -64,6 +64,7 @@ export function LiveChatSheet({ event, onOpenChange }: LiveChatSheetProps) {
   const inputRef = useRef<HTMLInputElement>(null);
 
   // Reset transcript + focus input each time a new session opens.
+  // biome-ignore lint/correctness/useExhaustiveDependencies: keyed on event?.id only — re-running on other event fields would reset the transcript
   useEffect(() => {
     if (event) {
       setMessages([
@@ -81,6 +82,7 @@ export function LiveChatSheet({ event, onOpenChange }: LiveChatSheetProps) {
     }
   }, [event?.id]); // eslint-disable-line react-hooks/exhaustive-deps
 
+  // biome-ignore lint/correctness/useExhaustiveDependencies: re-run on every message change is the intent — scroll target read via ref
   useEffect(() => {
     bottomRef.current?.scrollIntoView({ behavior: "smooth", block: "end" });
   }, [messages]);

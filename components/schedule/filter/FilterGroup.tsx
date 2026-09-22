@@ -24,7 +24,7 @@ import type { TagCategory } from "@/lib/schedule/types";
 import { cn } from "@/lib/utils";
 
 export interface FilterGroupProps
-  extends Omit<React.ComponentProps<"section">, "title"> {
+  extends Omit<React.ComponentProps<"fieldset">, "title"> {
   category: TagCategory;
   /** Spanish header text (content context). */
   title: string;
@@ -44,8 +44,7 @@ export function FilterGroup({
   ...props
 }: FilterGroupProps) {
   return (
-    <section
-      role="group"
+    <fieldset
       aria-label={title}
       data-slot="filter-group"
       data-category={category}
@@ -82,6 +81,6 @@ export function FilterGroup({
         </div>
       </div>
       {children}
-    </section>
+    </fieldset>
   );
 }

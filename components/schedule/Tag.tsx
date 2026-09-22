@@ -92,19 +92,10 @@ export const Tag = React.forwardRef<HTMLButtonElement, TagProps>(
       onRemove?.(value);
     };
 
-    const handleLabelClick = (e: React.MouseEvent<HTMLDivElement>) => {
+    const handleLabelClick = (e: React.MouseEvent<HTMLButtonElement>) => {
       if (!interactive || !isRemovable) return;
       onTagToggle?.(value);
-      onClick?.(e as unknown as React.MouseEvent<HTMLButtonElement>);
-    };
-
-    const handleLabelKeyDown = (e: React.KeyboardEvent<HTMLDivElement>) => {
-      if (!interactive || !isRemovable) return;
-      if (e.key === "Enter" || e.key === " ") {
-        e.preventDefault();
-        onTagToggle?.(value);
-      }
-      onKeyDown?.(e as unknown as React.KeyboardEvent<HTMLButtonElement>);
+      onClick?.(e);
     };
 
     const baseClassName = cn(
@@ -140,18 +131,17 @@ export const Tag = React.forwardRef<HTMLButtonElement, TagProps>(
               "bg-current",
             )}
           />
-          <span
+          <button
+            type="button"
             data-slot="tag-label"
-            role="button"
-            tabIndex={0}
             aria-label={ariaLabel ?? `Quitar filtro ${displayLabel}`}
             aria-pressed={true}
             onClick={handleLabelClick}
-            onKeyDown={handleLabelKeyDown}
+            onKeyDown={onKeyDown}
             className="cursor-pointer select-none"
           >
             {children ?? displayLabel}
-          </span>
+          </button>
           <button
             type="button"
             onClick={handleRemoveClick}
@@ -202,15 +192,14 @@ Tag.displayName = "Tag";
 // Compound: TagGroup — composable container for tags
 // ------------------------------------------------------------------
 
-export interface TagGroupProps extends React.ComponentProps<"div"> {
+export interface TagGroupProps extends React.ComponentProps<"fieldset"> {
   /** Accessible label for the group */
   label: string;
 }
 
 export function TagGroup({ label, className, children, ...props }: TagGroupProps) {
   return (
-    <div
-      role="group"
+    <fieldset
       aria-label={label}
       data-slot="tag-group"
       data-label={label}
@@ -219,6 +208,6 @@ export function TagGroup({ label, className, children, ...props }: TagGroupProps
     >
       <span className="sr-only">{label}</span>
       {children}
-    </div>
+    </fieldset>
   );
 }
