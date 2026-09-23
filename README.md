@@ -2,7 +2,7 @@
 
 Sitio web oficial de la **VII Jornadas Internacionales de Docencia e Investigación en Ciencias Sociales** (JIDFICS), celebrada en la **Universidad de Sonora, Campus Caborca** los días **23 y 24 de septiembre de 2026**.
 
-> **Estado (v1.1)**: búsqueda full-text con índice invertido · filtros **agrupados por categoría** (Temas / Ubicaciones) con conteo y limpieza por grupo · vista timeline por edificio · **hoja de detalle de sesión** (panel derecho en escritorio, bottom sheet en móvil, deep-link `?event=<id>`) · discusión en vivo (UI, backend-ready).
+> **Estado (v1.1)**: búsqueda full-text con índice invertido · filtros **colapsables por categoría** (Tipo / Ubicaciones / Temas) con conteo y limpieza por grupo · vista timeline por edificio · **hoja de detalle de sesión** (panel derecho en escritorio, bottom sheet en móvil, deep-link `?event=<id>`) · discusión en vivo (UI, backend-ready).
 
 > ℹ️ Este README tiene dos contextos separados:
 > **Contenido (es)** — información del evento y del sitio · **Guía técnica (en)** — documentation for builders.
@@ -20,8 +20,8 @@ Sitio web oficial de la **VII Jornadas Internacionales de Docencia e Investigaci
 ## ✨ Características
 
 - **Búsqueda inteligente** — índice invertido + fuzzy matching (Levenshtein ≤ 2) + ranking ponderado (título > ponente > etiquetas > ponencias > sala > edificio). Maneja tildes y typos: "violncia" → "Violencia", "educacion" → "Educación".
-- **Programa normalizado desde JSON real** — 45+ sesiones, 2 días, 6 edificios, 10+ ejes temáticos, 15+ tipos de actividad.
-- **Filtros agrupados por categoría (nuevo)** — dos grupos con encabezado, contador `seleccionados/total` y limpieza por grupo: **Temas** (etiquetas + tipos de actividad, orden alfabético `es`) y **Ubicaciones** (salas + edificios, orden numérico-aware). Clasificación por palabras clave con mapa de excepciones (`lib/schedule/tags.ts`).
+- **Programa normalizado desde JSON real** — 45+ sesiones, 2 días, 6 edificios, 10+ ejes temáticos, 14 tipos de actividad.
+- **Filtros colapsables por categoría (nuevo)** — tres grupos plegables (acordeón, todos abiertos por defecto) en orden **Tipo → Ubicaciones → Temas**, cada uno con contador `seleccionados/total` y limpieza por grupo: **Tipo de actividad** (Inauguración, Panel, …; orden alfabético `es`), **Ubicaciones** (salas + edificios, orden numérico-aware) y **Temas** (etiquetas temáticas). Clasificación por palabras clave con mapa de excepciones (`lib/schedule/tags.ts`); el esquema de filtros no cambia (agrupación solo-presentación).
 - **Filtrado multifacético** — título, ponente, autor, institución, etiqueta, edificio, sala; facetas combinadas con lógica AND/OR.
 - **Hoja de detalle de sesión (nuevo)** — al pulsar "Detalles de la sesión" en cualquier tarjeta: ponentes, ponencias completas, etiquetas accionables, **sesiones relacionadas** (mismo día, ranking hora → sala → eje), copiar enlace compartible. Panel derecho en escritorio (≈448 px), bottom sheet en móvil; deep-link `?event=<id>` valida el id antes de abrir.
 - **Vista Timeline por edificio** — pestañas por edificio con contador de sesiones, timeline vertical cronológico.
@@ -31,7 +31,7 @@ Sitio web oficial de la **VII Jornadas Internacionales de Docencia e Investigaci
 - **Accesibilidad (a11y)** — ARIA roles, focus trap en diálogos, Escape para cerrar, foco devuelto al disparador, navegación por teclado, etiquetas en español.
 - **Tema claro/oscuro** — `next-themes` con persistencia en `localStorage`.
 - **CI/CD** — GitHub Actions: lint + typecheck + tests + build en cada push/PR.
-- **Tests (TDD)** — **142 tests Vitest** en 11 suites (ver Guía técnica).
+- **Tests (TDD)** — **163 tests Vitest** en 12 suites (ver Guía técnica).
 
 ## 📌 Archivos con TODOs
 
@@ -63,8 +63,8 @@ jidfics/
 │   ├── schedule/
 │   │   ├── ScheduleApp.tsx       # Orchestrator: header, sidebars, grid, timeline, sheets
 │   │   ├── filter/               # Composable filter block
-│   │   │   ├── FilterSidebar.tsx # Block: two category groups (topic | location)
-│   │   │   ├── FilterGroup.tsx   # Component: header + count + per-group clear
+│   │   │   ├── FilterSidebar.tsx # Block: 3 collapsible groups (type > location > topic)
+│   │   │   ├── FilterGroup.tsx   # Component: accordion item (trigger + count + clear)
 │   │   │   └── FilterSidebar.test.tsx
 │   │   ├── EventCard.tsx         # Card → opens detail sheet (aria-haspopup) + chat
 │   │   ├── EventDetailSheet.tsx  # Block: Radix Sheet, responsive side (data-side)
@@ -146,19 +146,20 @@ bun run lint                        # biome check . && eslint .
 bun run format                      # biome autofix + format (write mode)
 ```
 
-**Suites — 142 tests total (140 + 2 integration skipped without credentials):**
+**Suites — 163 tests total (161 + 2 integration skipped without credentials):**
 
 | Suite | Tests | Covers |
 |---|---|---|
 | `src/test/search.test.ts` | 53 | inverted index, fuzzy (Levenshtein), prefix, ranking, highlights, Spanish diacritics |
-| `lib/schedule/tags.test.ts` | 19 | keyword classification, overrides, per-category sorting, counts/clear, real dataset |
+| `lib/schedule/tags.test.ts` | 26 | keyword classification, overrides, 3-way `type\|topic\|location` routing, sorting, counts/clear, real dataset |
 | `lib/schedule/eventDetail.test.ts` | 12 | `?event` strict parsing, share URL, related-session ranking |
 | `lib/schedule/filter.test.ts` | 12 | date/search/facets AND-OR |
 | `lib/schedule/data-integrity.test.ts` | 8 | real JSON guards + known room/time collision snapshot |
 | `lib/schedule/normalize.test.ts` | 7 | JSON → UI shape |
 | `lib/schedule/hooks/useCurrentSession.test.ts` | 10 | live/up-next, grouping, time travel |
 | `lib/schedule/hooks/useEventDetails.test.ts` | 4 | URL-driven sheet state (replaceState, deep link) |
-| `components/schedule/filter/FilterSidebar.test.tsx` | 7 | grouped sidebar block: counts, per-group clear, data-category |
+| `lib/env.test.ts` | 13 | env schema validation (server-only guards) |
+| `components/schedule/filter/FilterSidebar.test.tsx` | 8 | 3 collapsible groups (order, scoped counts, `aria-expanded` collapse, per-group clear, `data-category`) |
 | `components/schedule/EventDetailSheet.test.tsx` | 7 | details rendering, Escape, clipboard, related, responsive `data-side` |
 | `tests/integration/supabase.test.ts` | 3* | real connectivity (*2 skip without credentials) |
 
@@ -209,7 +210,8 @@ Push to `main` auto-deploys to production (PRs get previews) via the Vercel GitH
 | Normalization at build | `normalizeEvents()` runs in `page.tsx` (Server Component) | Zero runtime cost, typed data on the client |
 | Dynamic facets | `deriveFilters()` extracts options from the dataset | No hardcoded unions; new axes/types/venues need no code change |
 | Search | `SearchEngine` (inverted index + Levenshtein + weighted ranking) | Tolerates typos, <50ms |
-| **Tag categories** | Pure classifier + override map in `lib/schedule/tags.ts`; **presentation-only grouping** (filters schema unchanged) | Single ordering authority; no filter-serialization breakage; edge cases data-driven via `TODO(data)` |
+| **Tag categories** | Pure classifier + override map + three-category reducer (`type\|topic\|location`) in `lib/schedule/tags.ts`; **presentation-only grouping** (filters schema unchanged) | Single ordering authority; `type` is facet-backed only (never keyword-inferred); no filter-serialization breakage; edge cases data-driven via `TODO(data)` |
+| **Collapsible groups** | Existing shadcn/Radix Accordion (`type="multiple"`, all open by default) wrapping `FilterGroup` | No new dependency; unmount-on-close content, roving keyboard nav and `aria-expanded` free from Radix |
 | **Detail sheet** | shadcn/Radix Sheet (Dialog primitive) + `data-side` responsive switch | No new dependency; focus trap/Escape/focus-return free from Radix |
 | **URL state** | `history.replaceState` (no router, no `useSearchParams`) | No Suspense requirement, no history spam, still deep-linkable |
 | Composite hooks | `useScheduleApp` orchestrates search + filters + live + view + chat + details | Separation of concerns, testable |

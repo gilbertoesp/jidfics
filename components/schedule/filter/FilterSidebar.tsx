@@ -6,15 +6,18 @@
  * Replaces the former inline FilterSection of ScheduleApp. Structure:
  *
  *   FilterSidebar (search + results + global clear)
- *   ├── FilterGroup[category=topic]    "Temas"       → etiquetas + tipos de actividad
- *   └── FilterGroup[category=location] "Ubicaciones" → etiquetas de ubicación + salas + edificios
+ *   └── Accordion[type=multiple] (all open by default)
+ *       ├── FilterGroup[category=type]    "Tipo de actividad" (14 presentation modes)
+ *       ├── FilterGroup[category=location] "Ubicaciones" → salas + edificios
+ *       └── FilterGroup[category=topic]   "Temas" → etiquetas temáticas
  *
  * All grouping/sorting/counting logic is delegated to the pure module
  * `lib/schedule/tags.ts` (single ordering authority, independently sorted
  * per category). State stays controlled by the caller.
  *
- * A11y: section aria-label="Filtros del programa"; nested role=group labels
- * in Spanish; result count role=status aria-live=polite.
+ * A11y: section aria-label="Filtros del programa"; role=group fieldsets in
+ * Spanish; accordion triggers expose aria-expanded (Radix roving keys);
+ * result count role=status aria-live=polite.
  * data-slot: filter-sidebar
  */
 
@@ -22,6 +25,7 @@ import { Search, X } from "lucide-react";
 import { useMemo } from "react";
 import { FilterGroup } from "@/components/schedule/filter/FilterGroup";
 import { Tag, TagGroup } from "@/components/schedule/Tag";
+import { Accordion } from "@/components/ui/accordion";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -91,10 +95,12 @@ export function FilterSidebar({
 }: FilterSidebarProps) {
   const categorized = useMemo(() => categorizeDerived(derived), [derived]);
 
+  // Per-category selection / option totals (tags.ts is the single authority)
+  const typeCount = countSelectedCategory("type", filters);
   const topicCount = countSelectedCategory("topic", filters);
   const locationCount = countSelectedCategory("location", filters);
-  const topicTotal =
-    categorized.topic.tags.length + categorized.topic.activityTypes.length;
+  const typeTotal = categorized.type.activityTypes.length;
+  const topicTotal = categorized.topic.tags.length;
   const locationTotal =
     categorized.location.tags.length +
     categorized.location.venues.length +
@@ -129,90 +135,102 @@ export function FilterSidebar({
 
       <Separator />
 
-      {/* Topic category: thematic tags + activity types */}
-      <FilterGroup
-        category="topic"
-        title="Temas"
-        selectedCount={topicCount}
-        totalCount={topicTotal}
-        onClear={() => onClearCategory("topic")}
-      >
-        <TagGroup label="Etiquetas">
-          {categorized.topic.tags.map((option) => (
-            <FilterTag
-              key={option.value}
-              option={option}
-              category="topic"
-              selected={filters.tags.includes(option.value)}
-              onToggle={onToggleTag}
-              ariaPrefix="Filtrar por etiqueta"
-            />
-          ))}
-        </TagGroup>
+      {/* Three collapsible groups — requested order: type, location, topic */}
+      <Accordion type="multiple" defaultValue={["type", "location", "topic"]}>
+        {/* Type category: how the research is presented (facet-backed) */}
+        <FilterGroup
+          category="type"
+          title="Tipo de actividad"
+          selectedCount={typeCount}
+          totalCount={typeTotal}
+          onClear={() => onClearCategory("type")}
+        >
+          <TagGroup label="Opciones de tipo">
+            {categorized.type.activityTypes.map((option) => (
+              <FilterTag
+                key={option.value}
+                option={option}
+                category="type"
+                selected={filters.activityTypes.includes(option.value)}
+                onToggle={onToggleActivityType}
+                ariaPrefix="Filtrar por tipo"
+              />
+            ))}
+          </TagGroup>
+        </FilterGroup>
 
-        <TagGroup label="Tipo de actividad">
-          {categorized.topic.activityTypes.map((option) => (
-            <FilterTag
-              key={option.value}
-              option={option}
-              category="topic"
-              selected={filters.activityTypes.includes(option.value)}
-              onToggle={onToggleActivityType}
-              ariaPrefix="Filtrar por tipo"
-            />
-          ))}
-        </TagGroup>
-      </FilterGroup>
+        {/* Location category: location-like tags + venues + buildings */}
+        <FilterGroup
+          category="location"
+          title="Ubicaciones"
+          selectedCount={locationCount}
+          totalCount={locationTotal}
+          onClear={() => onClearCategory("location")}
+        >
+          {categorized.location.tags.length > 0 && (
+            <TagGroup label="Etiquetas de ubicación">
+              {categorized.location.tags.map((option) => (
+                <FilterTag
+                  key={option.value}
+                  option={option}
+                  category="location"
+                  selected={filters.tags.includes(option.value)}
+                  onToggle={onToggleTag}
+                  ariaPrefix="Filtrar por etiqueta"
+                />
+              ))}
+            </TagGroup>
+          )}
 
-      {/* Location category: location-like tags + venues + buildings */}
-      <FilterGroup
-        category="location"
-        title="Ubicaciones"
-        selectedCount={locationCount}
-        totalCount={locationTotal}
-        onClear={() => onClearCategory("location")}
-      >
-        {categorized.location.tags.length > 0 && (
-          <TagGroup label="Etiquetas de ubicación">
-            {categorized.location.tags.map((option) => (
+          <TagGroup label="Sala / Lugar">
+            {categorized.location.venues.map((option) => (
               <FilterTag
                 key={option.value}
                 option={option}
                 category="location"
+                selected={filters.venues.includes(option.value)}
+                onToggle={onToggleVenue}
+                ariaPrefix="Filtrar por sala"
+              />
+            ))}
+          </TagGroup>
+
+          <TagGroup label="Edificio">
+            {categorized.location.buildings.map((option) => (
+              <FilterTag
+                key={option.value}
+                option={option}
+                category="location"
+                selected={filters.buildings.includes(option.value)}
+                onToggle={onToggleBuilding}
+                ariaPrefix="Filtrar por edificio"
+              />
+            ))}
+          </TagGroup>
+        </FilterGroup>
+
+        {/* Topic category: thematic research tags only */}
+        <FilterGroup
+          category="topic"
+          title="Temas"
+          selectedCount={topicCount}
+          totalCount={topicTotal}
+          onClear={() => onClearCategory("topic")}
+        >
+          <TagGroup label="Etiquetas">
+            {categorized.topic.tags.map((option) => (
+              <FilterTag
+                key={option.value}
+                option={option}
+                category="topic"
                 selected={filters.tags.includes(option.value)}
                 onToggle={onToggleTag}
                 ariaPrefix="Filtrar por etiqueta"
               />
             ))}
           </TagGroup>
-        )}
-
-        <TagGroup label="Sala / Lugar">
-          {categorized.location.venues.map((option) => (
-            <FilterTag
-              key={option.value}
-              option={option}
-              category="location"
-              selected={filters.venues.includes(option.value)}
-              onToggle={onToggleVenue}
-              ariaPrefix="Filtrar por sala"
-            />
-          ))}
-        </TagGroup>
-
-        <TagGroup label="Edificio">
-          {categorized.location.buildings.map((option) => (
-            <FilterTag
-              key={option.value}
-              option={option}
-              category="location"
-              selected={filters.buildings.includes(option.value)}
-              onToggle={onToggleBuilding}
-              ariaPrefix="Filtrar por edificio"
-            />
-          ))}
-        </TagGroup>
-      </FilterGroup>
+        </FilterGroup>
+      </Accordion>
 
       <Separator />
 

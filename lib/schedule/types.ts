@@ -134,11 +134,16 @@ export interface ScheduleDerived {
 }
 
 /* ------------------------------------------------------------------ */
-/* Filter tag categorization (topic | location)                        */
+/* Filter tag categorization (type | topic | location)                 */
 /* ------------------------------------------------------------------ */
 
-/** A filter option belongs to exactly one category (nested sidebar sections). */
-export type TagCategory = "topic" | "location";
+/**
+ * Presentation-only grouping of filter facets (filters schema unchanged):
+ *  - "type"    → `tipo_actividad` (Inauguración, Panel, …) — facet-backed only,
+ *                never emitted by the free-text heuristic `categorizeTag`.
+ *  - "topic"   → research tags (ejes temáticos); "location" → salas/edificios.
+ */
+export type TagCategory = "type" | "topic" | "location";
 
 /** Classified + sortable filter option (see lib/schedule/tags.ts). */
 export interface TagOption {

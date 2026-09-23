@@ -184,12 +184,13 @@ describe("categorizeDerived", () => {
       "Salud",
       "Violencia",
     ]);
-    expect(derived.topic.activityTypes.map((o) => o.value)).toEqual([
+    expect(derived.type.activityTypes.map((o) => o.value)).toEqual([
       "Conferencia Magistral",
     ]);
     expect(derived.location.venues.map((o) => o.value)).toEqual(["sala-1"]);
     expect(derived.location.buildings.map((o) => o.value)).toEqual(["3B"]);
     // every option carries its category
+    expect(derived.type.activityTypes[0]?.category).toBe("type");
     expect(derived.topic.tags[0]?.category).toBe("topic");
     expect(derived.location.buildings[0]?.category).toBe("location");
   });
@@ -245,7 +246,7 @@ const selected: ScheduleFilters = {
 
 describe("countSelectedCategory", () => {
   it("sums facet selections per category", () => {
-    expect(countSelectedCategory("topic", selected)).toBe(2); // tags + activityTypes
+    expect(countSelectedCategory("topic", selected)).toBe(1); // tags only
     expect(countSelectedCategory("location", selected)).toBe(3); // venues + buildings
     expect(countSelectedCategory("topic", EMPTY_FILTERS)).toBe(0);
     expect(countSelectedCategory("location", EMPTY_FILTERS)).toBe(0);
@@ -264,7 +265,7 @@ describe("clearCategory", () => {
 
     const clearedTopic = clearCategory("topic", selected);
     expect(clearedTopic.tags).toEqual([]);
-    expect(clearedTopic.activityTypes).toEqual([]);
+    expect(clearedTopic.activityTypes).toEqual(["Conferencia Magistral"]);
     expect(clearedTopic.venues).toEqual(["sala-1", "sala-2"]);
     expect(clearedTopic.buildings).toEqual(["3B"]);
     expect(clearedTopic.date).toBe(selected.date);
@@ -273,5 +274,111 @@ describe("clearCategory", () => {
   it("does not mutate the input filters", () => {
     clearCategory("location", selected);
     expect(selected.venues).toEqual(["sala-1", "sala-2"]);
+  });
+});
+
+/* ------------------------------------------------------------------ */
+/* Three-category model (type | topic | location) — RED specs          */
+/* ------------------------------------------------------------------ */
+
+describe("TagCategory — three categories", () => {
+  it("TagCategory type union includes 'type'", () => {
+    // This will fail until types.ts is updated
+    const cat: TagCategory = "type";
+    expect(cat).toBe("type");
+  });
+});
+
+describe("categorizeDerived — three-category routing", () => {
+  it("routes activityTypes to 'type' category (not 'topic')", () => {
+    const derived = categorizeDerived(
+      makeDerived({
+        tags: ["Salud", "Violencia"],
+        activityTypes: ["Conferencia Magistral", "Panel"],
+        venues: [{ key: "sala-1", label: "Sala 1 · Centro" }],
+        buildings: [
+          { key: "3B", label: "Centro de Convenciones (Edificio 3B)" },
+        ],
+      }),
+    );
+
+    // type category exists and has activityTypes
+    expect(derived.type).toBeDefined();
+    expect(derived.type.activityTypes.map((o) => o.value)).toEqual([
+      "Conferencia Magistral",
+      "Panel",
+    ]);
+    // topic no longer exposes activityTypes
+    expect("activityTypes" in derived.topic).toBe(false);
+    expect(derived.topic.tags.map((o) => o.value)).toEqual([
+      "Salud",
+      "Violencia",
+    ]);
+    // every option carries its category
+    expect(derived.type.activityTypes[0]?.category).toBe("type");
+    expect(derived.topic.tags[0]?.category).toBe("topic");
+    expect(derived.location.buildings[0]?.category).toBe("location");
+  });
+});
+
+describe("countSelectedCategory — three categories", () => {
+  it("sums facet selections per category (type = activityTypes only)", () => {
+    // selected has tags:1 + activityTypes:1 = topic:1, type:1, location:2 (venues) + 1 (building) = 3
+    expect(countSelectedCategory("type", selected)).toBe(1); // activityTypes only
+    expect(countSelectedCategory("topic", selected)).toBe(1); // tags only
+    expect(countSelectedCategory("location", selected)).toBe(3); // venues + buildings
+    expect(countSelectedCategory("type", EMPTY_FILTERS)).toBe(0);
+    expect(countSelectedCategory("topic", EMPTY_FILTERS)).toBe(0);
+    expect(countSelectedCategory("location", EMPTY_FILTERS)).toBe(0);
+  });
+});
+
+describe("clearCategory — three categories", () => {
+  it("clears only the requested category, keeping others intact", () => {
+    const clearedType = clearCategory("type", selected);
+    expect(clearedType.activityTypes).toEqual([]);
+    expect(clearedType.tags).toEqual(["Salud"]);
+    expect(clearedType.venues).toEqual(["sala-1", "sala-2"]);
+    expect(clearedType.buildings).toEqual(["3B"]);
+    expect(clearedType.date).toBe(selected.date);
+    expect(clearedType.searchQuery).toBe(selected.searchQuery);
+
+    const clearedTopic = clearCategory("topic", selected);
+    expect(clearedTopic.tags).toEqual([]);
+    expect(clearedTopic.activityTypes).toEqual(["Conferencia Magistral"]);
+    expect(clearedTopic.venues).toEqual(["sala-1", "sala-2"]);
+    expect(clearedTopic.buildings).toEqual(["3B"]);
+
+    const clearedLocation = clearCategory("location", selected);
+    expect(clearedLocation.venues).toEqual([]);
+    expect(clearedLocation.buildings).toEqual([]);
+    expect(clearedLocation.tags).toEqual(["Salud"]);
+    expect(clearedLocation.activityTypes).toEqual(["Conferencia Magistral"]);
+  });
+
+  it("does not mutate the input filters", () => {
+    clearCategory("type", selected);
+    expect(selected.activityTypes).toEqual(["Conferencia Magistral"]);
+    clearCategory("topic", selected);
+    expect(selected.tags).toEqual(["Salud"]);
+  });
+});
+
+describe("real dataset categorization — three categories", () => {
+  const events = normalizeEvents(rawCalendario as RawCalendario);
+  const categorized = categorizeDerived(deriveFilters(events));
+
+  it("routes every real activityType to 'type' category (14 values)", () => {
+    expect(categorized.type).toBeDefined();
+    expect(categorized.type.activityTypes.length).toBe(14);
+    for (const option of categorized.type.activityTypes) {
+      expect(option.category).toBe("type");
+    }
+  });
+
+  it("topic.tags has 19 values and no activityTypes", () => {
+    const values: string[] = categorized.topic.tags.map((o) => o.value);
+    expect(values.length).toBeGreaterThanOrEqual(19);
+    expect("activityTypes" in categorized.topic).toBe(false);
   });
 });
