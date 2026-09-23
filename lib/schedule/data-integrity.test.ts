@@ -1,6 +1,10 @@
 import { describe, expect, it } from "vitest";
 import rawCalendario from "@/lib/schedule/calendario_vii_jidfics.json";
-import { normalizeEvents, normalizeMeta } from "@/lib/schedule/normalize";
+import {
+  deriveFilters,
+  normalizeEvents,
+  normalizeMeta,
+} from "@/lib/schedule/normalize";
 import type { RawCalendario } from "@/lib/schedule/types";
 
 /**
@@ -108,5 +112,19 @@ describe("normalized events integrity", () => {
       }
     }
     expect(collisions).toEqual(KNOWN_COLLISIONS);
+  });
+});
+
+describe("derived location facet (Ubicaciones)", () => {
+  const derived = deriveFilters(events);
+
+  it("uses one deduped room-only tag per venue in 'Sala * (Edificio *)' format", () => {
+    const labels = derived.venues.map((v) => v.label);
+    expect(labels.length).toBeGreaterThan(0);
+    expect(new Set(labels).size).toBe(labels.length); // no repeated locations
+    for (const label of labels) {
+      expect(label, label).toMatch(/^.+ \(Edificio [^()]+\)$/);
+      expect(label, label).not.toContain("·"); // no "Sala # · Sala *" copies
+    }
   });
 });

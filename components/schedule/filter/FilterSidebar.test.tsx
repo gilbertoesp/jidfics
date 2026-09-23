@@ -14,14 +14,16 @@ import type { ScheduleDerived, TagCategory } from "@/lib/schedule/types";
  *   Radix Accordion trigger exposes aria-expanded; role=group fieldset
  *   body in Spanish).
  * - Facet mapping: activityTypes → type; tags → topic;
- *   venues+buildings → location. Counts/clears are per category.
+ *   venues → location as ONE room-only list in "Sala * (Edificio *)" format
+ *   (the old "Sala # · Sala *" venue labels and the separate building row
+ *   were duplicates — both removed). Counts/clears are per category.
  */
 
 const derived: ScheduleDerived = {
   axes: [],
   tags: ["Salud", "Violencia"],
   activityTypes: ["Conferencia Magistral", "Mesa de Ponencias"],
-  venues: [{ key: "sala-1", label: "Sala 1 · Centro de Convenciones" }],
+  venues: [{ key: "sala-1", label: "Sala 1 (Edificio 3B)" }],
   buildings: [{ key: "3B", label: "Centro de Convenciones (Edificio 3B)" }],
 };
 
@@ -99,16 +101,24 @@ describe("FilterSidebar", () => {
     expect(topic).not.toHaveTextContent("Conferencia Magistral");
     expect(type).toHaveTextContent("Conferencia Magistral");
     expect(type).toHaveTextContent("Mesa de Ponencias");
-    expect(location).toHaveTextContent("Sala 1 · Centro de Convenciones");
-    expect(location).toHaveTextContent("Edificio 3B");
-    expect(topic).not.toHaveTextContent("Sala 1 · Centro");
+    expect(location).toHaveTextContent("Sala 1 (Edificio 3B)");
+    // building row removed — rooms carry the building in their own label
+    expect(location).not.toHaveTextContent("Centro de Convenciones");
+    expect(topic).not.toHaveTextContent("Sala 1 (Edificio");
     expect(location).not.toHaveTextContent("Violencia");
+  });
+
+  it("offers no building options in Ubicaciones (rooms only)", () => {
+    renderSidebar();
+    expect(
+      screen.queryAllByRole("button", { name: /^Filtrar por edificio/ }),
+    ).toEqual([]);
   });
 
   it("shows selected/total count scoped per category", () => {
     const { container } = renderSidebar({ tags: ["Salud"] });
     expect(countIn(container, "type")).toBe("0/2");
-    expect(countIn(container, "location")).toBe("0/2");
+    expect(countIn(container, "location")).toBe("0/1"); // rooms only, no building row
     expect(countIn(container, "topic")).toBe("1/2");
   });
 
