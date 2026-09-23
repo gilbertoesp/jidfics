@@ -118,13 +118,19 @@ describe("normalized events integrity", () => {
 describe("derived location facet (Ubicaciones)", () => {
   const derived = deriveFilters(events);
 
-  it("uses one deduped room-only tag per venue in 'Sala * (Edificio *)' format", () => {
+  it("uses one accurate hall-name tag per venue (no room numbers, no codes, no copies)", () => {
     const labels = derived.venues.map((v) => v.label);
     expect(labels.length).toBeGreaterThan(0);
     expect(new Set(labels).size).toBe(labels.length); // no repeated locations
+    // every label is a real hall (lugar) from the dataset — and every hall appears
+    const halls = events.map((e) => e.venueLabel.split(" · ")[1]);
+    expect(new Set(labels.map((l) => l.toLowerCase()))).toEqual(
+      new Set(halls.map((h) => h.toLowerCase())),
+    );
     for (const label of labels) {
-      expect(label, label).toMatch(/^.+ \(Edificio [^()]+\)$/);
       expect(label, label).not.toContain("·"); // no "Sala # · Sala *" copies
+      expect(label, label).not.toMatch(/\(Edificio/); // no building codes
+      expect(label, label).not.toMatch(/^Sala \d+$/); // no bare room numbers
     }
   });
 });

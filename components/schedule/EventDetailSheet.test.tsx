@@ -29,7 +29,7 @@ function makeEvent(partial: Partial<ConferenceEvent>): ConferenceEvent {
     building: "3B",
     venueKey: "sala-1",
     venueLabel: "Sala 1 · Centro de Convenciones",
-    venueName: "Sala 1",
+    venueHall: "Centro de Convenciones",
     speakers: [
       { name: "Dra. Ana López", institution: "UNISON", role: "speaker" },
     ],
