@@ -21,7 +21,7 @@ Sitio web oficial de la **VII Jornadas Internacionales de Docencia e Investigaci
 
 - **Búsqueda inteligente** — índice invertido + fuzzy matching (Levenshtein ≤ 2) + ranking ponderado (título > ponente > etiquetas > ponencias > sala > edificio). Maneja tildes y typos: "violncia" → "Violencia", "educacion" → "Educación".
 - **Programa normalizado desde JSON real** — 45+ sesiones, 2 días, 6 edificios, 10+ ejes temáticos, 14 tipos de actividad.
-- **Filtros colapsables por categoría (nuevo)** — tres grupos plegables (acordeón, todos abiertos por defecto) en orden **Tipo → Ubicaciones → Temas**, cada uno con contador `seleccionados/total` y limpieza por grupo: **Tipo de actividad** (Inauguración, Panel, …; orden alfabético `es`), **Ubicaciones** (una etiqueta por sala `Sala * (Edificio *)`, sin duplicados, orden numérico-aware) y **Temas** (etiquetas temáticas). Clasificación por palabras clave con mapa de excepciones (`lib/schedule/tags.ts`); el esquema de filtros no cambia (agrupación solo-presentación).
+- **Filtros colapsables por categoría (nuevo)** — tres grupos plegables (acordeón, todos abiertos por defecto) en orden **Tipo → Ubicaciones → Temas**, cada uno con contador `seleccionados/total` y limpieza por grupo: **Tipo de actividad** (Inauguración, Panel, …; orden alfabético `es`), **Ubicaciones** (una etiqueta por salón con su nombre real — `Centro de Convenciones`, `Sala Polivalente`, … — sin números de sala, códigos ni duplicados) y **Temas** (etiquetas temáticas). Clasificación por palabras clave con mapa de excepciones (`lib/schedule/tags.ts`); el esquema de filtros no cambia (agrupación solo-presentación).
 - **Filtrado multifacético** — título, ponente, autor, institución, etiqueta, edificio, sala; facetas combinadas con lógica AND/OR.
 - **Hoja de detalle de sesión (nuevo)** — al pulsar "Detalles de la sesión" en cualquier tarjeta: ponentes, ponencias completas, etiquetas accionables, **sesiones relacionadas** (mismo día, ranking hora → sala → eje), copiar enlace compartible. Panel derecho en escritorio (≈448 px), bottom sheet en móvil; deep-link `?event=<id>` valida el id antes de abrir.
 - **Vista Timeline (nueva)** — línea de tiempo única con TODOS los eventos del día en orden cronológico, ya filtrados por la barra lateral; cada sesión muestra sala + edificio, indicadores de vivo/próximo y etiquetas clicables para filtrar.
@@ -152,7 +152,7 @@ bun run format                      # biome autofix + format (write mode)
 | Suite | Tests | Covers |
 |---|---|---|
 | `src/test/search.test.ts` | 53 | inverted index, fuzzy (Levenshtein), prefix, ranking, highlights, Spanish diacritics |
-| `lib/schedule/tags.test.ts` | 27 | keyword classification, overrides, 3-way `type\|topic\|location` routing, sorting (incl. `Sala * (Edificio *)` rooms), counts/clear, real dataset |
+| `lib/schedule/tags.test.ts` | 27 | keyword classification, overrides, 3-way `type\|topic\|location` routing, sorting (room numbers, paren suffixes), counts/clear, real dataset |
 | `lib/schedule/eventDetail.test.ts` | 12 | `?event` strict parsing, share URL, related-session ranking |
 | `lib/schedule/filter.test.ts` | 12 | date/search/facets AND-OR |
 | `lib/schedule/data-integrity.test.ts` | 9 | real JSON guards + known room/time collision snapshot + Ubicaciones label dedupe |
