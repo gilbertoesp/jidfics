@@ -15,9 +15,9 @@ describe("room index (label-format change)", () => {
       startTime: "09:00",
       endTime: "10:00",
       title: "Conversatorio de bienvenida",
-      venueKey: "sala-1",
-      venueLabel: "Centro de Convenciones (Edificio 3B)",
-      venueHall: "Centro de Convenciones",
+      locationKey: "sala-1",
+      locationLabel: "Centro de Convenciones (Edificio 3B)",
+      hallName: "Centro de Convenciones",
       roomName: "Sala 1",
       activityType: "Panel",
       thematicAxis: "General",
@@ -42,10 +42,10 @@ const mockEvents: ConferenceEvent[] = [
     endTime: "10:30",
     title:
       "La ansiedad, depresión y estrés en jóvenes y el método integral para prevenirlos a través del Yoga",
-    venueKey: "sala-1",
+    locationKey: "sala-1",
     roomName: "Sala 1",
-    venueLabel: "Sala 1 · Centro de Convenciones",
-    venueHall: "Centro de Convenciones",
+    locationLabel: "Sala 1 · Centro de Convenciones",
+    hallName: "Centro de Convenciones",
     activityType: "Conferencia Magistral",
     thematicAxis: "Salud / Psicología",
     tags: ["Salud", "Psicología"],
@@ -65,10 +65,10 @@ const mockEvents: ConferenceEvent[] = [
     startTime: "10:30",
     endTime: "12:30",
     title: "Mesa 1 · Violencia",
-    venueKey: "sala-2",
+    locationKey: "sala-2",
     roomName: "Sala 2",
-    venueLabel: "Sala 2 · Sala Audiovisual",
-    venueHall: "Sala Audiovisual",
+    locationLabel: "Sala 2 · Sala Audiovisual",
+    hallName: "Sala Audiovisual",
     activityType: "Trabajos Libres",
     thematicAxis: "Violencia",
     tags: ["Violencia"],
@@ -96,10 +96,10 @@ const mockEvents: ConferenceEvent[] = [
     endTime: "09:00",
     title:
       "Niñez y tecnología: patrones de uso de pantallas, perfiles conductuales y desarrollo cognitivo-socioemocional en escolares",
-    venueKey: "sala-1",
+    locationKey: "sala-1",
     roomName: "Sala 1",
-    venueLabel: "Sala 1 · Centro de Convenciones",
-    venueHall: "Centro de Convenciones",
+    locationLabel: "Sala 1 · Centro de Convenciones",
+    hallName: "Centro de Convenciones",
     activityType: "Conferencia Magistral",
     thematicAxis: "Educación / Tecnología",
     tags: ["Educación", "Tecnología"],
@@ -119,10 +119,10 @@ const mockEvents: ConferenceEvent[] = [
     startTime: "09:00",
     endTime: "13:00",
     title: "Mesa 16 · Educación",
-    venueKey: "sala-2",
+    locationKey: "sala-2",
     roomName: "Sala 2",
-    venueLabel: "Sala 2 · Sala Audiovisual",
-    venueHall: "Sala Audiovisual",
+    locationLabel: "Sala 2 · Sala Audiovisual",
+    hallName: "Sala Audiovisual",
     activityType: "Trabajos Libres",
     thematicAxis: "Educación",
     tags: ["Educación"],
@@ -266,7 +266,7 @@ describe("SearchEngine", () => {
       expect(results.length).toBe(2); // WED-003 and THU-001
     });
 
-    it("indexes venue", () => {
+    it("indexes location", () => {
       const results = engine.search("Audiovisual");
       expect(results.length).toBe(2); // WED-MESA-1 and THU-MESA-16
     });

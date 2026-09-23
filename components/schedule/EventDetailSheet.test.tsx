@@ -27,10 +27,10 @@ function makeEvent(partial: Partial<ConferenceEvent>): ConferenceEvent {
     thematicAxis: "Violencia",
     tags: ["Violencia", "Tecnología"],
     building: "3B",
-    venueKey: "sala-1",
+    locationKey: "sala-1",
     roomName: "Sala 1",
-    venueLabel: "Centro de Convenciones (Edificio 3B)",
-    venueHall: "Centro de Convenciones",
+    locationLabel: "Centro de Convenciones (Edificio 3B)",
+    hallName: "Centro de Convenciones",
     speakers: [
       { name: "Dra. Ana López", institution: "UNISON", role: "speaker" },
     ],

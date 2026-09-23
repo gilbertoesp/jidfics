@@ -17,10 +17,10 @@ const meta = normalizeMeta(calendario);
 const TIME_RE = /^([01]\d|2[0-3]):[0-5]\d$/;
 
 describe("dataset shape", () => {
-  it("has a single venue (sede) with the expected fields", () => {
+  it("has a single sede (host) with the expected fields", () => {
     expect(calendario.edicion).toBe("VII");
     expect(calendario.sede.institucion).toContain("Sonora");
-    expect(meta.venueCampus).toBe("Caborca");
+    expect(meta.hostCampus).toBe("Caborca");
   });
 
   it("covers both conference days", () => {
@@ -54,8 +54,8 @@ describe("normalized events integrity", () => {
       expect(event.title.trim().length, event.id).toBeGreaterThan(0);
       expect(event.activityType.trim().length, event.id).toBeGreaterThan(0);
       expect(event.thematicAxis.trim().length, event.id).toBeGreaterThan(0);
-      expect(event.venueLabel.trim().length, event.id).toBeGreaterThan(0);
-      expect(event.venueKey.trim().length, event.id).toBeGreaterThan(0);
+      expect(event.locationLabel.trim().length, event.id).toBeGreaterThan(0);
+      expect(event.locationKey.trim().length, event.id).toBeGreaterThan(0);
     }
   });
 
@@ -66,12 +66,12 @@ describe("normalized events integrity", () => {
     }
   });
 
-  it("normalizes duplicate venue spellings to one key", () => {
+  it("normalizes duplicate location spellings to one key", () => {
     const labelsByKey = new Map<string, Set<string>>();
     for (const event of events) {
-      const set = labelsByKey.get(event.venueKey) ?? new Set<string>();
-      set.add(event.venueLabel);
-      labelsByKey.set(event.venueKey, set);
+      const set = labelsByKey.get(event.locationKey) ?? new Set<string>();
+      set.add(event.locationLabel);
+      labelsByKey.set(event.locationKey, set);
     }
     for (const [key, labels] of labelsByKey) {
       // Same schema-id may show localized/abbreviated label variants, but the
@@ -81,7 +81,7 @@ describe("normalized events integrity", () => {
     expect(events.length).toBeGreaterThan(20);
   });
 
-  it("pins the known same-venue time collisions for this edition", () => {
+  it("pins the known same-location time collisions for this edition", () => {
     // THU has parallel mesas assigned to shared rooms (partitioned halls).
     // Rather than fighting editorial data, we PIN the exact collision set so
     // the suite fails if an editor introduces NEW overlaps or resolves these.
@@ -93,7 +93,7 @@ describe("normalized events integrity", () => {
 
     const bySlot = new Map<string, Array<[string, string, string]>>();
     for (const event of events) {
-      const key = `${event.date}|${event.venueKey}`;
+      const key = `${event.date}|${event.locationKey}`;
       const list = bySlot.get(key) ?? [];
       list.push([event.startTime, event.endTime, event.id]);
       bySlot.set(key, list);
@@ -118,20 +118,20 @@ describe("normalized events integrity", () => {
 describe("derived location facet (Ubicaciones)", () => {
   const derived = deriveFilters(events);
 
-  it("uses one accurate 'hall (Edificio X)' tag per venue", () => {
-    const labels = derived.venues.map((v) => v.label);
+  it("uses one accurate 'hall (Edificio X)' tag per location", () => {
+    const labels = derived.locations.map((v) => v.label);
     expect(labels.length).toBeGreaterThan(0);
     expect(new Set(labels).size).toBe(labels.length); // no repeated locations
     // each facet label = its event's hall + building via the single formatter
     const expected = new Map(
       events.map((e) => [
-        e.venueKey,
+        e.locationKey,
         e.building !== "Unknown"
-          ? `${e.venueHall} (Edificio ${e.building})`
-          : e.venueHall,
+          ? `${e.hallName} (Edificio ${e.building})`
+          : e.hallName,
       ]),
     );
-    expect(new Map(derived.venues.map((v) => [v.key, v.label]))).toEqual(
+    expect(new Map(derived.locations.map((v) => [v.key, v.label]))).toEqual(
       expected,
     );
     for (const label of labels) {

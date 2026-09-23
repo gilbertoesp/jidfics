@@ -72,10 +72,10 @@ describe("normalizeEvents", () => {
       endTime: "10:00",
       activityType: "Conferencia Magistral",
       thematicAxis: "Salud / Psicología",
-      venueLabel: "Centro de Convenciones (Edificio 3B)",
-      venueHall: "Centro de Convenciones",
+      locationLabel: "Centro de Convenciones (Edificio 3B)",
+      hallName: "Centro de Convenciones",
       roomName: "Sala 1",
-      venueKey: "sala-1",
+      locationKey: "sala-1",
     });
     expect(events[0].speakers[0]).toEqual({
       name: "Dra. Ana",
@@ -119,7 +119,7 @@ describe("normalizeMeta", () => {
   it("maps conference metadata", () => {
     const meta = normalizeMeta(fixture);
     expect(meta.edition).toBe("VII");
-    expect(meta.venueCampus).toBe("Caborca");
+    expect(meta.hostCampus).toBe("Caborca");
     expect(meta.days).toEqual([{ date: "2026-09-23", dayName: "Miércoles" }]);
   });
 });
@@ -146,7 +146,7 @@ describe("deriveFilters", () => {
       "Conferencia Magistral",
       "Trabajos Libres",
     ]);
-    expect(derived.venues).toContainEqual({
+    expect(derived.locations).toContainEqual({
       key: "sala-1",
       label: "Centro de Convenciones (Edificio 3B)",
     });

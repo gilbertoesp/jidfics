@@ -5,7 +5,7 @@ import { EventCard } from "@/components/schedule/EventCard";
 import type { ConferenceEvent } from "@/lib/schedule/types";
 
 /* Contract: ONE location label per card — "hall (Edificio X)".
- * The trailing "· building" suffix was folded into venueLabel (no dupes). */
+ * The trailing "· building" suffix was folded into locationLabel (no dupes). */
 
 const event: ConferenceEvent = {
   id: "WED-004",
@@ -13,9 +13,9 @@ const event: ConferenceEvent = {
   startTime: "10:30",
   endTime: "11:30",
   title: "Bienestar y desarrollo psicológico",
-  venueKey: "sala-1",
-  venueLabel: "Centro de Convenciones (Edificio 3B)",
-  venueHall: "Centro de Convenciones",
+  locationKey: "sala-1",
+  locationLabel: "Centro de Convenciones (Edificio 3B)",
+  hallName: "Centro de Convenciones",
   roomName: "Sala 1",
   activityType: "Conferencia Magistral",
   thematicAxis: "Salud",

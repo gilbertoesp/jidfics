@@ -10,10 +10,10 @@ const mockEvents: ConferenceEvent[] = [
     startTime: "09:00",
     endTime: "10:00",
     title: "Conferencia Magistral",
-    venueKey: "sala-1",
+    locationKey: "sala-1",
     roomName: "Sala 1",
-    venueLabel: "Sala 1 · Centro de Convenciones",
-    venueHall: "Centro de Convenciones",
+    locationLabel: "Sala 1 · Centro de Convenciones",
+    hallName: "Centro de Convenciones",
     activityType: "Conferencia Magistral",
     thematicAxis: "Salud",
     tags: ["Salud"],
@@ -27,10 +27,10 @@ const mockEvents: ConferenceEvent[] = [
     startTime: "10:00",
     endTime: "11:00",
     title: "Mesa 1 · Violencia",
-    venueKey: "sala-2",
+    locationKey: "sala-2",
     roomName: "Sala 2",
-    venueLabel: "Sala 2 · Sala Audiovisual",
-    venueHall: "Sala Audiovisual",
+    locationLabel: "Sala 2 · Sala Audiovisual",
+    hallName: "Sala Audiovisual",
     activityType: "Trabajos Libres",
     thematicAxis: "Violencia",
     tags: ["Violencia"],
@@ -44,10 +44,10 @@ const mockEvents: ConferenceEvent[] = [
     startTime: "11:00",
     endTime: "12:00",
     title: "Conversatorio",
-    venueKey: "sala-3",
+    locationKey: "sala-3",
     roomName: "Sala 3",
-    venueLabel: "Sala 3 · Sala Polivalente",
-    venueHall: "Sala Polivalente",
+    locationLabel: "Sala 3 · Sala Polivalente",
+    hallName: "Sala Polivalente",
     activityType: "Conversatorio",
     thematicAxis: "Educación",
     tags: ["Educación"],
@@ -61,10 +61,10 @@ const mockEvents: ConferenceEvent[] = [
     startTime: "09:00",
     endTime: "10:00",
     title: "Clausura",
-    venueKey: "sala-1",
+    locationKey: "sala-1",
     roomName: "Sala 1",
-    venueLabel: "Sala 1 · Centro de Convenciones",
-    venueHall: "Centro de Convenciones",
+    locationLabel: "Sala 1 · Centro de Convenciones",
+    hallName: "Centro de Convenciones",
     activityType: "Clausura",
     thematicAxis: "General",
     tags: ["General"],
@@ -154,8 +154,8 @@ describe("useCurrentSession", () => {
       }),
     );
 
-    expect(result.current.liveByHall["Hall 1"]).toHaveLength(1);
-    expect(result.current.liveByHall["Hall 2"]).toBeUndefined();
+    expect(result.current.liveByHall["Centro de Convenciones"]).toHaveLength(1);
+    expect(result.current.liveByHall["Sala Audiovisual"]).toBeUndefined();
   });
 
   it("time-travel mode works with setTimeTravel", () => {

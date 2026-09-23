@@ -14,7 +14,7 @@ import type { ScheduleDerived, TagCategory } from "@/lib/schedule/types";
  *   Radix Accordion trigger exposes aria-expanded; role=group fieldset
  *   body in Spanish).
  * - Facet mapping: activityTypes → type; tags → topic;
- *   venues → location as ONE list of "hall (Edificio X)" labels
+ *   locations → location as ONE list of "hall (Edificio X)" labels
  *   ("Centro de Convenciones (Edificio 3B)", …) — the separate building row
  *   stays removed (its content is now part of each label). Counts per category.
  */
@@ -23,7 +23,7 @@ const derived: ScheduleDerived = {
   axes: [],
   tags: ["Salud", "Violencia"],
   activityTypes: ["Conferencia Magistral", "Mesa de Ponencias"],
-  venues: [{ key: "sala-1", label: "Centro de Convenciones (Edificio 3B)" }],
+  locations: [{ key: "sala-1", label: "Centro de Convenciones (Edificio 3B)" }],
   buildings: [{ key: "3B", label: "Centro de Convenciones (Edificio 3B)" }],
 };
 
@@ -33,7 +33,7 @@ const baseProps = {
   onSearchChange: vi.fn(),
   onToggleTag: vi.fn(),
   onToggleActivityType: vi.fn(),
-  onToggleVenue: vi.fn(),
+  onToggleLocation: vi.fn(),
   onToggleBuilding: vi.fn(),
   onClear: vi.fn(),
   onClearCategory: vi.fn(),
@@ -126,7 +126,7 @@ describe("FilterSidebar", () => {
 
   it("per-category clear is disabled at zero and fires with its category", async () => {
     const user = userEvent.setup();
-    renderSidebar({ activityTypes: ["Panel"], venues: ["sala-1"] });
+    renderSidebar({ activityTypes: ["Panel"], locations: ["sala-1"] });
 
     const clearType = screen.getByRole("button", {
       name: "Limpiar Tipo de actividad",
