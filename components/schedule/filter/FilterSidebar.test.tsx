@@ -1,4 +1,4 @@
-import { render, screen } from "@testing-library/react";
+import { render, screen, within } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import * as React from "react";
 import { describe, expect, it, vi } from "vitest";
@@ -14,16 +14,16 @@ import type { ScheduleDerived, TagCategory } from "@/lib/schedule/types";
  *   Radix Accordion trigger exposes aria-expanded; role=group fieldset
  *   body in Spanish).
  * - Facet mapping: activityTypes → type; tags → topic;
- *   venues → location as ONE list of hall names ("Centro de Convenciones",
- *   "Sala Polivalente", …) — room numbers, building codes and the separate
- *   building row were duplicated/inaccurate — removed. Counts per category.
+ *   venues → location as ONE list of "hall (Edificio X)" labels
+ *   ("Centro de Convenciones (Edificio 3B)", …) — the separate building row
+ *   stays removed (its content is now part of each label). Counts per category.
  */
 
 const derived: ScheduleDerived = {
   axes: [],
   tags: ["Salud", "Violencia"],
   activityTypes: ["Conferencia Magistral", "Mesa de Ponencias"],
-  venues: [{ key: "sala-1", label: "Centro de Convenciones" }],
+  venues: [{ key: "sala-1", label: "Centro de Convenciones (Edificio 3B)" }],
   buildings: [{ key: "3B", label: "Centro de Convenciones (Edificio 3B)" }],
 };
 
@@ -101,9 +101,11 @@ describe("FilterSidebar", () => {
     expect(topic).not.toHaveTextContent("Conferencia Magistral");
     expect(type).toHaveTextContent("Conferencia Magistral");
     expect(type).toHaveTextContent("Mesa de Ponencias");
-    expect(location).toHaveTextContent("Centro de Convenciones"); // hall name
-    // building row removed — no building-code chips remain
-    expect(location).not.toHaveTextContent("Edificio 3B");
+    expect(location).toHaveTextContent("Centro de Convenciones (Edificio 3B)");
+    // building row stays removed — structural check (labels carry codes now)
+    expect(
+      within(location).queryByRole("button", { name: /^Filtrar por edificio/ }),
+    ).toBeNull();
     expect(topic).not.toHaveTextContent("Centro de Convenciones");
     expect(location).not.toHaveTextContent("Violencia");
   });

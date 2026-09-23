@@ -7,6 +7,32 @@ import {
 } from "@/lib/schedule/search";
 import type { ConferenceEvent } from "@/lib/schedule/types";
 
+describe("room index (label-format change)", () => {
+  it("keeps rooms searchable: 'sala 1' matches via roomName, not the label", () => {
+    const roomEvent: ConferenceEvent = {
+      id: "room-1",
+      date: "2026-09-23",
+      startTime: "09:00",
+      endTime: "10:00",
+      title: "Conversatorio de bienvenida",
+      venueKey: "sala-1",
+      venueLabel: "Centro de Convenciones (Edificio 3B)",
+      venueHall: "Centro de Convenciones",
+      roomName: "Sala 1",
+      activityType: "Panel",
+      thematicAxis: "General",
+      tags: ["General"],
+      building: "3B",
+      speakers: [],
+      papers: [],
+    };
+    const ids = new SearchEngine([roomEvent])
+      .search("sala 1")
+      .map((r) => r.event.id);
+    expect(ids).toContain("room-1");
+  });
+});
+
 // Test data matching the real VII JIDFICS dataset structure
 const mockEvents: ConferenceEvent[] = [
   {

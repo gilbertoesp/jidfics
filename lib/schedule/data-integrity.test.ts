@@ -118,19 +118,26 @@ describe("normalized events integrity", () => {
 describe("derived location facet (Ubicaciones)", () => {
   const derived = deriveFilters(events);
 
-  it("uses one accurate hall-name tag per venue (no room numbers, no codes, no copies)", () => {
+  it("uses one accurate 'hall (Edificio X)' tag per venue", () => {
     const labels = derived.venues.map((v) => v.label);
     expect(labels.length).toBeGreaterThan(0);
     expect(new Set(labels).size).toBe(labels.length); // no repeated locations
-    // every label is a real hall (lugar) from the dataset — and every hall appears
-    const halls = events.map((e) => e.venueLabel.split(" · ")[1]);
-    expect(new Set(labels.map((l) => l.toLowerCase()))).toEqual(
-      new Set(halls.map((h) => h.toLowerCase())),
+    // each facet label = its event's hall + building via the single formatter
+    const expected = new Map(
+      events.map((e) => [
+        e.venueKey,
+        e.building !== "Unknown"
+          ? `${e.venueHall} (Edificio ${e.building})`
+          : e.venueHall,
+      ]),
+    );
+    expect(new Map(derived.venues.map((v) => [v.key, v.label]))).toEqual(
+      expected,
     );
     for (const label of labels) {
-      expect(label, label).not.toContain("·"); // no "Sala # · Sala *" copies
-      expect(label, label).not.toMatch(/\(Edificio/); // no building codes
-      expect(label, label).not.toMatch(/^Sala \d+$/); // no bare room numbers
+      expect(label, label).toMatch(/^.+ \(Edificio [^()]+\)$/); // hall + code
+      expect(label, label).not.toContain("·"); // no room-prefix copies
+      expect(label, label).not.toMatch(/^Sala \d+/); // no bare room numbers
     }
   });
 });

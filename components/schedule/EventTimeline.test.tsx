@@ -11,8 +11,8 @@ import type { ConferenceEvent } from "@/lib/schedule/types";
  *   with ONE chronological timeline of all (sidebar-filtered) events.
  * - No building tabs: queryByRole("tab") must stay empty; the section
  *   exposes data-slot="event-timeline" as its stable contract.
- * - Per item: time range, live/up-next badges, venue + building code
- *   (location context previously carried by the tabs), clickable tags.
+ * - Per item: time range, live/up-next badges, ONE location label
+ *   "hall (Edificio X)" (code folded in; no building badge), clickable tags.
  */
 
 function makeEvent(partial: Partial<ConferenceEvent>): ConferenceEvent {
@@ -27,7 +27,7 @@ function makeEvent(partial: Partial<ConferenceEvent>): ConferenceEvent {
     tags: ["Violencia"],
     building: "3B",
     venueKey: "sala-1",
-    venueLabel: "Sala 1 · Centro de Convenciones",
+    venueLabel: "Centro de Convenciones (Edificio 3B)",
     venueHall: "Centro de Convenciones",
     speakers: [],
     papers: [],
@@ -44,7 +44,7 @@ const events = [
     title: "Día 2",
     building: "1M",
     venueKey: "sala-3",
-    venueLabel: "Sala 3 · Sala Polivalente",
+    venueLabel: "Sala Polivalente (Edificio 1M)",
     venueHall: "Sala Polivalente",
   }),
   makeEvent({
@@ -52,7 +52,7 @@ const events = [
     startTime: "11:00",
     building: "1E",
     venueKey: "sala-2",
-    venueLabel: "Sala 2 · Sala Audiovisual",
+    venueLabel: "Sala Audiovisual (Edificio 1E)",
     venueHall: "Sala Audiovisual",
     title: "Mesa tarde",
   }),
@@ -91,14 +91,16 @@ describe("EventTimeline", () => {
     expect(titles).toEqual(["Mañana", "Mesa tarde", "Día 2"]);
   });
 
-  it("keeps location context per item: venue label + building code", () => {
+  it("keeps location context per item: 'hall (Edificio X)' label, no badge", () => {
     renderTimeline();
     expect(
-      screen.getByText("Sala 1 · Centro de Convenciones"),
+      screen.getByText("Centro de Convenciones (Edificio 3B)"),
     ).toBeInTheDocument();
-    expect(screen.getByText("Sala 2 · Sala Audiovisual")).toBeInTheDocument();
-    expect(screen.getAllByText("3B").length).toBeGreaterThan(0);
-    expect(screen.getAllByText("1E").length).toBeGreaterThan(0);
+    expect(
+      screen.getByText("Sala Audiovisual (Edificio 1E)"),
+    ).toBeInTheDocument();
+    // building code folded into the label — no redundant badge
+    expect(document.querySelector('[data-slot="event-building"]')).toBeNull();
   });
 
   it("fires onTagClick from a tag chip and reflects selection via aria-label", async () => {
