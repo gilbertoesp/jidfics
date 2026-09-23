@@ -58,15 +58,6 @@ function computeEventStatus(
   return "idle";
 }
 
-/** Group events by hall (Sala 1-4 = Halls 1-4, others = "Otras"). */
-function getHallLabel(venueKey: string): string {
-  if (venueKey.startsWith("sala-1")) return "Hall 1";
-  if (venueKey.startsWith("sala-2")) return "Hall 2";
-  if (venueKey.startsWith("sala-3")) return "Hall 3";
-  if (venueKey.startsWith("sala-4")) return "Hall 4";
-  return "Otras";
-}
-
 export interface UseCurrentSessionOptions {
   events: ConferenceEvent[];
   initialTime?: Date;
@@ -166,7 +157,7 @@ export function useCurrentSession({
   const liveByHall = useMemo(() => {
     const map: Record<string, ConferenceEvent[]> = {};
     for (const e of liveNow) {
-      const hall = getHallLabel(e.venueKey);
+      const hall = e.hallName;
       if (!map[hall]) {
         map[hall] = [];
       }
@@ -178,7 +169,7 @@ export function useCurrentSession({
   const upNextByHall = useMemo(() => {
     const map: Record<string, ConferenceEvent[]> = {};
     for (const e of upNext) {
-      const hall = getHallLabel(e.venueKey);
+      const hall = e.hallName;
       if (!map[hall]) {
         map[hall] = [];
       }

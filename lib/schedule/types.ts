@@ -102,13 +102,13 @@ export interface ConferenceEvent {
   endTime: string; // HH:mm
   title: string;
   /** Normalized room key (e.g. "sala-1", "sala-de-danza", "aula-201d"). */
-  venueKey: string;
+  locationKey: string;
   /** Raw room name (e.g. "Sala 1") — indexed for search after label-format change. */
   roomName: string;
   /** Unified location label, e.g. "Centro de Convenciones (Edificio 3B)". */
-  venueLabel: string;
-  /** Venue/hall name (e.g. "Centro de Convenciones") — Ubicaciones label source. */
-  venueHall: string;
+  locationLabel: string;
+  /** Location/hall name (e.g. "Centro de Convenciones") — Ubicaciones label source. */
+  hallName: string;
   /** Raw `tipo_actividad` — dynamic, dataset-driven. */
   activityType: string;
   /** Raw `eje_tematico` — dynamic, dataset-driven. */
@@ -126,9 +126,9 @@ export interface ConferenceMeta {
   edition: string;
   startDate: string;
   endDate: string;
-  venueInstitution: string;
-  venueCampus: string;
-  venueLocation: string;
+  hostInstitution: string;
+  hostCampus: string;
+  hostLocation: string;
   /** One entry per day: { date, dayName }. */
   days: { date: string; dayName: string }[];
 }
@@ -140,8 +140,8 @@ export interface ScheduleDerived {
   tags: string[];
   /** Unique activity types in dataset order. */
   activityTypes: string[];
-  /** Unique venue keys + labels. */
-  venues: { key: string; label: string }[];
+  /** Unique location keys + labels. */
+  locations: { key: string; label: string }[];
   /** Unique buildings in dataset order. */
   buildings: { key: string; label: string }[];
 }
@@ -160,7 +160,7 @@ export type TagCategory = "type" | "topic" | "location";
 
 /** Classified + sortable filter option (see lib/schedule/tags.ts). */
 export interface TagOption {
-  /** Canonical value used by ScheduleFilters (tag text / venue key / building key). */
+  /** Canonical value used by ScheduleFilters (tag text / location key / building key). */
   value: string;
   /** Human label (Spanish content) — defaults to value. */
   label: string;

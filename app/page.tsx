@@ -34,7 +34,7 @@ export default function SchedulePage() {
       <ScheduleApp events={events} meta={meta} derived={derived} />
 
       <footer className="mt-8 border-t py-8 text-center text-xs text-muted-foreground">
-        {meta.name} · {meta.venueInstitution}, Campus {meta.venueCampus}
+        {meta.name} · {meta.hostInstitution}, Campus {meta.hostCampus}
       </footer>
     </main>
   );

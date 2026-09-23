@@ -5,7 +5,7 @@ export interface BadgeColor {
 
 /**
  * Deterministic palette for arbitrary dataset strings (activity types,
- * thematic axes, venues). Class names are full literal strings so Tailwind
+ * thematic axes, locations). Class names are full literal strings so Tailwind
  * keeps them in the build.
  */
 const PALETTE: BadgeColor[] = [
@@ -71,7 +71,7 @@ function hashIndex(key: string): number {
   return ((h >>> 0) ^ (h >>> 13)) % PALETTE.length;
 }
 
-/** Stable color for any arbitrary string (axis, type, venue). */
+/** Stable color for any arbitrary string (axis, type, location). */
 export function colorFor(label: string): BadgeColor {
   return PALETTE[hashIndex(label)] ?? PALETTE[0];
 }

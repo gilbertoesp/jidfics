@@ -54,7 +54,7 @@ const FIELD_WEIGHTS = {
   paperTitle: 7,
   paperAuthor: 6,
   paperInstitution: 5,
-  venue: 5,
+  location: 5,
   building: 4,
 } as const;
 
@@ -80,7 +80,7 @@ export interface SearchFilters {
   tags?: string[];
   buildings?: string[];
   activityTypes?: string[];
-  venues?: string[];
+  locations?: string[];
 }
 
 /** Inverted index search engine */
@@ -170,12 +170,12 @@ export class SearchEngine {
       }
     }
 
-    // Venue label + room (rooms stay searchable without a label prefix)
-    for (const word of this.tokenize(event.venueLabel)) {
-      addTerm(word, "venue");
+    // Location label + room (rooms stay searchable without a label prefix)
+    for (const word of this.tokenize(event.locationLabel)) {
+      addTerm(word, "location");
     }
     for (const word of this.tokenize(event.roomName)) {
-      addTerm(word, "venue");
+      addTerm(word, "location");
     }
 
     // Building
@@ -363,7 +363,10 @@ export class SearchEngine {
       !filters.activityTypes.includes(event.activityType)
     )
       return false;
-    if (filters.venues?.length && !filters.venues.includes(event.venueKey))
+    if (
+      filters.locations?.length &&
+      !filters.locations.includes(event.locationKey)
+    )
       return false;
     return true;
   }
@@ -455,9 +458,12 @@ export class SearchEngine {
       }
     }
 
-    // Venue/Building highlights
-    if (matchedFields.includes("venue") || matchedFields.includes("building")) {
-      const locText = event.venueLabel;
+    // Location/Building highlights
+    if (
+      matchedFields.includes("location") ||
+      matchedFields.includes("building")
+    ) {
+      const locText = event.locationLabel;
       if (queryTerms.some((t) => normalizeSpanish(locText).includes(t))) {
         highlights.push(`Lugar: ${highlightText(locText)}`);
       }

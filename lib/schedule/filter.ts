@@ -6,7 +6,7 @@ export interface ScheduleFilters {
   axes: string[];
   tags: string[];
   activityTypes: string[];
-  venues: string[]; // venue keys
+  locations: string[]; // location keys
   buildings: string[];
 }
 
@@ -16,7 +16,7 @@ export const EMPTY_FILTERS: ScheduleFilters = {
   axes: [],
   tags: [],
   activityTypes: [],
-  venues: [],
+  locations: [],
   buildings: [],
 };
 
@@ -31,7 +31,7 @@ function matchSearch(event: ConferenceEvent, query: string): boolean {
   const q = normalize(query);
   const haystack = [
     event.title,
-    event.venueLabel,
+    event.locationLabel,
     event.thematicAxis,
     event.activityType,
     event.building ?? "",
@@ -46,14 +46,14 @@ function matchSearch(event: ConferenceEvent, query: string): boolean {
 /**
  * Multi-facet filter: AND across categories, OR within a category.
  * - date: exact match
- * - axes / tags / activityTypes / venues / buildings: empty array = no constraint
+ * - axes / tags / activityTypes / locations / buildings: empty array = no constraint
  * - searchQuery: substring across title/speakers/authors/institutions/tags/building
  */
 export function filterEvents(
   events: ConferenceEvent[],
   filters: ScheduleFilters,
 ): ConferenceEvent[] {
-  const { date, axes, tags, activityTypes, venues, buildings } = filters;
+  const { date, axes, tags, activityTypes, locations, buildings } = filters;
 
   return events.filter((event) => {
     if (event.date !== date) return false;
@@ -63,7 +63,8 @@ export function filterEvents(
       return false;
     if (activityTypes.length > 0 && !activityTypes.includes(event.activityType))
       return false;
-    if (venues.length > 0 && !venues.includes(event.venueKey)) return false;
+    if (locations.length > 0 && !locations.includes(event.locationKey))
+      return false;
     if (buildings.length > 0 && !buildings.includes(event.building))
       return false;
     return true;
@@ -76,7 +77,7 @@ export function hasActiveFilters(filters: ScheduleFilters): boolean {
     filters.axes.length > 0 ||
     filters.tags.length > 0 ||
     filters.activityTypes.length > 0 ||
-    filters.venues.length > 0 ||
+    filters.locations.length > 0 ||
     filters.buildings.length > 0
   );
 }
@@ -84,6 +85,6 @@ export function hasActiveFilters(filters: ScheduleFilters): boolean {
 export function scheduleSorter(a: ConferenceEvent, b: ConferenceEvent): number {
   return (
     a.startTime.localeCompare(b.startTime) ||
-    a.venueLabel.localeCompare(b.venueLabel)
+    a.locationLabel.localeCompare(b.locationLabel)
   );
 }

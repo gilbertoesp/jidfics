@@ -6,7 +6,7 @@ import type {
   ScheduleDerived,
 } from "@/lib/schedule/types";
 
-/** Lowercase without diacritics — used to derive stable venue keys. */
+/** Lowercase without diacritics — used to derive stable location keys. */
 function slugify(value: string): string {
   return value
     .toLocaleLowerCase("es")
@@ -20,7 +20,7 @@ function slugify(value: string): string {
  * Single source of truth for the location display format (DDD ubiquitous
  * language): `hall (Edificio X)` — bare hall when the building is unknown.
  */
-export function locationLabel(hall: string, building: string): string {
+export function formatLocationLabel(hall: string, building: string): string {
   return building && building !== "Unknown"
     ? `${hall} (Edificio ${building})`
     : hall;
@@ -94,10 +94,10 @@ export function normalizeEvents(calendario: RawCalendario): ConferenceEvent[] {
         startTime: evento.hora_inicio,
         endTime: evento.hora_fin,
         title: titleFor(evento),
-        venueKey: slugify(evento.sala),
+        locationKey: slugify(evento.sala),
         roomName: evento.sala,
-        venueLabel: locationLabel(evento.lugar, building),
-        venueHall: evento.lugar,
+        locationLabel: formatLocationLabel(evento.lugar, building),
+        hallName: evento.lugar,
         activityType: evento.tipo_actividad,
         thematicAxis: evento.eje_tematico ?? "General",
         tags: normalizedTags,
@@ -117,9 +117,9 @@ export function normalizeMeta(calendario: RawCalendario): ConferenceMeta {
     edition: calendario.edicion,
     startDate: calendario.fecha_inicio,
     endDate: calendario.fecha_fin,
-    venueInstitution: calendario.sede.institucion,
-    venueCampus: calendario.sede.campus,
-    venueLocation: calendario.sede.lugar,
+    hostInstitution: calendario.sede.institucion,
+    hostCampus: calendario.sede.campus,
+    hostLocation: calendario.sede.lugar,
     days: calendario.programa.map((day) => ({
       date: day.fecha,
       dayName: day.dia,
@@ -142,14 +142,14 @@ export function deriveFilters(events: ConferenceEvent[]): ScheduleDerived {
 
   const activityTypes = [...new Set(events.map((e) => e.activityType))];
 
-  const venueMap = new Map<string, string>();
+  const locationMap = new Map<string, string>();
   for (const event of events) {
-    if (!venueMap.has(event.venueKey)) {
+    if (!locationMap.has(event.locationKey)) {
       // "hall (Edificio X)" via the single formatter — same text as cards.
-      venueMap.set(event.venueKey, event.venueLabel);
+      locationMap.set(event.locationKey, event.locationLabel);
     }
   }
-  const venues = [...venueMap.entries()].map(([key, label]) => ({
+  const locations = [...locationMap.entries()].map(([key, label]) => ({
     key,
     label,
   }));
@@ -167,5 +167,5 @@ export function deriveFilters(events: ConferenceEvent[]): ScheduleDerived {
     label,
   }));
 
-  return { axes, tags, activityTypes, venues, buildings };
+  return { axes, tags, activityTypes, locations, buildings };
 }

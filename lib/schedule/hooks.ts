@@ -92,11 +92,11 @@ export function useScheduleFilters(meta: ConferenceMeta) {
     [toggleValue],
   );
 
-  const toggleVenue = useCallback(
-    (venue: string) => {
+  const toggleLocation = useCallback(
+    (location: string) => {
       setFilters((prev) => ({
         ...prev,
-        venues: toggleValue(prev.venues, venue),
+        locations: toggleValue(prev.locations, location),
       }));
     },
     [toggleValue],
@@ -133,7 +133,7 @@ export function useScheduleFilters(meta: ConferenceMeta) {
     clearAll,
     toggleTag,
     toggleBuilding,
-    toggleVenue,
+    toggleLocation,
     toggleActivityType,
     setDate,
     setSearchQuery,
@@ -234,7 +234,7 @@ export function useScheduleApp(
         tags: otherFilters.tags,
         buildings: otherFilters.buildings,
         activityTypes: otherFilters.activityTypes,
-        venues: otherFilters.venues,
+        locations: otherFilters.locations,
       });
       return searchResults.map((r) => r.event).sort(scheduleSorter);
     }
@@ -273,7 +273,7 @@ export function useScheduleApp(
     clearFilters: filtersHook.clearAll,
     toggleTag: filtersHook.toggleTag,
     toggleBuilding: filtersHook.toggleBuilding,
-    toggleVenue: filtersHook.toggleVenue,
+    toggleLocation: filtersHook.toggleLocation,
     toggleActivityType: filtersHook.toggleActivityType,
     setDate: filtersHook.setDate,
     setSearchQuery: filtersHook.setSearchQuery,
