@@ -456,7 +456,6 @@ export function ScheduleApp({ events, meta, derived }: ScheduleAppProps) {
       onToggleTag={toggleTag}
       onToggleActivityType={toggleActivityType}
       onToggleVenue={toggleVenue}
-      onToggleBuilding={toggleBuilding}
       onClear={clearFilters}
       onClearCategory={handleClearCategory}
     />

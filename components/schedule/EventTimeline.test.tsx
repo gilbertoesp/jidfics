@@ -28,6 +28,7 @@ function makeEvent(partial: Partial<ConferenceEvent>): ConferenceEvent {
     building: "3B",
     venueKey: "sala-1",
     venueLabel: "Sala 1 · Centro de Convenciones",
+    venueName: "Sala 1",
     speakers: [],
     papers: [],
     ...partial,
@@ -44,6 +45,7 @@ const events = [
     building: "1M",
     venueKey: "sala-3",
     venueLabel: "Sala 3 · Sala Polivalente",
+    venueName: "Sala 3",
   }),
   makeEvent({
     id: "e2",
@@ -51,6 +53,7 @@ const events = [
     building: "1E",
     venueKey: "sala-2",
     venueLabel: "Sala 2 · Sala Audiovisual",
+    venueName: "Sala 2",
     title: "Mesa tarde",
   }),
   makeEvent({ id: "e1", title: "Mañana" }),

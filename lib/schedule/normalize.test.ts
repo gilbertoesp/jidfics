@@ -73,8 +73,8 @@ describe("normalizeEvents", () => {
       activityType: "Conferencia Magistral",
       thematicAxis: "Salud / Psicología",
       venueLabel: "Sala 1 · Centro de Convenciones",
-      venueKey: "sala-1",
       venueName: "Sala 1",
+      venueKey: "sala-1",
     });
     expect(events[0].speakers[0]).toEqual({
       name: "Dra. Ana",

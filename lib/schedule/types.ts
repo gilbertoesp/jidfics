@@ -96,6 +96,8 @@ export interface ConferenceEvent {
   venueKey: string;
   /** Human label, e.g. "Sala 1 · Centro de Convenciones". */
   venueLabel: string;
+  /** Raw room name (e.g. "Sala 1", "Aula 201D") — Ubicaciones label source. */
+  venueName: string;
   /** Raw `tipo_actividad` — dynamic, dataset-driven. */
   activityType: string;
   /** Raw `eje_tematico` — dynamic, dataset-driven. */
