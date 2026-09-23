@@ -6,7 +6,7 @@ import type {
   ScheduleDerived,
 } from "@/lib/schedule/types";
 
-/** Lowercase without diacritics — used to derive stable venue keys. */
+/** Lowercase without diacritics — used to derive stable location keys. */
 function slugify(value: string): string {
   return value
     .toLocaleLowerCase("es")
@@ -14,6 +14,16 @@ function slugify(value: string): string {
     .replace(/[\u0300-\u036f]/g, "")
     .replace(/[^a-z0-9]+/g, "-")
     .replace(/^-|-$/g, "");
+}
+
+/**
+ * Single source of truth for the location display format (DDD ubiquitous
+ * language): `hall (Edificio X)` — bare hall when the building is unknown.
+ */
+export function formatLocationLabel(hall: string, building: string): string {
+  return building && building !== "Unknown"
+    ? `${hall} (Edificio ${building})`
+    : hall;
 }
 
 /** Building label mapping for human-readable names. */
@@ -76,19 +86,22 @@ export function normalizeEvents(calendario: RawCalendario): ConferenceEvent[] {
             : ["General"];
       const normalizedTags = tags.length > 0 ? tags : ["General"];
 
+      const building = evento.edificio?.trim() || "Unknown";
+
       events.push({
         id: evento.id,
         date: day.fecha,
         startTime: evento.hora_inicio,
         endTime: evento.hora_fin,
         title: titleFor(evento),
-        venueKey: slugify(evento.sala),
-        venueLabel: `${evento.sala} · ${evento.lugar}`,
-        venueHall: evento.lugar,
+        locationKey: slugify(evento.sala),
+        roomName: evento.sala,
+        locationLabel: formatLocationLabel(evento.lugar, building),
+        hallName: evento.lugar,
         activityType: evento.tipo_actividad,
         thematicAxis: evento.eje_tematico ?? "General",
         tags: normalizedTags,
-        building: evento.edificio?.trim() || "Unknown",
+        building,
         speakers: toSpeakers(evento),
         papers: toPapers(evento),
       });
@@ -104,9 +117,9 @@ export function normalizeMeta(calendario: RawCalendario): ConferenceMeta {
     edition: calendario.edicion,
     startDate: calendario.fecha_inicio,
     endDate: calendario.fecha_fin,
-    venueInstitution: calendario.sede.institucion,
-    venueCampus: calendario.sede.campus,
-    venueLocation: calendario.sede.lugar,
+    hostInstitution: calendario.sede.institucion,
+    hostCampus: calendario.sede.campus,
+    hostLocation: calendario.sede.lugar,
     days: calendario.programa.map((day) => ({
       date: day.fecha,
       dayName: day.dia,
@@ -129,15 +142,14 @@ export function deriveFilters(events: ConferenceEvent[]): ScheduleDerived {
 
   const activityTypes = [...new Set(events.map((e) => e.activityType))];
 
-  const venueMap = new Map<string, string>();
+  const locationMap = new Map<string, string>();
   for (const event of events) {
-    if (!venueMap.has(event.venueKey)) {
-      // Hall-name label: "Centro de Convenciones" — one accurate, human-
-      // readable name per venue (room numbers/codes duplicated other text).
-      venueMap.set(event.venueKey, event.venueHall);
+    if (!locationMap.has(event.locationKey)) {
+      // "hall (Edificio X)" via the single formatter — same text as cards.
+      locationMap.set(event.locationKey, event.locationLabel);
     }
   }
-  const venues = [...venueMap.entries()].map(([key, label]) => ({
+  const locations = [...locationMap.entries()].map(([key, label]) => ({
     key,
     label,
   }));
@@ -155,5 +167,5 @@ export function deriveFilters(events: ConferenceEvent[]): ScheduleDerived {
     label,
   }));
 
-  return { axes, tags, activityTypes, venues, buildings };
+  return { axes, tags, activityTypes, locations, buildings };
 }

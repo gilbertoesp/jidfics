@@ -46,8 +46,8 @@ function indicatorClasses(
 /**
  * Single chronological timeline of all events — replaces the per-building
  * tabbed "location table" (BuildingTimelines).
- * - Sorts a COPY by `date` then `scheduleSorter` (startTime → venueLabel).
- * - Each item shows venue label + building code, preserving the location
+ * - Sorts a COPY by `date` then `scheduleSorter` (startTime → locationLabel).
+ * - Each item shows location label + building code, preserving the location
  *   context the removed building tabs used to carry.
  * - `TimelineIndicator` is coloured by live status (green pulse) or
  *   `colorFor(activityType)`.
@@ -153,17 +153,10 @@ export function EventTimeline({
                 <div className="flex flex-col gap-2">
                   <span className="inline-flex items-center gap-1.5 text-xs text-muted-foreground">
                     <MapPin className="h-3 w-3 shrink-0" aria-hidden="true" />
-                    {event.venueLabel}
+                    {event.locationLabel}
                   </span>
 
                   <div className="flex flex-wrap items-center gap-1.5">
-                    <Badge
-                      variant="outline"
-                      data-slot="event-building"
-                      className="text-[11px] text-muted-foreground"
-                    >
-                      {event.building}
-                    </Badge>
                     <Badge
                       variant="outline"
                       className={cn(

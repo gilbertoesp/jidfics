@@ -13,7 +13,7 @@ import type { ConferenceEvent } from "@/lib/schedule/types";
  * - URL deep-link: `?event=<id>` validated STRICTLY against known ids
  *   (junk/unknown ids → null, never rendered).
  * - Related sessions: same date only; ranking =
- *   same start time (4) + same venue (2) + same thematic axis (1);
+ *   same start time (4) + same location (2) + same thematic axis (1);
  *   score 0 excluded; ties broken chronologically; capped by limit.
  */
 
@@ -28,9 +28,10 @@ function makeEvent(partial: Partial<ConferenceEvent>): ConferenceEvent {
     thematicAxis: "Violencia",
     tags: ["Violencia"],
     building: "3B",
-    venueKey: "sala-1",
-    venueLabel: "Sala 1 · Centro de Convenciones",
-    venueHall: "Centro de Convenciones",
+    locationKey: "sala-1",
+    roomName: "Sala 1",
+    locationLabel: "Sala 1 · Centro de Convenciones",
+    hallName: "Centro de Convenciones",
     speakers: [],
     papers: [],
     ...partial,
@@ -43,50 +44,56 @@ const events: ConferenceEvent[] = [
   makeEvent({
     id: "e2",
     startTime: "09:00",
-    venueKey: "sala-1",
-    venueLabel: "Sala 1 · Centro de Convenciones",
-    venueHall: "Centro de Convenciones",
+    locationKey: "sala-1",
+    roomName: "Sala 1",
+    locationLabel: "Sala 1 · Centro de Convenciones",
+    hallName: "Centro de Convenciones",
     thematicAxis: "Género",
   }), // 4+2=6
   makeEvent({
     id: "e3",
     startTime: "09:00",
-    venueKey: "sala-2",
-    venueLabel: "Sala 2 · Audiovisual",
-    venueHall: "Audiovisual",
+    locationKey: "sala-2",
+    roomName: "Sala 2",
+    locationLabel: "Sala 2 · Audiovisual",
+    hallName: "Audiovisual",
     thematicAxis: "Violencia",
   }), // 4+1=5
   makeEvent({
     id: "e4",
     startTime: "10:00",
-    venueKey: "sala-1",
-    venueLabel: "Sala 1 · Centro de Convenciones",
-    venueHall: "Centro de Convenciones",
+    locationKey: "sala-1",
+    roomName: "Sala 1",
+    locationLabel: "Sala 1 · Centro de Convenciones",
+    hallName: "Centro de Convenciones",
     thematicAxis: "Género",
   }), // 2
   makeEvent({
     id: "e5",
     startTime: "11:00",
-    venueKey: "sala-2",
-    venueLabel: "Sala 2 · Audiovisual",
-    venueHall: "Audiovisual",
+    locationKey: "sala-2",
+    roomName: "Sala 2",
+    locationLabel: "Sala 2 · Audiovisual",
+    hallName: "Audiovisual",
     thematicAxis: "Educación",
   }), // 0 → excluded
   makeEvent({
     id: "e6",
     startTime: "09:00",
-    venueKey: "sala-1",
-    venueLabel: "Sala 1 · Centro de Convenciones",
-    venueHall: "Centro de Convenciones",
+    locationKey: "sala-1",
+    roomName: "Sala 1",
+    locationLabel: "Sala 1 · Centro de Convenciones",
+    hallName: "Centro de Convenciones",
     thematicAxis: "Salud",
   }), // 4+2=6
   makeEvent({
     id: "e7",
     date: "2026-09-24",
     startTime: "09:00",
-    venueKey: "sala-1",
-    venueLabel: "Sala 1 · Centro de Convenciones",
-    venueHall: "Centro de Convenciones",
+    locationKey: "sala-1",
+    roomName: "Sala 1",
+    locationLabel: "Sala 1 · Centro de Convenciones",
+    hallName: "Centro de Convenciones",
   }), // other day → excluded
 ];
 
@@ -149,7 +156,7 @@ describe("buildShareUrl", () => {
 });
 
 describe("findRelatedEvents", () => {
-  it("ranks time → venue → axis and excludes unrelated/other-day sessions", () => {
+  it("ranks time → location → axis and excludes unrelated/other-day sessions", () => {
     const related = findRelatedEvents(events, self);
     expect(related.map((e) => e.id)).toEqual(["e2", "e6", "e3", "e4"]);
   });
@@ -169,7 +176,8 @@ describe("findRelatedEvents", () => {
   it("returns empty when nothing matches", () => {
     const loner = makeEvent({
       id: "x1",
-      venueKey: "sala-9",
+      locationKey: "sala-9",
+      roomName: "Sala 9",
       thematicAxis: "Único",
       startTime: "13:00",
     });

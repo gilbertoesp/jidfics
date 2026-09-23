@@ -106,9 +106,7 @@ export function EventDetailContent({
             {event.endTime}
           </time>
           <span aria-hidden="true"> · </span>
-          {event.venueLabel}
-          {event.building !== "Unknown" && <span aria-hidden="true"> · </span>}
-          {event.building !== "Unknown" && event.building}
+          {event.locationLabel}
         </SheetDescription>
       </SheetHeader>
 
@@ -228,7 +226,7 @@ export function EventDetailContent({
                     className="h-auto w-full flex-col items-start gap-0.5 whitespace-normal px-3 py-2 text-left"
                   >
                     <span className="text-xs tabular-nums text-muted-foreground">
-                      {item.startTime}–{item.endTime} · {item.venueLabel}
+                      {item.startTime}–{item.endTime} · {item.locationLabel}
                     </span>
                     <span className="text-sm font-medium text-foreground">
                       {item.title}
@@ -265,7 +263,7 @@ export function EventDetailContent({
         </span>
         <div className="flex-1" />
         {/* TODO(calendar): ICS / Google Calendar export — README › TODO files */}
-        {/* TODO(directions): map deep link (venue + building) — README › TODO files */}
+        {/* TODO(directions): map deep link (location + building) — README › TODO files */}
         {/* TODO(auth): enable once chat auth ships (needs Supabase session). */}
         <Button
           type="button"

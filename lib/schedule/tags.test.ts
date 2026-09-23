@@ -21,7 +21,7 @@ const makeDerived = (partial: Partial<ScheduleDerived>): ScheduleDerived => ({
   axes: [],
   tags: [],
   activityTypes: [],
-  venues: [],
+  locations: [],
   buildings: [],
   ...partial,
 });
@@ -146,11 +146,11 @@ describe("category sorting", () => {
   });
 
   it("locations sort numerically-aware (room number, then alpha)", () => {
-    const venues = toTagOptions(
+    const locations = toTagOptions(
       ["Sala 10 · Centro", "Sala 2 · Centro", "Sala 1 · Centro"],
       "location",
     );
-    expect(venues.map((o) => o.value)).toEqual([
+    expect(locations.map((o) => o.value)).toEqual([
       "Sala 1 · Centro",
       "Sala 2 · Centro",
       "Sala 10 · Centro",
@@ -186,12 +186,12 @@ describe("category sorting", () => {
 /* ------------------------------------------------------------------ */
 
 describe("categorizeDerived", () => {
-  it("groups facets: tags+activityTypes → topic, venues+buildings → location", () => {
+  it("groups facets: tags+activityTypes → topic, locations+buildings → location", () => {
     const derived = categorizeDerived(
       makeDerived({
         tags: ["Salud", "Violencia"],
         activityTypes: ["Conferencia Magistral"],
-        venues: [{ key: "sala-1", label: "Sala 1 · Centro" }],
+        locations: [{ key: "sala-1", label: "Sala 1 · Centro" }],
         buildings: [
           { key: "3B", label: "Centro de Convenciones (Edificio 3B)" },
         ],
@@ -205,7 +205,7 @@ describe("categorizeDerived", () => {
     expect(derived.type.activityTypes.map((o) => o.value)).toEqual([
       "Conferencia Magistral",
     ]);
-    expect(derived.location.venues.map((o) => o.value)).toEqual(["sala-1"]);
+    expect(derived.location.locations.map((o) => o.value)).toEqual(["sala-1"]);
     expect(derived.location.buildings.map((o) => o.value)).toEqual(["3B"]);
     // every option carries its category
     expect(derived.type.activityTypes[0]?.category).toBe("type");
@@ -213,17 +213,17 @@ describe("categorizeDerived", () => {
     expect(derived.location.buildings[0]?.category).toBe("location");
   });
 
-  it("venue options keep the human label as display label", () => {
+  it("location options keep the human label as display label", () => {
     const derived = categorizeDerived(
       makeDerived({
-        venues: [
+        locations: [
           { key: "sala-de-danza", label: "Sala de Danza · Edificio 1E" },
         ],
       }),
     );
-    const [venue] = derived.location.venues;
-    expect(venue?.value).toBe("sala-de-danza");
-    expect(venue?.label).toBe("Sala de Danza · Edificio 1E");
+    const [location] = derived.location.locations;
+    expect(location?.value).toBe("sala-de-danza");
+    expect(location?.label).toBe("Sala de Danza · Edificio 1E");
   });
 });
 
@@ -241,8 +241,8 @@ describe("real dataset categorization", () => {
     expect(categorized.location.tags).toEqual([]);
   });
 
-  it("routes every real venue and building to location", () => {
-    expect(categorized.location.venues.length).toBeGreaterThanOrEqual(6);
+  it("routes real hall labels and buildings into the location category", () => {
+    expect(categorized.location.locations.length).toBeGreaterThanOrEqual(6);
     expect(categorized.location.buildings.length).toBeGreaterThanOrEqual(6);
     for (const option of categorized.location.buildings) {
       expect(option.category).toBe("location");
@@ -258,14 +258,14 @@ const selected: ScheduleFilters = {
   ...EMPTY_FILTERS,
   tags: ["Salud"],
   activityTypes: ["Conferencia Magistral"],
-  venues: ["sala-1", "sala-2"],
+  locations: ["sala-1", "sala-2"],
   buildings: ["3B"],
 };
 
 describe("countSelectedCategory", () => {
   it("sums facet selections per category", () => {
     expect(countSelectedCategory("topic", selected)).toBe(1); // tags only
-    expect(countSelectedCategory("location", selected)).toBe(3); // venues + buildings
+    expect(countSelectedCategory("location", selected)).toBe(3); // locations + buildings
     expect(countSelectedCategory("topic", EMPTY_FILTERS)).toBe(0);
     expect(countSelectedCategory("location", EMPTY_FILTERS)).toBe(0);
   });
@@ -274,7 +274,7 @@ describe("countSelectedCategory", () => {
 describe("clearCategory", () => {
   it("clears only the requested category, keeping date/search/other category", () => {
     const clearedLocation = clearCategory("location", selected);
-    expect(clearedLocation.venues).toEqual([]);
+    expect(clearedLocation.locations).toEqual([]);
     expect(clearedLocation.buildings).toEqual([]);
     expect(clearedLocation.tags).toEqual(["Salud"]);
     expect(clearedLocation.activityTypes).toEqual(["Conferencia Magistral"]);
@@ -284,14 +284,14 @@ describe("clearCategory", () => {
     const clearedTopic = clearCategory("topic", selected);
     expect(clearedTopic.tags).toEqual([]);
     expect(clearedTopic.activityTypes).toEqual(["Conferencia Magistral"]);
-    expect(clearedTopic.venues).toEqual(["sala-1", "sala-2"]);
+    expect(clearedTopic.locations).toEqual(["sala-1", "sala-2"]);
     expect(clearedTopic.buildings).toEqual(["3B"]);
     expect(clearedTopic.date).toBe(selected.date);
   });
 
   it("does not mutate the input filters", () => {
     clearCategory("location", selected);
-    expect(selected.venues).toEqual(["sala-1", "sala-2"]);
+    expect(selected.locations).toEqual(["sala-1", "sala-2"]);
   });
 });
 
@@ -313,7 +313,7 @@ describe("categorizeDerived — three-category routing", () => {
       makeDerived({
         tags: ["Salud", "Violencia"],
         activityTypes: ["Conferencia Magistral", "Panel"],
-        venues: [{ key: "sala-1", label: "Sala 1 · Centro" }],
+        locations: [{ key: "sala-1", label: "Sala 1 · Centro" }],
         buildings: [
           { key: "3B", label: "Centro de Convenciones (Edificio 3B)" },
         ],
@@ -341,10 +341,10 @@ describe("categorizeDerived — three-category routing", () => {
 
 describe("countSelectedCategory — three categories", () => {
   it("sums facet selections per category (type = activityTypes only)", () => {
-    // selected has tags:1 + activityTypes:1 = topic:1, type:1, location:2 (venues) + 1 (building) = 3
+    // selected has tags:1 + activityTypes:1 = topic:1, type:1, location:2 (locations) + 1 (building) = 3
     expect(countSelectedCategory("type", selected)).toBe(1); // activityTypes only
     expect(countSelectedCategory("topic", selected)).toBe(1); // tags only
-    expect(countSelectedCategory("location", selected)).toBe(3); // venues + buildings
+    expect(countSelectedCategory("location", selected)).toBe(3); // locations + buildings
     expect(countSelectedCategory("type", EMPTY_FILTERS)).toBe(0);
     expect(countSelectedCategory("topic", EMPTY_FILTERS)).toBe(0);
     expect(countSelectedCategory("location", EMPTY_FILTERS)).toBe(0);
@@ -356,7 +356,7 @@ describe("clearCategory — three categories", () => {
     const clearedType = clearCategory("type", selected);
     expect(clearedType.activityTypes).toEqual([]);
     expect(clearedType.tags).toEqual(["Salud"]);
-    expect(clearedType.venues).toEqual(["sala-1", "sala-2"]);
+    expect(clearedType.locations).toEqual(["sala-1", "sala-2"]);
     expect(clearedType.buildings).toEqual(["3B"]);
     expect(clearedType.date).toBe(selected.date);
     expect(clearedType.searchQuery).toBe(selected.searchQuery);
@@ -364,11 +364,11 @@ describe("clearCategory — three categories", () => {
     const clearedTopic = clearCategory("topic", selected);
     expect(clearedTopic.tags).toEqual([]);
     expect(clearedTopic.activityTypes).toEqual(["Conferencia Magistral"]);
-    expect(clearedTopic.venues).toEqual(["sala-1", "sala-2"]);
+    expect(clearedTopic.locations).toEqual(["sala-1", "sala-2"]);
     expect(clearedTopic.buildings).toEqual(["3B"]);
 
     const clearedLocation = clearCategory("location", selected);
-    expect(clearedLocation.venues).toEqual([]);
+    expect(clearedLocation.locations).toEqual([]);
     expect(clearedLocation.buildings).toEqual([]);
     expect(clearedLocation.tags).toEqual(["Salud"]);
     expect(clearedLocation.activityTypes).toEqual(["Conferencia Magistral"]);

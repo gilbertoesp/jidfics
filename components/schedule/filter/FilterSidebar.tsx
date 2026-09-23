@@ -45,10 +45,10 @@ export interface FilterSidebarProps {
   onSearchChange: (query: string) => void;
   onToggleTag: (tag: string) => void;
   onToggleActivityType: (type: string) => void;
-  onToggleVenue: (venue: string) => void;
+  onToggleLocation: (location: string) => void;
   /** Clears every facet (keeps date + search query). */
   onClear: () => void;
-  /** Clears one category's facets (tags+activityTypes | venues). */
+  /** Clears one category's facets (tags+activityTypes | locations). */
   onClearCategory: (category: TagCategory) => void;
 }
 
@@ -87,7 +87,7 @@ export function FilterSidebar({
   onSearchChange,
   onToggleTag,
   onToggleActivityType,
-  onToggleVenue,
+  onToggleLocation,
   onClear,
   onClearCategory,
 }: FilterSidebarProps) {
@@ -100,7 +100,7 @@ export function FilterSidebar({
   const typeTotal = categorized.type.activityTypes.length;
   const topicTotal = categorized.topic.tags.length;
   const locationTotal =
-    categorized.location.tags.length + categorized.location.venues.length;
+    categorized.location.tags.length + categorized.location.locations.length;
 
   return (
     <section
@@ -155,7 +155,7 @@ export function FilterSidebar({
           </TagGroup>
         </FilterGroup>
 
-        {/* Location category: location-like tags + hall names (venueHall) */}
+        {/* Location category: one "hall (Edificio X)" label per location */}
         <FilterGroup
           category="location"
           title="Ubicaciones"
@@ -179,13 +179,13 @@ export function FilterSidebar({
           )}
 
           <TagGroup label="Salas">
-            {categorized.location.venues.map((option) => (
+            {categorized.location.locations.map((option) => (
               <FilterTag
                 key={option.value}
                 option={option}
                 category="location"
-                selected={filters.venues.includes(option.value)}
-                onToggle={onToggleVenue}
+                selected={filters.locations.includes(option.value)}
+                onToggle={onToggleLocation}
                 ariaPrefix="Filtrar por sala"
               />
             ))}

@@ -54,8 +54,8 @@ export function ScheduleHeader({ meta }: ScheduleHeaderProps) {
           </span>
           <span className="inline-flex items-center gap-2">
             <MapPin className="h-4 w-4" aria-hidden="true" />
-            {meta.venueInstitution}, Campus {meta.venueCampus} ·{" "}
-            {meta.venueLocation}
+            {meta.hostInstitution}, Campus {meta.hostCampus} ·{" "}
+            {meta.hostLocation}
           </span>
         </div>
       </div>

@@ -6,7 +6,7 @@
  *    knownIds (unknown/junk → null); never trust the query string.
  *  - removeEventParam strips only `event`, preserving other params (close path).
  *  - Related sessions: same date only, ranked by
- *    same start time (4) + same venue (2) + same thematic axis (1),
+ *    same start time (4) + same location (2) + same thematic axis (1),
  *    score 0 excluded, ties broken chronologically, capped by `limit`.
  *  - buildShareUrl produces a canonical URL via URL/URLSearchParams (encoding safe).
  *
@@ -53,10 +53,10 @@ export function buildShareUrl(base: string, id: string): string {
 }
 
 const WEIGHT_SAME_TIME = 4;
-const WEIGHT_SAME_VENUE = 2;
+const WEIGHT_SAME_LOCATION = 2;
 const WEIGHT_SAME_AXIS = 1;
 
-/** Related sessions: same day, scored time > venue > axis, chronologically tie-broken. */
+/** Related sessions: same day, scored time > location > axis, chronologically tie-broken. */
 export function findRelatedEvents(
   events: readonly ConferenceEvent[],
   event: ConferenceEvent,
@@ -69,7 +69,8 @@ export function findRelatedEvents(
     .map((candidate) => {
       let score = 0;
       if (candidate.startTime === event.startTime) score += WEIGHT_SAME_TIME;
-      if (candidate.venueKey === event.venueKey) score += WEIGHT_SAME_VENUE;
+      if (candidate.locationKey === event.locationKey)
+        score += WEIGHT_SAME_LOCATION;
       if (candidate.thematicAxis === event.thematicAxis)
         score += WEIGHT_SAME_AXIS;
       return { candidate, score };

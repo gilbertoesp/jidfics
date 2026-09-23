@@ -7,6 +7,32 @@ import {
 } from "@/lib/schedule/search";
 import type { ConferenceEvent } from "@/lib/schedule/types";
 
+describe("room index (label-format change)", () => {
+  it("keeps rooms searchable: 'sala 1' matches via roomName, not the label", () => {
+    const roomEvent: ConferenceEvent = {
+      id: "room-1",
+      date: "2026-09-23",
+      startTime: "09:00",
+      endTime: "10:00",
+      title: "Conversatorio de bienvenida",
+      locationKey: "sala-1",
+      locationLabel: "Centro de Convenciones (Edificio 3B)",
+      hallName: "Centro de Convenciones",
+      roomName: "Sala 1",
+      activityType: "Panel",
+      thematicAxis: "General",
+      tags: ["General"],
+      building: "3B",
+      speakers: [],
+      papers: [],
+    };
+    const ids = new SearchEngine([roomEvent])
+      .search("sala 1")
+      .map((r) => r.event.id);
+    expect(ids).toContain("room-1");
+  });
+});
+
 // Test data matching the real VII JIDFICS dataset structure
 const mockEvents: ConferenceEvent[] = [
   {
@@ -16,9 +42,10 @@ const mockEvents: ConferenceEvent[] = [
     endTime: "10:30",
     title:
       "La ansiedad, depresión y estrés en jóvenes y el método integral para prevenirlos a través del Yoga",
-    venueKey: "sala-1",
-    venueLabel: "Sala 1 · Centro de Convenciones",
-    venueHall: "Centro de Convenciones",
+    locationKey: "sala-1",
+    roomName: "Sala 1",
+    locationLabel: "Sala 1 · Centro de Convenciones",
+    hallName: "Centro de Convenciones",
     activityType: "Conferencia Magistral",
     thematicAxis: "Salud / Psicología",
     tags: ["Salud", "Psicología"],
@@ -38,9 +65,10 @@ const mockEvents: ConferenceEvent[] = [
     startTime: "10:30",
     endTime: "12:30",
     title: "Mesa 1 · Violencia",
-    venueKey: "sala-2",
-    venueLabel: "Sala 2 · Sala Audiovisual",
-    venueHall: "Sala Audiovisual",
+    locationKey: "sala-2",
+    roomName: "Sala 2",
+    locationLabel: "Sala 2 · Sala Audiovisual",
+    hallName: "Sala Audiovisual",
     activityType: "Trabajos Libres",
     thematicAxis: "Violencia",
     tags: ["Violencia"],
@@ -68,9 +96,10 @@ const mockEvents: ConferenceEvent[] = [
     endTime: "09:00",
     title:
       "Niñez y tecnología: patrones de uso de pantallas, perfiles conductuales y desarrollo cognitivo-socioemocional en escolares",
-    venueKey: "sala-1",
-    venueLabel: "Sala 1 · Centro de Convenciones",
-    venueHall: "Centro de Convenciones",
+    locationKey: "sala-1",
+    roomName: "Sala 1",
+    locationLabel: "Sala 1 · Centro de Convenciones",
+    hallName: "Centro de Convenciones",
     activityType: "Conferencia Magistral",
     thematicAxis: "Educación / Tecnología",
     tags: ["Educación", "Tecnología"],
@@ -90,9 +119,10 @@ const mockEvents: ConferenceEvent[] = [
     startTime: "09:00",
     endTime: "13:00",
     title: "Mesa 16 · Educación",
-    venueKey: "sala-2",
-    venueLabel: "Sala 2 · Sala Audiovisual",
-    venueHall: "Sala Audiovisual",
+    locationKey: "sala-2",
+    roomName: "Sala 2",
+    locationLabel: "Sala 2 · Sala Audiovisual",
+    hallName: "Sala Audiovisual",
     activityType: "Trabajos Libres",
     thematicAxis: "Educación",
     tags: ["Educación"],
@@ -236,7 +266,7 @@ describe("SearchEngine", () => {
       expect(results.length).toBe(2); // WED-003 and THU-001
     });
 
-    it("indexes venue", () => {
+    it("indexes location", () => {
       const results = engine.search("Audiovisual");
       expect(results.length).toBe(2); // WED-MESA-1 and THU-MESA-16
     });

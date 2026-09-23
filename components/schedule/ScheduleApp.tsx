@@ -45,28 +45,29 @@ interface ScheduleAppProps {
 function ActiveFiltersBar({
   tags,
   buildings,
-  venues,
+  locations,
   activityTypes,
   onRemoveTag,
   onRemoveBuilding,
-  onRemoveVenue,
+  onRemoveLocation,
   onRemoveActivityType,
   onClearAll,
   resultCount,
 }: {
   tags: string[];
   buildings: string[];
-  venues: string[];
+  locations: string[];
   activityTypes: string[];
   onRemoveTag: (tag: string) => void;
   onRemoveBuilding: (building: string) => void;
-  onRemoveVenue: (venue: string) => void;
+  onRemoveLocation: (location: string) => void;
   onRemoveActivityType: (type: string) => void;
   onClearAll: () => void;
   resultCount: number;
 }) {
   const hasActive =
-    tags.length + buildings.length + venues.length + activityTypes.length > 0;
+    tags.length + buildings.length + locations.length + activityTypes.length >
+    0;
 
   if (!hasActive) return null;
 
@@ -108,16 +109,16 @@ function ActiveFiltersBar({
             className="bg-blue/10 border-blue text-blue"
           />
         ))}
-        {venues.map((v) => (
+        {locations.map((v) => (
           <Tag
             key={v}
             value={v}
             selected
             removable
-            onTagToggle={onRemoveVenue}
-            onRemove={onRemoveVenue}
+            onTagToggle={onRemoveLocation}
+            onRemove={onRemoveLocation}
             aria-label={`Quitar filtro de sala ${v}`}
-            data-slot="active-venue"
+            data-slot="active-location"
             className="bg-green/10 border-green text-green"
           />
         ))}
@@ -395,7 +396,7 @@ export function ScheduleApp({ events, meta, derived }: ScheduleAppProps) {
     clearFilters,
     toggleTag,
     toggleBuilding,
-    toggleVenue,
+    toggleLocation,
     toggleActivityType,
     setDate,
     setSearchQuery,
@@ -455,7 +456,7 @@ export function ScheduleApp({ events, meta, derived }: ScheduleAppProps) {
       onSearchChange={handleSearchChange}
       onToggleTag={toggleTag}
       onToggleActivityType={toggleActivityType}
-      onToggleVenue={toggleVenue}
+      onToggleLocation={toggleLocation}
       onClear={clearFilters}
       onClearCategory={handleClearCategory}
     />
@@ -551,11 +552,11 @@ export function ScheduleApp({ events, meta, derived }: ScheduleAppProps) {
           <ActiveFiltersBar
             tags={filters.tags}
             buildings={filters.buildings}
-            venues={filters.venues}
+            locations={filters.locations}
             activityTypes={filters.activityTypes}
             onRemoveTag={toggleTag}
             onRemoveBuilding={toggleBuilding}
-            onRemoveVenue={toggleVenue}
+            onRemoveLocation={toggleLocation}
             onRemoveActivityType={toggleActivityType}
             onClearAll={clearFilters}
             resultCount={filteredEvents.length}

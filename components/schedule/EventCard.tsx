@@ -73,10 +73,7 @@ export function EventCard({
         </span>
         <span className="inline-flex items-center gap-1.5 text-muted-foreground">
           <MapPin className="h-3.5 w-3.5" aria-hidden="true" />
-          {event.venueLabel}
-          {event.building && event.building !== "Unknown" && (
-            <span className="text-muted-foreground/70">· {event.building}</span>
-          )}
+          {event.locationLabel}
         </span>
         {liveStatus && <LiveIndicatorBadge status={liveStatus} showLabel />}
       </div>

@@ -27,9 +27,10 @@ function makeEvent(partial: Partial<ConferenceEvent>): ConferenceEvent {
     thematicAxis: "Violencia",
     tags: ["Violencia", "Tecnología"],
     building: "3B",
-    venueKey: "sala-1",
-    venueLabel: "Sala 1 · Centro de Convenciones",
-    venueHall: "Centro de Convenciones",
+    locationKey: "sala-1",
+    roomName: "Sala 1",
+    locationLabel: "Centro de Convenciones (Edificio 3B)",
+    hallName: "Centro de Convenciones",
     speakers: [
       { name: "Dra. Ana López", institution: "UNISON", role: "speaker" },
     ],
@@ -93,7 +94,9 @@ describe("EventDetailSheet", () => {
     const dialog = screen.getByRole("dialog");
     expect(dialog).toHaveTextContent("Violencia digital");
     expect(dialog).toHaveTextContent("09:00");
-    expect(dialog).toHaveTextContent("Sala 1 · Centro de Convenciones");
+    expect(dialog).toHaveTextContent("Centro de Convenciones (Edificio 3B)");
+    // building folded into the label — no trailing "· 3B" duplication
+    expect(dialog).not.toHaveTextContent("· 3B");
     expect(dialog).toHaveTextContent("Dra. Ana López");
     expect(dialog).toHaveTextContent("Redes y acoso");
     expect(dialog).toHaveTextContent("Carlos Ruiz");

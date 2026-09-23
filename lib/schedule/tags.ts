@@ -44,7 +44,7 @@ export const LOCATION_KEYWORDS: readonly string[] = [
 /**
  * Manual classification overrides keyed by the normalized tag value
  * (lowercase, diacritics stripped). Wins over LOCATION_KEYWORDS.
- * TODO(data): add edge cases here as organizers refine venue naming.
+ * TODO(data): add edge cases here as organizers refine location naming.
  */
 export const TAG_CATEGORY_OVERRIDES: Record<string, TagCategory> = {};
 
@@ -155,7 +155,11 @@ export function splitTagsByCategory(tags: readonly string[]): {
 export interface CategorizedDerived {
   type: { activityTypes: TagOption[] };
   topic: { tags: TagOption[] };
-  location: { tags: TagOption[]; venues: TagOption[]; buildings: TagOption[] };
+  location: {
+    tags: TagOption[];
+    locations: TagOption[];
+    buildings: TagOption[];
+  };
 }
 
 /** Group + sort every derived facet by category (sidebar input). */
@@ -177,8 +181,8 @@ export function categorizeDerived(
     },
     location: {
       tags: toTagOptions(locationTags, "location"),
-      venues: toTagOptions(
-        derived.venues.map((v) => ({ value: v.key, label: v.label })),
+      locations: toTagOptions(
+        derived.locations.map((v) => ({ value: v.key, label: v.label })),
         "location",
       ),
       buildings: toTagOptions(
@@ -198,11 +202,12 @@ function facetValues(
   filters: ScheduleFilters,
 ): string[] {
   if (category === "type") return filters.activityTypes;
-  if (category === "location") return [...filters.venues, ...filters.buildings];
+  if (category === "location")
+    return [...filters.locations, ...filters.buildings];
   return filters.tags; // topic
 }
 
-/** Selected count per category (activityTypes | tags | venues+buildings). */
+/** Selected count per category (activityTypes | tags | locations+buildings). */
 export function countSelectedCategory(
   category: TagCategory,
   filters: ScheduleFilters,
@@ -216,6 +221,7 @@ export function clearCategory(
   filters: ScheduleFilters,
 ): ScheduleFilters {
   if (category === "type") return { ...filters, activityTypes: [] };
-  if (category === "location") return { ...filters, venues: [], buildings: [] };
+  if (category === "location")
+    return { ...filters, locations: [], buildings: [] };
   return { ...filters, tags: [] }; // topic
 }

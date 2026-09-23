@@ -2,7 +2,7 @@
 
 Sitio web oficial de la **VII Jornadas Internacionales de Docencia e Investigación en Ciencias Sociales** (JIDFICS), celebrada en la **Universidad de Sonora, Campus Caborca** los días **23 y 24 de septiembre de 2026**.
 
-> **Estado (v1.1)**: búsqueda full-text con índice invertido · filtros **colapsables por categoría** (Tipo / Ubicaciones / Temas) con conteo y limpieza por grupo · vista timeline única (eventos filtrados en orden cronológico) · **hoja de detalle de sesión** (panel derecho en escritorio, bottom sheet en móvil, deep-link `?event=<id>`) · discusión en vivo (UI, backend-ready).
+> **Estado (v1.2)**: búsqueda full-text con índice invertido · filtros **colapsables por categoría** (Tipo / Ubicaciones / Temas) con conteo y limpieza por grupo · vista timeline única (eventos filtrados en orden cronológico) · **hoja de detalle de sesión** (panel derecho en escritorio, bottom sheet en móvil, deep-link `?event=<id>`) · discusión en vivo (UI, backend-ready) · **datos SSOT** (un único JSON; el parche v2 se consumió en `calendario_vii_jidfics.json`) · ubicación en formato `Salón (Edificio X)` en todo el sitio · vocabulario único (DDD).
 
 > ℹ️ Este README tiene dos contextos separados:
 > **Contenido (es)** — información del evento y del sitio · **Guía técnica (en)** — documentation for builders.
@@ -19,19 +19,19 @@ Sitio web oficial de la **VII Jornadas Internacionales de Docencia e Investigaci
 
 ## ✨ Características
 
-- **Búsqueda inteligente** — índice invertido + fuzzy matching (Levenshtein ≤ 2) + ranking ponderado (título > ponente > etiquetas > ponencias > sala > edificio). Maneja tildes y typos: "violncia" → "Violencia", "educacion" → "Educación".
+- **Búsqueda inteligente** — índice invertido + fuzzy matching (Levenshtein ≤ 2) + ranking ponderado (título > ponente > etiquetas > ponencias > ubicación > edificio). Maneja tildes y typos: "violncia" → "Violencia", "educacion" → "Educación".
 - **Programa normalizado desde JSON real** — 45+ sesiones, 2 días, 6 edificios, 10+ ejes temáticos, 14 tipos de actividad.
-- **Filtros colapsables por categoría (nuevo)** — tres grupos plegables (acordeón, todos abiertos por defecto) en orden **Tipo → Ubicaciones → Temas**, cada uno con contador `seleccionados/total` y limpieza por grupo: **Tipo de actividad** (Inauguración, Panel, …; orden alfabético `es`), **Ubicaciones** (una etiqueta por salón con su nombre real — `Centro de Convenciones`, `Sala Polivalente`, … — sin números de sala, códigos ni duplicados) y **Temas** (etiquetas temáticas). Clasificación por palabras clave con mapa de excepciones (`lib/schedule/tags.ts`); el esquema de filtros no cambia (agrupación solo-presentación).
+- **Filtros colapsables por categoría (nuevo)** — tres grupos plegables (acordeón, todos abiertos por defecto) en orden **Tipo → Ubicaciones → Temas**, cada uno con contador `seleccionados/total` y limpieza por grupo: **Tipo de actividad** (Inauguración, Panel, …; orden alfabético `es`), **Ubicaciones** (una etiqueta unificada por ubicación, formato `Salón (Edificio X)` — `Centro de Convenciones (Edificio 3B)`, `Sala Polivalente (Edificio 1M)`, … — sin duplicados; la sala ya no se muestra pero `roomName` sigue indexado: buscar "sala 1" funciona) y **Temas** (etiquetas temáticas). Clasificación por palabras clave con mapa de excepciones (`lib/schedule/tags.ts`); el esquema de filtros no cambia (agrupación solo-presentación).
 - **Filtrado multifacético** — título, ponente, autor, institución, etiqueta, edificio, sala; facetas combinadas con lógica AND/OR.
 - **Hoja de detalle de sesión (nuevo)** — al pulsar "Detalles de la sesión" en cualquier tarjeta: ponentes, ponencias completas, etiquetas accionables, **sesiones relacionadas** (mismo día, ranking hora → sala → eje), copiar enlace compartible. Panel derecho en escritorio (≈448 px), bottom sheet en móvil; deep-link `?event=<id>` valida el id antes de abrir.
-- **Vista Timeline (nueva)** — línea de tiempo única con TODOS los eventos del día en orden cronológico, ya filtrados por la barra lateral; cada sesión muestra sala + edificio, indicadores de vivo/próximo y etiquetas clicables para filtrar.
+- **Vista Timeline (nueva)** — línea de tiempo única con TODOS los eventos del día en orden cronológico, ya filtrados por la barra lateral; cada sesión muestra la ubicación unificada `Salón (Edificio X)`, indicadores de vivo/próximo y etiquetas clicables para filtrar.
 - **Filtros activos visibles** — barra de chips removibles con contador de resultados.
 - **Discusión en vivo (UI)** — hoja lateral por sesión (`LiveChatSheet`), backend-ready para Supabase Realtime. *Autenticación de participantes para comentar: considerada, pendiente (ver tabla de TODOs).*
-- **Seguimiento en tiempo real** — barra flotante con sesiones LIVE NOW / UP NEXT (30 min) agrupadas por sala.
+- **Seguimiento en tiempo real** — barra flotante con sesiones LIVE NOW / UP NEXT (30 min) agrupadas por salón (nombre real del recinto).
 - **Accesibilidad (a11y)** — ARIA roles, focus trap en diálogos, Escape para cerrar, foco devuelto al disparador, navegación por teclado, etiquetas en español.
 - **Tema claro/oscuro** — `next-themes` con persistencia en `localStorage`.
 - **CI/CD** — GitHub Actions: lint + typecheck + tests + build en cada push/PR.
-- **Tests (TDD)** — **172 tests Vitest** en 13 suites (ver Guía técnica).
+- **Tests (TDD)** — **181 tests Vitest** en 14 suites (ver Guía técnica).
 
 ## 📌 Archivos con TODOs
 
@@ -67,6 +67,7 @@ jidfics/
 │   │   │   ├── FilterGroup.tsx   # Component: accordion item (trigger + count + clear)
 │   │   │   └── FilterSidebar.test.tsx
 │   │   ├── EventCard.tsx         # Card → opens detail sheet (aria-haspopup) + chat
+│   │   ├── EventCard.test.tsx    # location label contract (no building suffix)
 │   │   ├── EventDetailSheet.tsx  # Block: Radix Sheet, responsive side (data-side)
 │   │   ├── EventDetailContent.tsx# Compound: Header / Body / Footer
 │   │   ├── EventDetailSheet.test.tsx
@@ -93,7 +94,7 @@ jidfics/
 │   │   │   ├── useCurrentSession.ts  # live/up-next + time travel (dev)
 │   │   │   └── useEventDetails.ts    # URL-driven detail sheet state
 │   │   ├── colors.ts             # Deterministic FNV-1a → Tailwind palette
-│   │   ├── calendario_vii_jidfics.json  # Real dataset (single source of truth)
+│   │   ├── calendario_vii_jidfics.json  # SSOT dataset (v2 updates consumed, 45 events)
 │   │   └── *.test.ts
 │   ├── supabase/
 │   │   ├── proxy.ts              # updateSession() for Next 16 proxy
@@ -101,7 +102,7 @@ jidfics/
 │   │   └── client.ts             # createClient() for Browser
 │   └── utils.ts                  # cn(), hasEnvVars
 ├── proxy.ts                      # Next 16 proxy (replaces middleware.ts)
-├── src/test/search.test.ts       # 53 TDD tests for SearchEngine
+├── src/test/search.test.ts       # 54 TDD tests for SearchEngine
 ├── .github/workflows/ci.yml      # CI: lint + typecheck + test + build
 ├── vitest.config.ts / vitest.setup.ts  # jsdom + RTL + jest-dom matchers
 ├── tsconfig.json                 # strict TS + paths @/*
@@ -147,22 +148,23 @@ bun run lint                        # biome check . && eslint .
 bun run format                      # biome autofix + format (write mode)
 ```
 
-**Suites — 172 tests total (170 + 2 integration skipped without credentials):**
+**Suites — 181 tests total (179 + 2 integration skipped without credentials):**
 
 | Suite | Tests | Covers |
 |---|---|---|
-| `src/test/search.test.ts` | 53 | inverted index, fuzzy (Levenshtein), prefix, ranking, highlights, Spanish diacritics |
+| `src/test/search.test.ts` | 54 | inverted index (incl. `roomName`), fuzzy (Levenshtein), prefix, ranking, highlights, Spanish diacritics |
 | `lib/schedule/tags.test.ts` | 27 | keyword classification, overrides, 3-way `type\|topic\|location` routing, sorting (room numbers, paren suffixes), counts/clear, real dataset |
 | `lib/schedule/eventDetail.test.ts` | 12 | `?event` strict parsing, share URL, related-session ranking |
 | `lib/schedule/filter.test.ts` | 12 | date/search/facets AND-OR |
-| `lib/schedule/data-integrity.test.ts` | 9 | real JSON guards + known room/time collision snapshot + Ubicaciones label dedupe |
+| `lib/schedule/data-integrity.test.ts` | 15 | real JSON guards + v2 SSOT merge (WED-004 · mesas 14/21 · póster) + schema-key whitelist + canonical 7-location registry + `hall (Edificio X)` accuracy + collision snapshot |
 | `lib/schedule/normalize.test.ts` | 7 | JSON → UI shape |
 | `lib/schedule/hooks/useCurrentSession.test.ts` | 10 | live/up-next, grouping, time travel |
 | `lib/schedule/hooks/useEventDetails.test.ts` | 4 | URL-driven sheet state (replaceState, deep link) |
 | `lib/env.test.ts` | 13 | env schema validation (server-only guards) |
-| `components/schedule/filter/FilterSidebar.test.tsx` | 9 | 3 collapsible groups (order, scoped counts, `aria-expanded` collapse, per-group clear, `data-category`), rooms-only Ubicaciones |
+| `components/schedule/filter/FilterSidebar.test.tsx` | 9 | 3 collapsible groups (order, scoped counts, `aria-expanded` collapse, per-group clear, `data-category`), unified `hall (Edificio X)` Ubicaciones |
 | `components/schedule/EventDetailSheet.test.tsx` | 7 | details rendering, Escape, clipboard, related, responsive `data-side` |
-| `components/schedule/EventTimeline.test.tsx` | 6 | single timeline (no building tabs), chronological order, venue+building per item, tag clicks, live badges |
+| `components/schedule/EventTimeline.test.tsx` | 6 | single timeline (no building tabs), chronological order, unified location label per item, tag clicks, live badges |
+| `components/schedule/EventCard.test.tsx` | 2 | unified location label (building folded in, no suffix) |
 | `tests/integration/supabase.test.ts` | 3* | real connectivity (*2 skip without credentials) |
 
 ### TDD workflow (failsafe branches)
@@ -210,7 +212,7 @@ Push to `main` auto-deploys to production (PRs get previews) via the Vercel GitH
 | Area | Decision | Rationale |
 |---|---|---|
 | Normalization at build | `normalizeEvents()` runs in `page.tsx` (Server Component) | Zero runtime cost, typed data on the client |
-| Dynamic facets | `deriveFilters()` extracts options from the dataset | No hardcoded unions; new axes/types/venues need no code change |
+| Dynamic facets | `deriveFilters()` extracts options from the dataset | No hardcoded unions; new axes/types/locations need no code change |
 | Search | `SearchEngine` (inverted index + Levenshtein + weighted ranking) | Tolerates typos, <50ms |
 | **Tag categories** | Pure classifier + override map + three-category reducer (`type\|topic\|location`) in `lib/schedule/tags.ts`; **presentation-only grouping** (filters schema unchanged) | Single ordering authority; `type` is facet-backed only (never keyword-inferred); no filter-serialization breakage; edge cases data-driven via `TODO(data)` |
 | **Collapsible groups** | Existing shadcn/Radix Accordion (`type="multiple"`, all open by default) wrapping `FilterGroup` | No new dependency; unmount-on-close content, roving keyboard nav and `aria-expanded` free from Radix |
@@ -218,10 +220,35 @@ Push to `main` auto-deploys to production (PRs get previews) via the Vercel GitH
 | **URL state** | `history.replaceState` (no router, no `useSearchParams`) | No Suspense requirement, no history spam, still deep-linkable |
 | Composite hooks | `useScheduleApp` orchestrates search + filters + live + view + chat + details | Separation of concerns, testable |
 | Colors | FNV-1a hash → 10 Tailwind colors (literal classes) | Deterministic, dark-mode safe, tree-shakeable |
-| Venue keys | `slugify(label)` (lowercase, diacritics stripped, `-` separator) | Dedupe "Sala de Usos Múltiples" / "sala de usos multiples" |
+| Location keys | `slugify(roomName)` + `formatLocationLabel()` → `hall (Edificio X)` | Dedupe "Sala de Usos Múltiples" / "sala de usos multiples"; one display formatter for chips/cards/sheet/timeline |
 | Next 16 proxy | `export function proxy` in `proxy.ts` (not `middleware.ts`) | Official Next 16 convention |
 | Snapshot tests | Known Thursday room/time collisions fixed in a test | Catches data regressions without fighting editorial data |
 | Component taxonomy | primitive (Radix) → component (`Tag`, `FilterGroup`) → block (`FilterSidebar`, `EventDetailSheet`) → utility (`tags.ts`, `eventDetail.ts`) | building-components skill: composition, `data-slot`/`data-state` contracts, code = documentation |
+
+## 🗣️ Ubiquitous language (DDD)
+
+One term per concept — data, code, tests and this README speak the same vocabulary:
+
+| Term | Meaning | Canonical home |
+|---|---|---|
+| **event / sesión** | one program entry (id, times, day) | `RawEvento` → `ConferenceEvent` |
+| **locationKey** | deduped room slug (`sala-1`, `aula-201d`) — facet & filter value | `ConferenceEvent.locationKey` |
+| **roomName** | raw room (`Sala 1`) — not displayed, indexed for search ("sala 1") | `ConferenceEvent.roomName` |
+| **hallName** | venue hall (`Centro de Convenciones`) — Ubicaciones chip source | `ConferenceEvent.hallName` |
+| **building** | code (`3B`, or `Unknown`) | `ConferenceEvent.building` |
+| **locationLabel** | display `hall (Edificio X)` via `formatLocationLabel()` (bare hall if `Unknown`) — chips, cards, sheet, timeline | `lib/schedule/normalize.ts` |
+| **locations** | the Ubicaciones facet (`ScheduleDerived` / `ScheduleFilters` / search) | `filter.ts`, `tags.ts` |
+| **host\*** | conference sede metadata (`hostInstitution`, `hostCampus`, `hostLocation`) | `ConferenceMeta` |
+| **`location` category** | filter category id `type \| topic \| location` (unchanged) | `TagCategory` |
+
+Retired: `venueKey` / `venueLabel` / `venueHall` / `venues` / `venue*` meta / `toggleVenue` / `getHallLabel` ("Hall 1..4"). Sweep check: `grep -rni 'venue' lib components src app` → 0 hits.
+
+## 🗃️ Data — single source of truth
+
+- **`lib/schedule/calendario_vii_jidfics.json` is the only dataset** (45 events, 2 days). The organizer's v2 patch (`schedule_updates_v2.json`) was **consumed into it and deleted** — no second copy can drift.
+- Consumed v2 updates: WED-004 title/speaker (prior values preserved in the optional, unrendered `historial_cambios`), WED-MESA-14's three papers, THU-MESA-21 canonical titles + authors, poster authorship updated **in place** inside `THU-CARTELES-VIRTUALES`, canonical `Sala de Usos Múltiples` casing.
+- Guardrails in `data-integrity.test.ts` (red on drift): schema-key **whitelist** (patch-only keys such as `ponencias_detalladas` / `fecha` are rejected), the exact **7 canonical `(sala, lugar, edificio)` triples**, `hall (Edificio X)` label accuracy, 45 unique event ids, known collision snapshot.
+- To update the program: edit only that JSON, then run `bunx vitest run lib/schedule/data-integrity.test.ts`.
 
 ---
 
