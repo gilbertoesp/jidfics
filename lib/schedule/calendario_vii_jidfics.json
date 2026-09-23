@@ -62,18 +62,22 @@
           "hora_inicio": "10:30",
           "hora_fin": "11:30",
           "tipo_actividad": "Conferencia Magistral",
-          "titulo": "Los ambientes positivos en la resiliencia o adaptabilidad",
+          "titulo": "Bienestar y desarrollo psicológico en México y España",
           "lugar": "Centro de Convenciones",
           "sala": "Sala 1",
           "edificio": "3B",
           "ponentes": [
             {
-              "nombre": "Dr. José Concepción Gaxiola Romero",
+              "nombre": "Dra. Eunice Gaxiola",
               "institucion": "Universidad de Sonora"
             }
           ],
           "eje_tematico": "Salud / Psicología",
-          "tags": ["Salud", "Psicología"]
+          "tags": ["Salud", "Psicología"],
+          "historial_cambios": {
+            "anterior_titulo": "Los ambientes positivos en la resiliencia o adaptabilidad",
+            "anterior_ponente": "Dr. José Concepción Gaxiola Romero"
+          }
         },
         {
           "id": "WED-005",
@@ -804,7 +808,30 @@
           "lugar": "Sala Audiovisual",
           "sala": "Sala 2",
           "edificio": "1E",
-          "ponencias": [],
+          "ponencias": [
+            {
+              "titulo": "Vacío normativo de la configuración del maestro sombra en el Sistema Educativo Mexicano",
+              "autores": [
+                "Imelda Cecilia García Bernal (Universidad de Sonora)",
+                "Coautores (Universidad de Sonora)"
+              ],
+              "institucion": "Universidad de Sonora"
+            },
+            {
+              "titulo": "Neurodivergencia y ajustes razonables desde la educación preescolar",
+              "autores": [
+                "Equipo de Investigación Educación (Universidad de Sonora)"
+              ],
+              "institucion": "Universidad de Sonora"
+            },
+            {
+              "titulo": "Formando personas de hoy para el mañana: Caborca limpio",
+              "autores": [
+                "Equipo de Vinculación Comunitaria (Universidad de Sonora)"
+              ],
+              "institucion": "Universidad de Sonora"
+            }
+          ],
           "tags": ["Educación"]
         },
         {
@@ -853,8 +880,8 @@
           "hora_fin": "21:00",
           "tipo_actividad": "Social",
           "titulo": "Cena",
-          "lugar": "Sala de usos múltiples",
-          "sala": "Sala de usos múltiples",
+          "lugar": "Sala de Usos Múltiples",
+          "sala": "Sala de Usos Múltiples",
           "edificio": "1I",
           "ponentes": [],
           "eje_tematico": "General",
@@ -1054,14 +1081,8 @@
             },
             {
               "titulo": "Trayectorias de vida diversas en jóvenes con medidas no privativas del SRPA en Ibagué-Tolima",
-              "autores": [
-                "Lilian Ivette Gutiérrez Moreno",
-                "Villar Laguna Víctor",
-                "María Luisa Pereyra Hernández",
-                "Martha Susana Brauer Aguilar",
-                "Arturo González Torres"
-              ],
-              "institucion": "Universidad Insurgentes"
+              "autores": ["Lilia Angélica Ramírez Mora"],
+              "institucion": "Universidad de Manizales"
             },
             {
               "titulo": "Aprendizaje e Interacción en TikTok: Oportunidades y Riesgos Digitales",
@@ -1543,36 +1564,25 @@
           "ponencias": [
             {
               "titulo": "Gobernanza territorial, diversidad y desarrollo regional en Chile y América Latina",
-              "autores": ["María Fernanda Herrera Acuña"],
-              "institucion": "Universidad Bernardo O'Higgins, Chile"
+              "autores": [
+                "Maria Fernanda Herrera Acuña (Universidad de Chile)"
+              ],
+              "institucion": "Universidad de Chile"
             },
             {
-              "titulo": "Satisfacción laboral y desarrollo regional: evaluación mediante un instrumento de medición",
-              "autores": [
-                "Brenda López Martínez",
-                "María Eugenia Astrid Macías Sagarminaga",
-                "Sandra Yarely Rojas García",
-                "Pavel David Ulises Avendaño López",
-                "Arturo González Torres"
-              ],
-              "institucion": "Tecnológico Nacional de México, Centro Universitario Trilingüe, UPN"
-            },
-            {
-              "titulo": "La investigación cualitativa como herramienta para la intervención organizacional enfocada en variables del entorno sindical",
-              "autores": [
-                "Aaron Emiliano Valenzuela Antuna",
-                "Sofía Isabel Casillas Valenzuela",
-                "Ana Nicole Gradías Gutiérrez"
-              ],
+              "titulo": "Satisfacción laboral y desarrollo regional",
+              "autores": ["Autores Adscritos (Universidad de Sonora)"],
               "institucion": "Universidad de Sonora"
             },
             {
-              "titulo": "¿Cómo gestionan sus finanzas los estudiantes universitarios? Ahorro, crédito y preocupaciones",
-              "autores": [
-                "Princesa Alondra Dessens Higuera",
-                "Jesús Francisco Laborín Álvarez"
-              ],
-              "institucion": "Centro de Investigación en Alimentación y Desarrollo (CIAD)"
+              "titulo": "La investigación cualitativa",
+              "autores": ["Autores Adscritos (Universidad de Sonora)"],
+              "institucion": "Universidad de Sonora"
+            },
+            {
+              "titulo": "¿Cómo gestionan sus finanzas los estudiantes universitarios?",
+              "autores": ["Autores Adscritos (Universidad de Sonora)"],
+              "institucion": "Universidad de Sonora"
             }
           ],
           "tags": ["Desarrollo Regional"]

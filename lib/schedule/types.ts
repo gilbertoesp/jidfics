@@ -13,6 +13,13 @@ export interface RawPonencia {
   institucion: string;
 }
 
+/** v2 audit trail of prior values (kept for provenance; not rendered). */
+export interface HistorialCambios {
+  anterior_titulo?: string;
+  anterior_ponente?: string;
+  anterior_ponentes?: string[];
+}
+
 /** Session-level event (conferencia, inauguración, conversatorio…). */
 export interface RawEventoSesion {
   id: string;
@@ -28,6 +35,7 @@ export interface RawEventoSesion {
   tags?: string[];
   ponencias?: undefined;
   mesa_numero?: undefined;
+  historial_cambios?: HistorialCambios;
 }
 
 /** Mesa (Trabajos Libres / Carteles / Posgrados) holding multiple papers. */
@@ -45,6 +53,7 @@ export interface RawEventoMesa {
   tags?: string[];
   ponencias?: RawPonencia[];
   mesa_numero?: number;
+  historial_cambios?: HistorialCambios;
 }
 
 export type RawEvento = RawEventoSesion | RawEventoMesa;
