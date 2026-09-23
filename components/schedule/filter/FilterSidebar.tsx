@@ -155,7 +155,7 @@ export function FilterSidebar({
           </TagGroup>
         </FilterGroup>
 
-        {/* Location category: location-like tags + hall names (venueHall) */}
+        {/* Location category: one "hall (Edificio X)" label per location */}
         <FilterGroup
           category="location"
           title="Ubicaciones"

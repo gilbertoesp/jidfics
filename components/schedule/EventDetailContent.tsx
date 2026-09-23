@@ -107,8 +107,6 @@ export function EventDetailContent({
           </time>
           <span aria-hidden="true"> · </span>
           {event.venueLabel}
-          {event.building !== "Unknown" && <span aria-hidden="true"> · </span>}
-          {event.building !== "Unknown" && event.building}
         </SheetDescription>
       </SheetHeader>
 

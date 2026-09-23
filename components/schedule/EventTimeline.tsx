@@ -159,13 +159,6 @@ export function EventTimeline({
                   <div className="flex flex-wrap items-center gap-1.5">
                     <Badge
                       variant="outline"
-                      data-slot="event-building"
-                      className="text-[11px] text-muted-foreground"
-                    >
-                      {event.building}
-                    </Badge>
-                    <Badge
-                      variant="outline"
                       className={cn(
                         "gap-1.5 border text-[11px]",
                         activityColor.badge,

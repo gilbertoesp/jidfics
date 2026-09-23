@@ -170,8 +170,11 @@ export class SearchEngine {
       }
     }
 
-    // Venue
+    // Venue label + room (rooms stay searchable without a label prefix)
     for (const word of this.tokenize(event.venueLabel)) {
+      addTerm(word, "venue");
+    }
+    for (const word of this.tokenize(event.roomName)) {
       addTerm(word, "venue");
     }
 
@@ -454,7 +457,7 @@ export class SearchEngine {
 
     // Venue/Building highlights
     if (matchedFields.includes("venue") || matchedFields.includes("building")) {
-      const locText = `${event.venueLabel} · ${event.building}`;
+      const locText = event.venueLabel;
       if (queryTerms.some((t) => normalizeSpanish(locText).includes(t))) {
         highlights.push(`Lugar: ${highlightText(locText)}`);
       }

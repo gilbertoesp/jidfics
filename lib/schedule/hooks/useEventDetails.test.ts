@@ -23,6 +23,7 @@ function makeEvent(id: string): ConferenceEvent {
     tags: ["Violencia"],
     building: "3B",
     venueKey: "sala-1",
+    roomName: "Sala 1",
     venueLabel: "Sala 1 · Centro de Convenciones",
     venueHall: "Centro de Convenciones",
     speakers: [],

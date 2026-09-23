@@ -103,7 +103,9 @@ export interface ConferenceEvent {
   title: string;
   /** Normalized room key (e.g. "sala-1", "sala-de-danza", "aula-201d"). */
   venueKey: string;
-  /** Human label, e.g. "Sala 1 · Centro de Convenciones". */
+  /** Raw room name (e.g. "Sala 1") — indexed for search after label-format change. */
+  roomName: string;
+  /** Unified location label, e.g. "Centro de Convenciones (Edificio 3B)". */
   venueLabel: string;
   /** Venue/hall name (e.g. "Centro de Convenciones") — Ubicaciones label source. */
   venueHall: string;

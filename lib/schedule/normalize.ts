@@ -16,6 +16,16 @@ function slugify(value: string): string {
     .replace(/^-|-$/g, "");
 }
 
+/**
+ * Single source of truth for the location display format (DDD ubiquitous
+ * language): `hall (Edificio X)` — bare hall when the building is unknown.
+ */
+export function locationLabel(hall: string, building: string): string {
+  return building && building !== "Unknown"
+    ? `${hall} (Edificio ${building})`
+    : hall;
+}
+
 /** Building label mapping for human-readable names. */
 export function buildingLabel(edificio: string): string {
   const labels: Record<string, string> = {
@@ -76,6 +86,8 @@ export function normalizeEvents(calendario: RawCalendario): ConferenceEvent[] {
             : ["General"];
       const normalizedTags = tags.length > 0 ? tags : ["General"];
 
+      const building = evento.edificio?.trim() || "Unknown";
+
       events.push({
         id: evento.id,
         date: day.fecha,
@@ -83,12 +95,13 @@ export function normalizeEvents(calendario: RawCalendario): ConferenceEvent[] {
         endTime: evento.hora_fin,
         title: titleFor(evento),
         venueKey: slugify(evento.sala),
-        venueLabel: `${evento.sala} · ${evento.lugar}`,
+        roomName: evento.sala,
+        venueLabel: locationLabel(evento.lugar, building),
         venueHall: evento.lugar,
         activityType: evento.tipo_actividad,
         thematicAxis: evento.eje_tematico ?? "General",
         tags: normalizedTags,
-        building: evento.edificio?.trim() || "Unknown",
+        building,
         speakers: toSpeakers(evento),
         papers: toPapers(evento),
       });
@@ -132,9 +145,8 @@ export function deriveFilters(events: ConferenceEvent[]): ScheduleDerived {
   const venueMap = new Map<string, string>();
   for (const event of events) {
     if (!venueMap.has(event.venueKey)) {
-      // Hall-name label: "Centro de Convenciones" — one accurate, human-
-      // readable name per venue (room numbers/codes duplicated other text).
-      venueMap.set(event.venueKey, event.venueHall);
+      // "hall (Edificio X)" via the single formatter — same text as cards.
+      venueMap.set(event.venueKey, event.venueLabel);
     }
   }
   const venues = [...venueMap.entries()].map(([key, label]) => ({

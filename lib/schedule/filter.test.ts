@@ -21,6 +21,7 @@ function makeEvent(partial: Partial<ConferenceEvent>): ConferenceEvent {
     tags: ["Violencia"],
     building: "3B",
     venueKey: "sala-1",
+    roomName: "Sala 1",
     venueLabel: "Sala 1 · Centro de Convenciones",
     venueHall: "Centro de Convenciones",
     speakers: [],
@@ -40,6 +41,7 @@ const events: ConferenceEvent[] = [
     tags: ["Violencia"],
     building: "3B",
     venueKey: "sala-1",
+    roomName: "Sala 1",
     speakers: [{ name: "Dra. Ana", institution: "UNISON", role: "speaker" }],
   }),
   makeEvent({
@@ -52,6 +54,7 @@ const events: ConferenceEvent[] = [
     tags: ["Género"],
     building: "1E",
     venueKey: "sala-2",
+    roomName: "Sala 2",
     venueLabel: "Sala 2 · Sala Audiovisual",
     venueHall: "Sala Audiovisual",
     papers: [
@@ -72,6 +75,7 @@ const events: ConferenceEvent[] = [
     tags: ["General"],
     building: "3B",
     venueKey: "sala-1",
+    roomName: "Sala 1",
   }),
 ];
 

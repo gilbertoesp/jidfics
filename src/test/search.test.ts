@@ -43,6 +43,7 @@ const mockEvents: ConferenceEvent[] = [
     title:
       "La ansiedad, depresión y estrés en jóvenes y el método integral para prevenirlos a través del Yoga",
     venueKey: "sala-1",
+    roomName: "Sala 1",
     venueLabel: "Sala 1 · Centro de Convenciones",
     venueHall: "Centro de Convenciones",
     activityType: "Conferencia Magistral",
@@ -65,6 +66,7 @@ const mockEvents: ConferenceEvent[] = [
     endTime: "12:30",
     title: "Mesa 1 · Violencia",
     venueKey: "sala-2",
+    roomName: "Sala 2",
     venueLabel: "Sala 2 · Sala Audiovisual",
     venueHall: "Sala Audiovisual",
     activityType: "Trabajos Libres",
@@ -95,6 +97,7 @@ const mockEvents: ConferenceEvent[] = [
     title:
       "Niñez y tecnología: patrones de uso de pantallas, perfiles conductuales y desarrollo cognitivo-socioemocional en escolares",
     venueKey: "sala-1",
+    roomName: "Sala 1",
     venueLabel: "Sala 1 · Centro de Convenciones",
     venueHall: "Centro de Convenciones",
     activityType: "Conferencia Magistral",
@@ -117,6 +120,7 @@ const mockEvents: ConferenceEvent[] = [
     endTime: "13:00",
     title: "Mesa 16 · Educación",
     venueKey: "sala-2",
+    roomName: "Sala 2",
     venueLabel: "Sala 2 · Sala Audiovisual",
     venueHall: "Sala Audiovisual",
     activityType: "Trabajos Libres",
