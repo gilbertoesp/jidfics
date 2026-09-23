@@ -184,12 +184,13 @@ describe("categorizeDerived", () => {
       "Salud",
       "Violencia",
     ]);
-    expect(derived.topic.activityTypes.map((o) => o.value)).toEqual([
+    expect(derived.type.activityTypes.map((o) => o.value)).toEqual([
       "Conferencia Magistral",
     ]);
     expect(derived.location.venues.map((o) => o.value)).toEqual(["sala-1"]);
     expect(derived.location.buildings.map((o) => o.value)).toEqual(["3B"]);
     // every option carries its category
+    expect(derived.type.activityTypes[0]?.category).toBe("type");
     expect(derived.topic.tags[0]?.category).toBe("topic");
     expect(derived.location.buildings[0]?.category).toBe("location");
   });
@@ -245,7 +246,7 @@ const selected: ScheduleFilters = {
 
 describe("countSelectedCategory", () => {
   it("sums facet selections per category", () => {
-    expect(countSelectedCategory("topic", selected)).toBe(2); // tags + activityTypes
+    expect(countSelectedCategory("topic", selected)).toBe(1); // tags only
     expect(countSelectedCategory("location", selected)).toBe(3); // venues + buildings
     expect(countSelectedCategory("topic", EMPTY_FILTERS)).toBe(0);
     expect(countSelectedCategory("location", EMPTY_FILTERS)).toBe(0);
@@ -264,7 +265,7 @@ describe("clearCategory", () => {
 
     const clearedTopic = clearCategory("topic", selected);
     expect(clearedTopic.tags).toEqual([]);
-    expect(clearedTopic.activityTypes).toEqual([]);
+    expect(clearedTopic.activityTypes).toEqual(["Conferencia Magistral"]);
     expect(clearedTopic.venues).toEqual(["sala-1", "sala-2"]);
     expect(clearedTopic.buildings).toEqual(["3B"]);
     expect(clearedTopic.date).toBe(selected.date);
@@ -307,8 +308,8 @@ describe("categorizeDerived — three-category routing", () => {
       "Conferencia Magistral",
       "Panel",
     ]);
-    // topic no longer has activityTypes
-    expect(derived.topic.activityTypes).toEqual([]);
+    // topic no longer exposes activityTypes
+    expect("activityTypes" in derived.topic).toBe(false);
     expect(derived.topic.tags.map((o) => o.value)).toEqual([
       "Salud",
       "Violencia",
@@ -378,6 +379,6 @@ describe("real dataset categorization — three categories", () => {
   it("topic.tags has 19 values and no activityTypes", () => {
     const values: string[] = categorized.topic.tags.map((o) => o.value);
     expect(values.length).toBeGreaterThanOrEqual(19);
-    expect(categorized.topic.activityTypes).toEqual([]);
+    expect("activityTypes" in categorized.topic).toBe(false);
   });
 });

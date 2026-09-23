@@ -3,13 +3,14 @@
  *
  * Contract (builder context, en):
  *  - Every filter option belongs to exactly one `TagCategory`:
- *    "topic" (ejes temáticos, tipos de actividad) | "location" (salas, edificios).
- *  - Classification = keyword heuristic (word-boundary, diacritic/case-insensitive)
- *    with an injectable manual-override map for data-driven edge cases.
+ *    "type" (tipo_actividad: how research is presented — facet-backed only) |
+ *    "topic" (ejes temáticos) | "location" (salas, edificios).
+ *  - Classification of free text = keyword heuristic (word-boundary,
+ *    diacritic/case-insensitive) with an injectable manual-override map;
+ *    heuristic only ever emits topic|location ("type" comes from the facet).
  *  - Sorting is independent per category:
- *    topic    → alphabetical, `es` locale (accents respected)
- *    location → numeric-aware (room/building number padded, then alpha) —
- *                the "building → floor → room" spirit without floor metadata.
+ *    type/topic → alphabetical, `es` locale (accents respected)
+ *    location   → numeric-aware (room/building number padded, then alpha).
  *  - Counts/clears operate per category over `ScheduleFilters` and never mutate.
  *
  * Keyboard map: none (utility — non-visual).
@@ -149,7 +150,8 @@ export function splitTagsByCategory(tags: readonly string[]): {
 /* ------------------------------------------------------------------ */
 
 export interface CategorizedDerived {
-  topic: { tags: TagOption[]; activityTypes: TagOption[] };
+  type: { activityTypes: TagOption[] };
+  topic: { tags: TagOption[] };
   location: { tags: TagOption[]; venues: TagOption[]; buildings: TagOption[] };
 }
 
@@ -161,12 +163,14 @@ export function categorizeDerived(
     derived.tags,
   );
   return {
-    topic: {
-      tags: toTagOptions(topicTags, "topic"),
+    type: {
       activityTypes: toTagOptions(
         derived.activityTypes.map((t) => ({ value: t })),
-        "topic",
+        "type",
       ),
+    },
+    topic: {
+      tags: toTagOptions(topicTags, "topic"),
     },
     location: {
       tags: toTagOptions(locationTags, "location"),
@@ -190,12 +194,12 @@ function facetValues(
   category: TagCategory,
   filters: ScheduleFilters,
 ): string[] {
-  return category === "location"
-    ? [...filters.venues, ...filters.buildings]
-    : [...filters.tags, ...filters.activityTypes];
+  if (category === "type") return filters.activityTypes;
+  if (category === "location") return [...filters.venues, ...filters.buildings];
+  return filters.tags; // topic
 }
 
-/** Selected count per category (tags+activityTypes | venues+buildings). */
+/** Selected count per category (activityTypes | tags | venues+buildings). */
 export function countSelectedCategory(
   category: TagCategory,
   filters: ScheduleFilters,
@@ -208,7 +212,7 @@ export function clearCategory(
   category: TagCategory,
   filters: ScheduleFilters,
 ): ScheduleFilters {
-  return category === "location"
-    ? { ...filters, venues: [], buildings: [] }
-    : { ...filters, tags: [], activityTypes: [] };
+  if (category === "type") return { ...filters, activityTypes: [] };
+  if (category === "location") return { ...filters, venues: [], buildings: [] };
+  return { ...filters, tags: [] }; // topic
 }

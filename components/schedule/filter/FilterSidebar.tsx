@@ -94,7 +94,7 @@ export function FilterSidebar({
   const topicCount = countSelectedCategory("topic", filters);
   const locationCount = countSelectedCategory("location", filters);
   const topicTotal =
-    categorized.topic.tags.length + categorized.topic.activityTypes.length;
+    categorized.topic.tags.length + categorized.type.activityTypes.length;
   const locationTotal =
     categorized.location.tags.length +
     categorized.location.venues.length +
@@ -151,11 +151,11 @@ export function FilterSidebar({
         </TagGroup>
 
         <TagGroup label="Tipo de actividad">
-          {categorized.topic.activityTypes.map((option) => (
+          {categorized.type.activityTypes.map((option) => (
             <FilterTag
               key={option.value}
               option={option}
-              category="topic"
+              category="type"
               selected={filters.activityTypes.includes(option.value)}
               onToggle={onToggleActivityType}
               ariaPrefix="Filtrar por tipo"
