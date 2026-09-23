@@ -134,3 +134,124 @@ describe("derived location facet (Ubicaciones)", () => {
     }
   });
 });
+
+/* ------------------------------------------------------------------ */
+/* v2 SSOT — schedule_updates_v2.json consumed into the master dataset */
+/* ------------------------------------------------------------------ */
+const rawEvents = rawCalendario.programa.flatMap(
+  (d) => d.eventos,
+) as unknown as Array<Record<string, unknown> & { id: string }>;
+const rawById = new Map(rawEvents.map((e) => [e.id, e]));
+
+interface RawPonencia {
+  titulo: string;
+  autores: string[];
+  institucion?: string;
+}
+const ponenciasOf = (id: string): RawPonencia[] =>
+  (rawById.get(id)?.ponencias as RawPonencia[] | undefined) ?? [];
+
+describe("v2 content updates (single source of truth)", () => {
+  it("applies the WED-004 v2 title/speaker and preserves its change history", () => {
+    const w4 = events.find((e) => e.id === "WED-004");
+    expect(w4?.title).toBe(
+      "Bienestar y desarrollo psicológico en México y España",
+    );
+    expect(w4?.speakers).toEqual([
+      {
+        name: "Dra. Eunice Gaxiola",
+        institution: "Universidad de Sonora",
+        role: "speaker",
+      },
+    ]);
+    const hist = rawById.get("WED-004")?.historial_cambios as
+      | { anterior_titulo?: string; anterior_ponente?: string }
+      | undefined;
+    expect(hist?.anterior_titulo).toBe(
+      "Los ambientes positivos en la resiliencia o adaptabilidad",
+    );
+    expect(hist?.anterior_ponente).toBe("Dr. José Concepción Gaxiola Romero");
+  });
+
+  it("fills WED-MESA-14 with its three v2 papers (institution-tagged authors)", () => {
+    const p14 = ponenciasOf("WED-MESA-14");
+    expect(p14.map((p) => p.titulo)).toEqual([
+      "Vacío normativo de la configuración del maestro sombra en el Sistema Educativo Mexicano",
+      "Neurodivergencia y ajustes razonables desde la educación preescolar",
+      "Formando personas de hoy para el mañana: Caborca limpio",
+    ]);
+    expect(p14[0].autores).toEqual([
+      "Imelda Cecilia García Bernal (Universidad de Sonora)",
+      "Coautores (Universidad de Sonora)",
+    ]);
+  });
+
+  it("rewrites THU-MESA-21 papers to canonical v2 titles with authors", () => {
+    const p21 = ponenciasOf("THU-MESA-21");
+    expect(p21.map((p) => p.titulo)).toEqual([
+      "Gobernanza territorial, diversidad y desarrollo regional en Chile y América Latina",
+      "Satisfacción laboral y desarrollo regional",
+      "La investigación cualitativa",
+      "¿Cómo gestionan sus finanzas los estudiantes universitarios?",
+    ]);
+    expect(p21[0].autores).toEqual([
+      "Maria Fernanda Herrera Acuña (Universidad de Chile)",
+    ]);
+  });
+
+  it("updates the 'Trayectorias de vida…' poster authors in place (no duplicate event)", () => {
+    const posters = ponenciasOf("THU-CARTELES-VIRTUALES");
+    const poster = posters.find((p) =>
+      p.titulo.startsWith("Trayectorias de vida diversas"),
+    );
+    expect(poster?.autores).toEqual(["Lilia Angélica Ramírez Mora"]);
+    expect(poster?.institucion).toBe("Universidad de Manizales");
+    // in-place policy: never materialize the poster as its own session
+    expect(
+      events.filter((e) => e.title.startsWith("Trayectorias de vida")),
+    ).toHaveLength(0);
+  });
+
+  it("keeps every event on canonical schema keys (rejects patch-only fields)", () => {
+    const EVENT_KEYS = new Set([
+      "id",
+      "hora_inicio",
+      "hora_fin",
+      "tipo_actividad",
+      "titulo",
+      "mesa_numero",
+      "lugar",
+      "sala",
+      "edificio",
+      "ponentes",
+      "eje_tematico",
+      "tags",
+      "ponencias",
+      "historial_cambios",
+    ]);
+    for (const e of rawEvents) {
+      for (const key of Object.keys(e)) {
+        expect(EVENT_KEYS.has(key), `${e.id}.${key}`).toBe(true);
+      }
+    }
+  });
+
+  it("keeps exactly the 7 canonical locations with exact casing", () => {
+    const CANON = new Set([
+      "Sala 1|Centro de Convenciones|3B",
+      "Sala 2|Sala Audiovisual|1E",
+      "Sala 3|Sala Polivalente|1M",
+      "Sala 4|Sala de Maestría|1G",
+      "Aula 201D|Aula 201D|201D",
+      "Sala de Danza|Sala de Danza|1E",
+      "Sala de Usos Múltiples|Sala de Usos Múltiples|1I",
+    ]);
+    const seen = new Set(
+      rawEvents.map(
+        (e) => `${String(e.sala)}|${String(e.lugar)}|${String(e.edificio)}`,
+      ),
+    );
+    for (const t of seen) expect(CANON.has(t), t).toBe(true); // exact casing
+    expect(seen.size).toBe(CANON.size); // every canonical location in use
+  });
+});
