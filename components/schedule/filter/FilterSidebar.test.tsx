@@ -5,14 +5,16 @@ import { describe, expect, it, vi } from "vitest";
 
 import { FilterSidebar } from "@/components/schedule/filter/FilterSidebar";
 import { EMPTY_FILTERS, type ScheduleFilters } from "@/lib/schedule/filter";
-import type { ScheduleDerived } from "@/lib/schedule/types";
+import type { ScheduleDerived, TagCategory } from "@/lib/schedule/types";
 
 /* Contract notes (builder context, en):
- * - The sidebar is a composable BLOCK: two FilterGroup sections, one per
- *   TagCategory ("topic" | "location"), each with header, selected count
- *   and per-category clear (building-components: data-slot/data-category,
- *   role=group + aria-label in Spanish content).
- * - Facet mapping: tags+activityTypes → topic; venues+buildings → location.
+ * - The sidebar is a composable BLOCK: three collapsible FilterGroup
+ *   sections in order type → location → topic (building-components:
+ *   data-slot="filter-group" + data-category="type|topic|location";
+ *   Radix Accordion trigger exposes aria-expanded; role=group fieldset
+ *   body in Spanish).
+ * - Facet mapping: activityTypes → type; tags → topic;
+ *   venues+buildings → location. Counts/clears are per category.
  */
 
 const derived: ScheduleDerived = {
@@ -41,48 +43,128 @@ function renderSidebar(filters: Partial<ScheduleFilters> = {}) {
   );
 }
 
+/** Locate one collapsible group by its stable data-slot/data-category contract. */
+function group(container: HTMLElement, category: TagCategory): HTMLElement {
+  const el = container.querySelector<HTMLElement>(
+    `[data-slot="filter-group"][data-category="${category}"]`,
+  );
+  if (!el) throw new Error(`missing filter-group[data-category=${category}]`);
+  return el;
+}
+
+/** Header count text ("n/total") inside a group. */
+function countIn(container: HTMLElement, category: TagCategory): string {
+  return (
+    group(container, category).querySelector<HTMLElement>(
+      '[data-slot="filter-group-count"]',
+    )?.textContent ?? ""
+  );
+}
+
+/** Collapsible header trigger (Radix AccordionTrigger wrapper). */
+function triggerIn(container: HTMLElement, category: TagCategory): HTMLElement {
+  const el = group(container, category).querySelector<HTMLElement>(
+    '[data-slot="filter-group-trigger"]',
+  );
+  if (!el) throw new Error(`missing filter-group-trigger in ${category}`);
+  return el;
+}
+
 describe("FilterSidebar", () => {
-  it("renders one group per category with Spanish headers", () => {
-    renderSidebar();
-    expect(screen.getByRole("group", { name: "Temas" })).toBeInTheDocument();
+  it("renders three collapsible groups in order type → location → topic", () => {
+    const { container } = renderSidebar();
+    const order = [
+      ...container.querySelectorAll('[data-slot="filter-group"]'),
+    ].map((el) => el.getAttribute("data-category"));
+    expect(order).toEqual(["type", "location", "topic"]);
+    // each group exposes its Spanish header as a role=group fieldset
+    expect(
+      screen.getByRole("group", { name: "Tipo de actividad" }),
+    ).toBeInTheDocument();
     expect(
       screen.getByRole("group", { name: "Ubicaciones" }),
     ).toBeInTheDocument();
+    expect(screen.getByRole("group", { name: "Temas" })).toBeInTheDocument();
   });
 
   it("nests facets under the right category group", () => {
-    renderSidebar();
-    const topics = screen.getByRole("group", { name: "Temas" });
-    const locations = screen.getByRole("group", { name: "Ubicaciones" });
+    const { container } = renderSidebar();
+    const topic = group(container, "topic");
+    const type = group(container, "type");
+    const location = group(container, "location");
 
-    expect(topics).toHaveTextContent("Salud");
-    expect(topics).toHaveTextContent("Conferencia Magistral");
-    expect(locations).toHaveTextContent("Sala 1 · Centro de Convenciones");
-    expect(locations).toHaveTextContent("Edificio 3B");
-    // location group must not leak topic tags and vice versa
-    expect(topics).not.toHaveTextContent("Sala 1 · Centro");
-    expect(locations).not.toHaveTextContent("Violencia");
+    expect(topic).toHaveTextContent("Salud");
+    expect(topic).toHaveTextContent("Violencia");
+    // activity types left "Temas" — they are presentation modes, not topics
+    expect(topic).not.toHaveTextContent("Conferencia Magistral");
+    expect(type).toHaveTextContent("Conferencia Magistral");
+    expect(type).toHaveTextContent("Mesa de Ponencias");
+    expect(location).toHaveTextContent("Sala 1 · Centro de Convenciones");
+    expect(location).toHaveTextContent("Edificio 3B");
+    expect(topic).not.toHaveTextContent("Sala 1 · Centro");
+    expect(location).not.toHaveTextContent("Violencia");
   });
 
-  it("shows selected/total count per category", () => {
-    renderSidebar({ tags: ["Salud"] }); // topic: 1 of 4, location: 0 of 2
-    expect(screen.getByText("1/4")).toBeInTheDocument();
-    expect(screen.getByText("0/2")).toBeInTheDocument();
+  it("shows selected/total count scoped per category", () => {
+    const { container } = renderSidebar({ tags: ["Salud"] });
+    expect(countIn(container, "type")).toBe("0/2");
+    expect(countIn(container, "location")).toBe("0/2");
+    expect(countIn(container, "topic")).toBe("1/2");
   });
 
-  it("per-category clear is disabled at zero and fires with the category", async () => {
+  it("per-category clear is disabled at zero and fires with its category", async () => {
     const user = userEvent.setup();
-    renderSidebar({ venues: ["sala-1"] });
+    renderSidebar({ activityTypes: ["Panel"], venues: ["sala-1"] });
 
+    const clearType = screen.getByRole("button", {
+      name: "Limpiar Tipo de actividad",
+    });
     const clearTopic = screen.getByRole("button", { name: "Limpiar Temas" });
     const clearLocation = screen.getByRole("button", {
       name: "Limpiar Ubicaciones",
     });
-    expect(clearTopic).toBeDisabled();
+    expect(clearType).toBeEnabled();
+    expect(clearTopic).toBeDisabled(); // no tags selected → topic at zero
     expect(clearLocation).toBeEnabled();
 
+    await user.click(clearType);
+    expect(baseProps.onClearCategory).toHaveBeenLastCalledWith("type");
     await user.click(clearLocation);
-    expect(baseProps.onClearCategory).toHaveBeenCalledWith("location");
+    expect(baseProps.onClearCategory).toHaveBeenLastCalledWith("location");
+  });
+
+  it("collapses and reopens a group via its trigger (aria-expanded)", async () => {
+    const user = userEvent.setup();
+    const { container } = renderSidebar();
+    const trigger = triggerIn(container, "type");
+    expect(trigger).toHaveAttribute("aria-expanded", "true");
+
+    await user.click(trigger);
+    expect(triggerIn(container, "type")).toHaveAttribute(
+      "aria-expanded",
+      "false",
+    );
+    // Radix unmounts closed content → type options leave the DOM
+    expect(
+      screen.queryByRole("button", {
+        name: "Filtrar por tipo Conferencia Magistral",
+      }),
+    ).not.toBeInTheDocument();
+
+    await user.click(triggerIn(container, "type"));
+    expect(triggerIn(container, "type")).toHaveAttribute(
+      "aria-expanded",
+      "true",
+    );
+    expect(
+      screen.getByRole("button", {
+        name: "Filtrar por tipo Conferencia Magistral",
+      }),
+    ).toBeInTheDocument();
+    // other groups stay open (type=multiple accordion)
+    expect(
+      screen.getByRole("button", { name: "Filtrar por etiqueta Salud" }),
+    ).toBeInTheDocument();
   });
 
   it("forwards search input and global clear", async () => {
@@ -119,6 +201,10 @@ describe("FilterSidebar", () => {
     expect(salud).toHaveAttribute("data-category", "topic");
     const sala = screen.getByRole("button", { name: /Filtrar por sala/ });
     expect(sala).toHaveAttribute("data-category", "location");
+    const tipo = screen.getByRole("button", {
+      name: "Filtrar por tipo Conferencia Magistral",
+    });
+    expect(tipo).toHaveAttribute("data-category", "type");
   });
 
   it("announces result count politely", () => {
