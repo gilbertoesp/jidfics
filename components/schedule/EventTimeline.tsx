@@ -21,8 +21,8 @@ import { scheduleSorter } from "@/lib/schedule/filter";
 import type { ConferenceEvent } from "@/lib/schedule/types";
 import { cn } from "@/lib/utils";
 
-export interface BuildingTimelineProps {
-  building: { key: string; label: string };
+export interface EventTimelineProps {
+  /** Already sidebar-filtered events — the timeline itself filters nothing. */
   events: ConferenceEvent[];
   getLiveStatus?: (event: ConferenceEvent) => LiveStatus;
   onTagClick?: (tag: string) => void;
@@ -44,30 +44,30 @@ function indicatorClasses(
 }
 
 /**
- * Timeline for a single building.
- * - Filters events for `building.key`.
- * - Sorts by `date` then `startTime` (via `scheduleSorter` for time ordering).
- * - Renders vertical Timeline (readable on mobile+desktop) using `TimelineItem` per event.
- * - `TimelineIndicator` is coloured by live status (green pulse) or `colorFor(activityType)`.
+ * Single chronological timeline of all events — replaces the per-building
+ * tabbed "location table" (BuildingTimelines).
+ * - Sorts a COPY by `date` then `scheduleSorter` (startTime → venueLabel).
+ * - Each item shows venue label + building code, preserving the location
+ *   context the removed building tabs used to carry.
+ * - `TimelineIndicator` is coloured by live status (green pulse) or
+ *   `colorFor(activityType)`.
  */
-export function BuildingTimeline({
-  building,
+export function EventTimeline({
   events,
   getLiveStatus,
   onTagClick,
   selectedTags = [],
-}: BuildingTimelineProps) {
-  const sorted = useMemo(() => {
-    const filtered = events.filter((e) => e.building === building.key);
-    // Primary: date, secondary: scheduleSorter (startTime → venueLabel)
-    filtered.sort(
-      (a, b) => a.date.localeCompare(b.date) || scheduleSorter(a, b),
-    );
-    return filtered;
-  }, [events, building.key]);
+}: EventTimelineProps) {
+  const sorted = useMemo(
+    () =>
+      [...events].sort(
+        (a, b) => a.date.localeCompare(b.date) || scheduleSorter(a, b),
+      ),
+    [events],
+  );
 
-  // Active step: last live/up-next index + 1, or all completed if none — keeps timeline separators coloured sensibly.
-  // Fallback to sorted.length so the whole track appears completed when viewed statically.
+  // Active step: last live/up-next index + 1, or all completed if none — keeps
+  // timeline separators coloured sensibly; fallback shows the whole track.
   // NOTE: hook must be before early return (rules-of-hooks)
   const activeStep = useMemo(() => {
     if (!getLiveStatus) return sorted.length;
@@ -85,15 +85,16 @@ export function BuildingTimeline({
         role="status"
         className="rounded-xl border border-dashed p-8 text-center text-sm text-muted-foreground"
       >
-        No hay sesiones programadas en{" "}
-        <span className="font-medium">{building.label}</span>.
+        No hay sesiones que coincidan con los filtros actuales.
       </p>
     );
   }
 
   return (
-    <section aria-label={`Línea de tiempo — ${building.label}`}>
-      <h3 className="sr-only">{building.label}</h3>
+    <section
+      aria-label="Línea de tiempo de sesiones"
+      data-slot="event-timeline"
+    >
       <Timeline
         orientation="vertical"
         defaultValue={activeStep}
@@ -155,7 +156,14 @@ export function BuildingTimeline({
                     {event.venueLabel}
                   </span>
 
-                  <div className="flex flex-wrap gap-1.5">
+                  <div className="flex flex-wrap items-center gap-1.5">
+                    <Badge
+                      variant="outline"
+                      data-slot="event-building"
+                      className="text-[11px] text-muted-foreground"
+                    >
+                      {event.building}
+                    </Badge>
                     <Badge
                       variant="outline"
                       className={cn(

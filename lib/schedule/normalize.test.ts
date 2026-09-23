@@ -73,6 +73,7 @@ describe("normalizeEvents", () => {
       activityType: "Conferencia Magistral",
       thematicAxis: "Salud / Psicología",
       venueLabel: "Sala 1 · Centro de Convenciones",
+      venueName: "Sala 1",
       venueKey: "sala-1",
     });
     expect(events[0].speakers[0]).toEqual({
@@ -146,7 +147,7 @@ describe("deriveFilters", () => {
     ]);
     expect(derived.venues).toContainEqual({
       key: "sala-1",
-      label: "Sala 1 · Centro de Convenciones",
+      label: "Sala 1 (Edificio 3B)",
     });
   });
 });

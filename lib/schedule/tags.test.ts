@@ -157,6 +157,24 @@ describe("category sorting", () => {
     ]);
   });
 
+  it("room tags in 'Sala * (Edificio *)' format sort by room number (building digits in parens ignored)", () => {
+    const rooms = toTagOptions(
+      [
+        "Sala de Danza (Edificio 1E)",
+        "Aula 201D (Edificio 201D)",
+        "Sala 2 (Edificio 1E)",
+        "Sala 1 (Edificio 3B)",
+      ],
+      "location",
+    );
+    expect(rooms.map((o) => o.value)).toEqual([
+      "Sala 1 (Edificio 3B)",
+      "Sala 2 (Edificio 1E)",
+      "Aula 201D (Edificio 201D)",
+      "Sala de Danza (Edificio 1E)",
+    ]);
+  });
+
   it("buildings sort by numeric prefix then alpha (building → floor → room spirit)", () => {
     const buildings = toTagOptions(["201D", "1E", "3B"], "location");
     expect(buildings.map((o) => o.value)).toEqual(["1E", "3B", "201D"]);

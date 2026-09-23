@@ -8,7 +8,7 @@
  *   FilterSidebar (search + results + global clear)
  *   └── Accordion[type=multiple] (all open by default)
  *       ├── FilterGroup[category=type]    "Tipo de actividad" (14 presentation modes)
- *       ├── FilterGroup[category=location] "Ubicaciones" → salas + edificios
+ *       ├── FilterGroup[category=location] "Ubicaciones" → salas "Sala * (Edificio *)"
  *       └── FilterGroup[category=topic]   "Temas" → etiquetas temáticas
  *
  * All grouping/sorting/counting logic is delegated to the pure module
@@ -46,10 +46,9 @@ export interface FilterSidebarProps {
   onToggleTag: (tag: string) => void;
   onToggleActivityType: (type: string) => void;
   onToggleVenue: (venue: string) => void;
-  onToggleBuilding: (building: string) => void;
   /** Clears every facet (keeps date + search query). */
   onClear: () => void;
-  /** Clears one category's facets (tags+activityTypes | venues+buildings). */
+  /** Clears one category's facets (tags+activityTypes | venues). */
   onClearCategory: (category: TagCategory) => void;
 }
 
@@ -89,7 +88,6 @@ export function FilterSidebar({
   onToggleTag,
   onToggleActivityType,
   onToggleVenue,
-  onToggleBuilding,
   onClear,
   onClearCategory,
 }: FilterSidebarProps) {
@@ -102,9 +100,7 @@ export function FilterSidebar({
   const typeTotal = categorized.type.activityTypes.length;
   const topicTotal = categorized.topic.tags.length;
   const locationTotal =
-    categorized.location.tags.length +
-    categorized.location.venues.length +
-    categorized.location.buildings.length;
+    categorized.location.tags.length + categorized.location.venues.length;
 
   return (
     <section
@@ -159,7 +155,7 @@ export function FilterSidebar({
           </TagGroup>
         </FilterGroup>
 
-        {/* Location category: location-like tags + venues + buildings */}
+        {/* Location category: location-like tags + rooms "Sala * (Edificio *)" */}
         <FilterGroup
           category="location"
           title="Ubicaciones"
@@ -182,7 +178,7 @@ export function FilterSidebar({
             </TagGroup>
           )}
 
-          <TagGroup label="Sala / Lugar">
+          <TagGroup label="Salas">
             {categorized.location.venues.map((option) => (
               <FilterTag
                 key={option.value}
@@ -191,19 +187,6 @@ export function FilterSidebar({
                 selected={filters.venues.includes(option.value)}
                 onToggle={onToggleVenue}
                 ariaPrefix="Filtrar por sala"
-              />
-            ))}
-          </TagGroup>
-
-          <TagGroup label="Edificio">
-            {categorized.location.buildings.map((option) => (
-              <FilterTag
-                key={option.value}
-                option={option}
-                category="location"
-                selected={filters.buildings.includes(option.value)}
-                onToggle={onToggleBuilding}
-                ariaPrefix="Filtrar por edificio"
               />
             ))}
           </TagGroup>

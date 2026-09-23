@@ -15,9 +15,9 @@ import React, {
   useRef,
   useState,
 } from "react";
-import { BuildingTimelines } from "@/components/schedule/BuildingTimelines";
 import { EventCard } from "@/components/schedule/EventCard";
 import { EventDetailSheet } from "@/components/schedule/EventDetailSheet";
+import { EventTimeline } from "@/components/schedule/EventTimeline";
 import { FloatingSessionBar } from "@/components/schedule/FloatingSessionBar";
 import { FilterSidebar } from "@/components/schedule/filter/FilterSidebar";
 import { LiveChatSheet } from "@/components/schedule/LiveChatSheet";
@@ -424,7 +424,7 @@ export function ScheduleApp({ events, meta, derived }: ScheduleAppProps) {
     [setSearchQuery],
   );
 
-  // Handle tag click from EventCard/BuildingTimeline
+  // Handle tag click from EventCard/EventTimeline
   const handleTagClick = useCallback(
     (tag: string) => {
       toggleTag(tag);
@@ -456,7 +456,6 @@ export function ScheduleApp({ events, meta, derived }: ScheduleAppProps) {
       onToggleTag={toggleTag}
       onToggleActivityType={toggleActivityType}
       onToggleVenue={toggleVenue}
-      onToggleBuilding={toggleBuilding}
       onClear={clearFilters}
       onClearCategory={handleClearCategory}
     />
@@ -483,16 +482,15 @@ export function ScheduleApp({ events, meta, derived }: ScheduleAppProps) {
     </ul>
   );
 
-  // Render timeline view
+  // Render timeline view — ONE chronological timeline of sidebar-filtered events
   const renderTimeline = () => (
-    <section className="flex flex-col gap-4" aria-label="Timeline por edificio">
+    <section className="flex flex-col gap-4" aria-label="Timeline del programa">
       <p className="text-sm text-muted-foreground">
-        Vista cronológica por edificio — haz clic en cualquier etiqueta para
-        filtrar
+        Vista cronológica de todos los eventos filtrados — usa la barra lateral
+        para filtrar y haz clic en cualquier etiqueta para afinar
       </p>
-      <BuildingTimelines
+      <EventTimeline
         events={filteredEvents}
-        derived={derived}
         getLiveStatus={getLiveStatus}
         onTagClick={handleTagClick}
         selectedTags={filters.tags}

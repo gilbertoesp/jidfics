@@ -30,6 +30,7 @@ function makeEvent(partial: Partial<ConferenceEvent>): ConferenceEvent {
     building: "3B",
     venueKey: "sala-1",
     venueLabel: "Sala 1 · Centro de Convenciones",
+    venueName: "Sala 1",
     speakers: [],
     papers: [],
     ...partial,
@@ -44,6 +45,7 @@ const events: ConferenceEvent[] = [
     startTime: "09:00",
     venueKey: "sala-1",
     venueLabel: "Sala 1 · Centro de Convenciones",
+    venueName: "Sala 1",
     thematicAxis: "Género",
   }), // 4+2=6
   makeEvent({
@@ -51,6 +53,7 @@ const events: ConferenceEvent[] = [
     startTime: "09:00",
     venueKey: "sala-2",
     venueLabel: "Sala 2 · Audiovisual",
+    venueName: "Sala 2",
     thematicAxis: "Violencia",
   }), // 4+1=5
   makeEvent({
@@ -58,6 +61,7 @@ const events: ConferenceEvent[] = [
     startTime: "10:00",
     venueKey: "sala-1",
     venueLabel: "Sala 1 · Centro de Convenciones",
+    venueName: "Sala 1",
     thematicAxis: "Género",
   }), // 2
   makeEvent({
@@ -65,6 +69,7 @@ const events: ConferenceEvent[] = [
     startTime: "11:00",
     venueKey: "sala-2",
     venueLabel: "Sala 2 · Audiovisual",
+    venueName: "Sala 2",
     thematicAxis: "Educación",
   }), // 0 → excluded
   makeEvent({
@@ -72,6 +77,7 @@ const events: ConferenceEvent[] = [
     startTime: "09:00",
     venueKey: "sala-1",
     venueLabel: "Sala 1 · Centro de Convenciones",
+    venueName: "Sala 1",
     thematicAxis: "Salud",
   }), // 4+2=6
   makeEvent({
@@ -80,6 +86,7 @@ const events: ConferenceEvent[] = [
     startTime: "09:00",
     venueKey: "sala-1",
     venueLabel: "Sala 1 · Centro de Convenciones",
+    venueName: "Sala 1",
   }), // other day → excluded
 ];
 

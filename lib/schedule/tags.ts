@@ -84,7 +84,10 @@ export function categorizeTag(
 /* ------------------------------------------------------------------ */
 
 function sortKeyFor(label: string): string {
-  const digits = label.match(/\d+/g) ?? [];
+  // Room labels embed "(Edificio 1E)" — building digits must not outrank the
+  // room number, so digit extraction ignores the parenthesized suffix.
+  const base = label.replace(/\s*\([^)]*\)/g, "");
+  const digits = base.match(/\d+/g) ?? [];
   const padded = digits.map((d) => d.padStart(6, "0")).join("");
   return padded + normalizeForMatch(label);
 }

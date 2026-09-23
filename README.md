@@ -2,7 +2,7 @@
 
 Sitio web oficial de la **VII Jornadas Internacionales de Docencia e Investigación en Ciencias Sociales** (JIDFICS), celebrada en la **Universidad de Sonora, Campus Caborca** los días **23 y 24 de septiembre de 2026**.
 
-> **Estado (v1.1)**: búsqueda full-text con índice invertido · filtros **colapsables por categoría** (Tipo / Ubicaciones / Temas) con conteo y limpieza por grupo · vista timeline por edificio · **hoja de detalle de sesión** (panel derecho en escritorio, bottom sheet en móvil, deep-link `?event=<id>`) · discusión en vivo (UI, backend-ready).
+> **Estado (v1.1)**: búsqueda full-text con índice invertido · filtros **colapsables por categoría** (Tipo / Ubicaciones / Temas) con conteo y limpieza por grupo · vista timeline única (eventos filtrados en orden cronológico) · **hoja de detalle de sesión** (panel derecho en escritorio, bottom sheet en móvil, deep-link `?event=<id>`) · discusión en vivo (UI, backend-ready).
 
 > ℹ️ Este README tiene dos contextos separados:
 > **Contenido (es)** — información del evento y del sitio · **Guía técnica (en)** — documentation for builders.
@@ -21,17 +21,17 @@ Sitio web oficial de la **VII Jornadas Internacionales de Docencia e Investigaci
 
 - **Búsqueda inteligente** — índice invertido + fuzzy matching (Levenshtein ≤ 2) + ranking ponderado (título > ponente > etiquetas > ponencias > sala > edificio). Maneja tildes y typos: "violncia" → "Violencia", "educacion" → "Educación".
 - **Programa normalizado desde JSON real** — 45+ sesiones, 2 días, 6 edificios, 10+ ejes temáticos, 14 tipos de actividad.
-- **Filtros colapsables por categoría (nuevo)** — tres grupos plegables (acordeón, todos abiertos por defecto) en orden **Tipo → Ubicaciones → Temas**, cada uno con contador `seleccionados/total` y limpieza por grupo: **Tipo de actividad** (Inauguración, Panel, …; orden alfabético `es`), **Ubicaciones** (salas + edificios, orden numérico-aware) y **Temas** (etiquetas temáticas). Clasificación por palabras clave con mapa de excepciones (`lib/schedule/tags.ts`); el esquema de filtros no cambia (agrupación solo-presentación).
+- **Filtros colapsables por categoría (nuevo)** — tres grupos plegables (acordeón, todos abiertos por defecto) en orden **Tipo → Ubicaciones → Temas**, cada uno con contador `seleccionados/total` y limpieza por grupo: **Tipo de actividad** (Inauguración, Panel, …; orden alfabético `es`), **Ubicaciones** (una etiqueta por sala `Sala * (Edificio *)`, sin duplicados, orden numérico-aware) y **Temas** (etiquetas temáticas). Clasificación por palabras clave con mapa de excepciones (`lib/schedule/tags.ts`); el esquema de filtros no cambia (agrupación solo-presentación).
 - **Filtrado multifacético** — título, ponente, autor, institución, etiqueta, edificio, sala; facetas combinadas con lógica AND/OR.
 - **Hoja de detalle de sesión (nuevo)** — al pulsar "Detalles de la sesión" en cualquier tarjeta: ponentes, ponencias completas, etiquetas accionables, **sesiones relacionadas** (mismo día, ranking hora → sala → eje), copiar enlace compartible. Panel derecho en escritorio (≈448 px), bottom sheet en móvil; deep-link `?event=<id>` valida el id antes de abrir.
-- **Vista Timeline por edificio** — pestañas por edificio con contador de sesiones, timeline vertical cronológico.
+- **Vista Timeline (nueva)** — línea de tiempo única con TODOS los eventos del día en orden cronológico, ya filtrados por la barra lateral; cada sesión muestra sala + edificio, indicadores de vivo/próximo y etiquetas clicables para filtrar.
 - **Filtros activos visibles** — barra de chips removibles con contador de resultados.
 - **Discusión en vivo (UI)** — hoja lateral por sesión (`LiveChatSheet`), backend-ready para Supabase Realtime. *Autenticación de participantes para comentar: considerada, pendiente (ver tabla de TODOs).*
 - **Seguimiento en tiempo real** — barra flotante con sesiones LIVE NOW / UP NEXT (30 min) agrupadas por sala.
 - **Accesibilidad (a11y)** — ARIA roles, focus trap en diálogos, Escape para cerrar, foco devuelto al disparador, navegación por teclado, etiquetas en español.
 - **Tema claro/oscuro** — `next-themes` con persistencia en `localStorage`.
 - **CI/CD** — GitHub Actions: lint + typecheck + tests + build en cada push/PR.
-- **Tests (TDD)** — **163 tests Vitest** en 12 suites (ver Guía técnica).
+- **Tests (TDD)** — **172 tests Vitest** en 13 suites (ver Guía técnica).
 
 ## 📌 Archivos con TODOs
 
@@ -70,7 +70,8 @@ jidfics/
 │   │   ├── EventDetailSheet.tsx  # Block: Radix Sheet, responsive side (data-side)
 │   │   ├── EventDetailContent.tsx# Compound: Header / Body / Footer
 │   │   ├── EventDetailSheet.test.tsx
-│   │   ├── BuildingTimeline.tsx / BuildingTimelines.tsx
+│   │   ├── EventTimeline.tsx     # Block: single chronological timeline (sidebar-filtered)
+│   │   ├── EventTimeline.test.tsx
 │   │   ├── LiveChatSheet.tsx     # Chat UI (TODO(auth) + TODO(realtime))
 │   │   ├── FloatingSessionBar.tsx / LiveIndicatorBadge.tsx
 │   │   ├── ScheduleHeader.tsx
@@ -146,21 +147,22 @@ bun run lint                        # biome check . && eslint .
 bun run format                      # biome autofix + format (write mode)
 ```
 
-**Suites — 163 tests total (161 + 2 integration skipped without credentials):**
+**Suites — 172 tests total (170 + 2 integration skipped without credentials):**
 
 | Suite | Tests | Covers |
 |---|---|---|
 | `src/test/search.test.ts` | 53 | inverted index, fuzzy (Levenshtein), prefix, ranking, highlights, Spanish diacritics |
-| `lib/schedule/tags.test.ts` | 26 | keyword classification, overrides, 3-way `type\|topic\|location` routing, sorting, counts/clear, real dataset |
+| `lib/schedule/tags.test.ts` | 27 | keyword classification, overrides, 3-way `type\|topic\|location` routing, sorting (incl. `Sala * (Edificio *)` rooms), counts/clear, real dataset |
 | `lib/schedule/eventDetail.test.ts` | 12 | `?event` strict parsing, share URL, related-session ranking |
 | `lib/schedule/filter.test.ts` | 12 | date/search/facets AND-OR |
-| `lib/schedule/data-integrity.test.ts` | 8 | real JSON guards + known room/time collision snapshot |
+| `lib/schedule/data-integrity.test.ts` | 9 | real JSON guards + known room/time collision snapshot + Ubicaciones label dedupe |
 | `lib/schedule/normalize.test.ts` | 7 | JSON → UI shape |
 | `lib/schedule/hooks/useCurrentSession.test.ts` | 10 | live/up-next, grouping, time travel |
 | `lib/schedule/hooks/useEventDetails.test.ts` | 4 | URL-driven sheet state (replaceState, deep link) |
 | `lib/env.test.ts` | 13 | env schema validation (server-only guards) |
-| `components/schedule/filter/FilterSidebar.test.tsx` | 8 | 3 collapsible groups (order, scoped counts, `aria-expanded` collapse, per-group clear, `data-category`) |
+| `components/schedule/filter/FilterSidebar.test.tsx` | 9 | 3 collapsible groups (order, scoped counts, `aria-expanded` collapse, per-group clear, `data-category`), rooms-only Ubicaciones |
 | `components/schedule/EventDetailSheet.test.tsx` | 7 | details rendering, Escape, clipboard, related, responsive `data-side` |
+| `components/schedule/EventTimeline.test.tsx` | 6 | single timeline (no building tabs), chronological order, venue+building per item, tag clicks, live badges |
 | `tests/integration/supabase.test.ts` | 3* | real connectivity (*2 skip without credentials) |
 
 ### TDD workflow (failsafe branches)
