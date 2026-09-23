@@ -157,7 +157,7 @@ describe("category sorting", () => {
     ]);
   });
 
-  it("room tags in 'Sala * (Edificio *)' format sort by room number (building digits in parens ignored)", () => {
+  it("location labels with a parenthesized suffix sort by the leading room number", () => {
     const rooms = toTagOptions(
       [
         "Sala de Danza (Edificio 1E)",

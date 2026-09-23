@@ -84,7 +84,7 @@ export function normalizeEvents(calendario: RawCalendario): ConferenceEvent[] {
         title: titleFor(evento),
         venueKey: slugify(evento.sala),
         venueLabel: `${evento.sala} · ${evento.lugar}`,
-        venueName: evento.sala,
+        venueHall: evento.lugar,
         activityType: evento.tipo_actividad,
         thematicAxis: evento.eje_tematico ?? "General",
         tags: normalizedTags,
@@ -132,14 +132,9 @@ export function deriveFilters(events: ConferenceEvent[]): ScheduleDerived {
   const venueMap = new Map<string, string>();
   for (const event of events) {
     if (!venueMap.has(event.venueKey)) {
-      // Room-only label: "Sala 2 (Edificio 1E)" — the old "{sala} · {lugar}"
-      // duplicated location text already shown by other options.
-      venueMap.set(
-        event.venueKey,
-        event.building !== "Unknown"
-          ? `${event.venueName} (Edificio ${event.building})`
-          : event.venueName,
-      );
+      // Hall-name label: "Centro de Convenciones" — one accurate, human-
+      // readable name per venue (room numbers/codes duplicated other text).
+      venueMap.set(event.venueKey, event.venueHall);
     }
   }
   const venues = [...venueMap.entries()].map(([key, label]) => ({

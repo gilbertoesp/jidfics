@@ -22,7 +22,7 @@ function makeEvent(partial: Partial<ConferenceEvent>): ConferenceEvent {
     building: "3B",
     venueKey: "sala-1",
     venueLabel: "Sala 1 · Centro de Convenciones",
-    venueName: "Sala 1",
+    venueHall: "Centro de Convenciones",
     speakers: [],
     papers: [],
     ...partial,
@@ -53,7 +53,7 @@ const events: ConferenceEvent[] = [
     building: "1E",
     venueKey: "sala-2",
     venueLabel: "Sala 2 · Sala Audiovisual",
-    venueName: "Sala 2",
+    venueHall: "Sala Audiovisual",
     papers: [
       {
         title: "Mujeres y ciencia",

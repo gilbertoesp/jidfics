@@ -8,7 +8,7 @@
  *   FilterSidebar (search + results + global clear)
  *   └── Accordion[type=multiple] (all open by default)
  *       ├── FilterGroup[category=type]    "Tipo de actividad" (14 presentation modes)
- *       ├── FilterGroup[category=location] "Ubicaciones" → salas "Sala * (Edificio *)"
+ *       ├── FilterGroup[category=location] "Ubicaciones" → nombres de salón (Centro de Convenciones, …)
  *       └── FilterGroup[category=topic]   "Temas" → etiquetas temáticas
  *
  * All grouping/sorting/counting logic is delegated to the pure module
@@ -155,7 +155,7 @@ export function FilterSidebar({
           </TagGroup>
         </FilterGroup>
 
-        {/* Location category: location-like tags + rooms "Sala * (Edificio *)" */}
+        {/* Location category: location-like tags + hall names (venueHall) */}
         <FilterGroup
           category="location"
           title="Ubicaciones"

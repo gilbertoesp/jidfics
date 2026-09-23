@@ -14,16 +14,16 @@ import type { ScheduleDerived, TagCategory } from "@/lib/schedule/types";
  *   Radix Accordion trigger exposes aria-expanded; role=group fieldset
  *   body in Spanish).
  * - Facet mapping: activityTypes → type; tags → topic;
- *   venues → location as ONE room-only list in "Sala * (Edificio *)" format
- *   (the old "Sala # · Sala *" venue labels and the separate building row
- *   were duplicates — both removed). Counts/clears are per category.
+ *   venues → location as ONE list of hall names ("Centro de Convenciones",
+ *   "Sala Polivalente", …) — room numbers, building codes and the separate
+ *   building row were duplicated/inaccurate — removed. Counts per category.
  */
 
 const derived: ScheduleDerived = {
   axes: [],
   tags: ["Salud", "Violencia"],
   activityTypes: ["Conferencia Magistral", "Mesa de Ponencias"],
-  venues: [{ key: "sala-1", label: "Sala 1 (Edificio 3B)" }],
+  venues: [{ key: "sala-1", label: "Centro de Convenciones" }],
   buildings: [{ key: "3B", label: "Centro de Convenciones (Edificio 3B)" }],
 };
 
@@ -101,10 +101,10 @@ describe("FilterSidebar", () => {
     expect(topic).not.toHaveTextContent("Conferencia Magistral");
     expect(type).toHaveTextContent("Conferencia Magistral");
     expect(type).toHaveTextContent("Mesa de Ponencias");
-    expect(location).toHaveTextContent("Sala 1 (Edificio 3B)");
-    // building row removed — rooms carry the building in their own label
-    expect(location).not.toHaveTextContent("Centro de Convenciones");
-    expect(topic).not.toHaveTextContent("Sala 1 (Edificio");
+    expect(location).toHaveTextContent("Centro de Convenciones"); // hall name
+    // building row removed — no building-code chips remain
+    expect(location).not.toHaveTextContent("Edificio 3B");
+    expect(topic).not.toHaveTextContent("Centro de Convenciones");
     expect(location).not.toHaveTextContent("Violencia");
   });
 
