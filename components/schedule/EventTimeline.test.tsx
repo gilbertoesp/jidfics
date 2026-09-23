@@ -28,7 +28,6 @@ function makeEvent(partial: Partial<ConferenceEvent>): ConferenceEvent {
     building: "3B",
     venueKey: "sala-1",
     venueLabel: "Sala 1 · Centro de Convenciones",
-    venueName: "Sala 1",
     speakers: [],
     papers: [],
     ...partial,
@@ -42,6 +41,9 @@ const events = [
     date: "2026-09-24",
     startTime: "09:00",
     title: "Día 2",
+    building: "1M",
+    venueKey: "sala-3",
+    venueLabel: "Sala 3 · Sala Polivalente",
   }),
   makeEvent({
     id: "e2",
@@ -49,7 +51,6 @@ const events = [
     building: "1E",
     venueKey: "sala-2",
     venueLabel: "Sala 2 · Sala Audiovisual",
-    venueName: "Sala 2",
     title: "Mesa tarde",
   }),
   makeEvent({ id: "e1", title: "Mañana" }),
@@ -102,10 +103,11 @@ describe("EventTimeline", () => {
     const onTagClick = vi.fn();
     renderTimeline({ onTagClick, selectedTags: ["Violencia"] });
 
-    // selected → chip advertises removal
-    const chip = screen.getByRole("button", {
+    // selected → chip advertises removal (each event sharing the tag renders one)
+    const chip = screen.getAllByRole("button", {
       name: "Quitar filtro Violencia",
-    });
+    })[0];
+    expect(chip).toBeDefined();
     await user.click(chip);
     expect(onTagClick).toHaveBeenCalledWith("Violencia");
 
