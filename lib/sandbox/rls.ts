@@ -9,7 +9,8 @@ export type RlsDeniedCode =
   | "invalid_claims"
   | "not_delegation"
   | "uid_mismatch"
-  | "missing_scope";
+  | "missing_scope"
+  | "unknown_resource";
 
 export class RlsDeniedError extends Error {
   readonly code: RlsDeniedCode;
@@ -21,23 +22,18 @@ export class RlsDeniedError extends Error {
   }
 }
 
-function hasScope(scope: string, required: string): boolean {
+/** Space-delimited scope check: does `scope` cover `required`? */
+export function hasScope(scope: string, required: string): boolean {
   return scope.split(" ").includes(required);
 }
 
 /**
- * Minimal container-sandbox RLS gate (mirrors `auth.uid() = owner` policies):
- * only 60s delegation tokens authenticate, the subject must own the resource
- * (admin roles override), and the delegation scope must cover the action.
- * Fail-closed: every refusal throws {@link RlsDeniedError}.
+ * Verify + Zod-parse a delegation token: fail-closed on verification errors,
+ * malformed claims and non-delegation tokens.
  */
-export async function authorizeContainerAccess(input: {
-  token: string;
-  requiredScope: string;
-  resourceOwnerId: string;
-}): Promise<DelegationClaims> {
-  const { token, requiredScope, resourceOwnerId } = input;
-
+export async function verifyDelegationClaims(
+  token: string,
+): Promise<DelegationClaims> {
   let payload: unknown;
   try {
     payload = await verifyAccessToken(token);
@@ -57,14 +53,31 @@ export async function authorizeContainerAccess(input: {
         .join("; ")}`,
     );
   }
-  const claims = parsed.data;
 
-  if (claims.use !== "delegation") {
+  if (parsed.data.use !== "delegation") {
     throw new RlsDeniedError(
       "not_delegation",
       "only delegation tokens may drive the container sandbox",
     );
   }
+
+  return parsed.data;
+}
+
+/**
+ * Minimal container-sandbox RLS gate (mirrors `auth.uid() = owner` policies):
+ * only 60s delegation tokens authenticate, the subject must own the resource
+ * (admin roles override), and the delegation scope must cover the action.
+ * Fail-closed: every refusal throws {@link RlsDeniedError}.
+ */
+export async function authorizeContainerAccess(input: {
+  token: string;
+  requiredScope: string;
+  resourceOwnerId: string;
+}): Promise<DelegationClaims> {
+  const { token, requiredScope, resourceOwnerId } = input;
+
+  const claims = await verifyDelegationClaims(token);
 
   const isOwner = claims.sub === resourceOwnerId;
   const isAdmin = ROLE_RANK[claims.role] >= ROLE_RANK["admin"];

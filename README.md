@@ -31,7 +31,7 @@ Sitio web oficial de la **VII Jornadas Internacionales de Docencia e Investigaci
 - **Accesibilidad (a11y)** — ARIA roles, focus trap en diálogos, Escape para cerrar, foco devuelto al disparador, navegación por teclado, etiquetas en español.
 - **Tema claro/oscuro** — `next-themes` con persistencia en `localStorage`.
 - **CI/CD** — GitHub Actions: lint + typecheck + tests + build en cada push/PR.
-- **Tests (TDD)** — **242 tests Vitest** en 20 suites (ver Guía técnica).
+- **Tests (TDD)** — **254 tests Vitest** en 21 suites (ver Guía técnica).
 
 ## 📌 Archivos con TODOs
 
@@ -108,6 +108,7 @@ jidfics/
 │   │   └── *.test.ts
 │   ├── sandbox/
 │   │   ├── claims.ts              # Zod delegation claims (sub=auth.uid source, use, scope, role, jti)
+│   │   ├── policies.ts            # Zod sandbox policy registry + authorizeDataAccess (table→action→scope)
 │   │   ├── rls.ts                 # authorizeContainerAccess — auth.uid()=owner RLS gate (fail-closed)
 │   │   └── *.test.ts
 │   ├── supabase/
@@ -166,7 +167,7 @@ bun run lint                        # biome check . && eslint .
 bun run format                      # biome autofix + format (write mode)
 ```
 
-**Suites — 242 tests total (240 + 2 integration skipped without credentials):**
+**Suites — 254 tests total (252 + 2 integration skipped without credentials):**
 
 | Suite | Tests | Covers |
 |---|---|---|
@@ -190,6 +191,7 @@ bun run format                      # biome autofix + format (write mode)
 | `lib/oauth/store.test.ts` | 6 | fail-closed Supabase lookups (client registry, denylist) mocked at the DB seam |
 | `lib/sandbox/claims.test.ts` | 6 | delegation claims Zod boundary (missing sub/scope/jti, unknown role/use rejected) |
 | `lib/sandbox/rls.test.ts` | 7 | container RLS gate entry: uid ownership, admin override, scope cover, fail-closed codes |
+| `lib/sandbox/policies.test.ts` | 12 | data-access entry: Zod registry, owner/none ownership, admin override, unknown_resource fail-closed |
 
 ### TDD workflow (failsafe branches)
 
@@ -232,6 +234,7 @@ Push to `main` auto-deploys to production (PRs get previews) via the Vercel GitH
 - **Token exchange (feature seam)**: `POST /api/oauth/token` (RFC 8693, `urn:ietf:params:oauth:grant-type:token-exchange`) — Zod-validated form boundary, issues **300s EdDSA access tokens** carrying `act` (actor), `azp`, `aud`, `scope` and tier claim. Invariants: requested scope ⊆ subject ∩ client allow-list (delegation only narrows) · tier ≤ min(subject, client) · denylisted `jti` → `401 invalid_token` · foreign audience → `400 invalid_target`. Seams: entry `app/api/oauth/token/route.ts` → exits `lib/oauth/signer.ts` (jose) and `lib/oauth/store.ts` (Supabase, fail-closed). Tables (`oauth_clients`, `token_denylist`) land with Phase 1 migrations — the store denies everything until then.
 - **Primary JWT → Delegation Tokens**: `subject_token_type=urn:jidfics:token-type:primary` verifies a Supabase primary JWT (`lib/oauth/primary.ts`, jose HS256 + `SUPABASE_JWT_SECRET`), then Zod-parses `app_metadata.roles` (unknown role → `401 invalid_token`) and `authorization.scopes` (`lib/oauth/claims.ts`). With `requested_token_type=urn:jidfics:token-type:delegation` the exchange mints a **60s downscoped Delegation Token** (`use:"delegation"`, scope = `authorization.scopes ∩ client.allowed_scopes`, tier = `min(highest(roles), client)`) — the credential handed to the AI agent tool loop (next phase). Denylist id falls back `jti → session_id`; neither present → lookup skipped.
 - **Container sandbox RLS gate (feature seam)**: `authorizeContainerAccess({ token, requiredScope, resourceOwnerId })` (`lib/sandbox/rls.ts`) — verifies the token (exit `lib/oauth/signer.ts`, mocked in tests), Zod-parses delegation claims (`lib/sandbox/claims.ts`: `sub` = `auth.uid()` source, `use`, `scope`, `role`, `jti`), then applies minimal RLS invariants mirroring `auth.uid() = owner`: only `use:"delegation"` tokens authenticate · foreign uid → `uid_mismatch` (admin roles override) · uncovered action → `missing_scope` · any verification/Zod failure → `invalid_claims`. Every refusal throws typed `RlsDeniedError` (fail-closed) — the future MCP/sandbox route maps `code` → `403 Forbidden`.
+- **Sandbox data-access policies (feature seam)**: `authorizeDataAccess({ token, table, action, rowOwnerId })` (`lib/sandbox/policies.ts`) — explicit Zod registry `SANDBOX_POLICIES` (`table → action → { scope, ownership: "owner" | "none" }`); table/action absent → `unknown_resource` (fail-closed), owner mode delegates to the `auth.uid() = owner` gate, none mode requires only an authenticated delegation covering the action scope. This is the policy layer the isolated-vm container consults **before** any data query executes.
 - **Chat auth (considered, NOT built)**: lightweight participant sign-in to comment; evolution path is one-click OAuth (Google / LinkedIn) with a **localStorage-encrypted profile cache** (WebCrypto AES-GCM, per-session key). That cache is a UX optimization only — **never an auth boundary**; the real session stays in the HttpOnly cookie handled by `proxy.ts`. Typing strategy: generated Supabase DB types. Design notes live in `TODO(auth)` at `components/schedule/LiveChatSheet.tsx`.
 
 ## 🧱 Architecture decisions
