@@ -1,26 +1,34 @@
 import { NextResponse } from "next/server";
 import { auth } from "@/auth";
+import { decideGate } from "@/lib/auth/gate";
 
-export default auth((req) => {
-  const isAuthenticated = !!req.auth;
-  const isLoginPage = req.nextUrl.pathname === "/auth/login";
+export default auth(async (req) => {
+  const decision = decideGate({
+    pathname: req.nextUrl.pathname,
+    method: req.method,
+    isAuthenticated: Boolean(req.auth),
+    role: req.auth?.user?.role ?? null,
+  });
 
-  // If authenticated and trying to access login page, redirect to protected
-  if (isAuthenticated && isLoginPage) {
-    return NextResponse.redirect(new URL("/protected", req.url));
+  switch (decision.action) {
+    case "next":
+      return NextResponse.next();
+    case "away-from-login":
+      return NextResponse.redirect(new URL("/protected", req.url));
+    case "login": {
+      const loginUrl = new URL("/auth/login", req.url);
+      loginUrl.searchParams.set("callbackUrl", decision.callbackUrl);
+      return NextResponse.redirect(loginUrl);
+    }
+    case "forbidden":
+      return new NextResponse(null, { status: 403 });
+    case "not-found":
+      return new NextResponse(null, { status: 404 });
   }
-
-  // If not authenticated and trying to access protected path
-  if (!isAuthenticated && req.nextUrl.pathname.startsWith("/protected")) {
-    const loginUrl = new URL("/auth/login", req.url);
-    loginUrl.searchParams.set("callbackUrl", req.nextUrl.pathname);
-    return NextResponse.redirect(loginUrl);
-  }
-
-  // Continue
-  return NextResponse.next();
 });
 
 export const config = {
-  matcher: ["/protected/:path*", "/auth/login"],
+  // Deny-by-default: the gate sees every route-handler request; static build
+  // assets are excluded here and are also declared public in lib/auth/policy.ts.
+  matcher: ["/((?!_next/static|_next/image).*)"],
 };
