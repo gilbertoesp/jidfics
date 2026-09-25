@@ -1,6 +1,8 @@
 import { NextResponse } from "next/server";
 import { auth } from "@/auth";
 
+// TODO(auth): replace the hardcoded matcher with an explicit route-policy
+// table (PUBLIC | AUTHED | ROLE) so new routes are deny-by-default.
 export default auth((req) => {
   const isAuthenticated = !!req.auth;
   const isLoginPage = req.nextUrl.pathname === "/auth/login";

@@ -31,7 +31,7 @@ Sitio web oficial de la **VII Jornadas Internacionales de Docencia e Investigaci
 - **Accesibilidad (a11y)** — ARIA roles, focus trap en diálogos, Escape para cerrar, foco devuelto al disparador, navegación por teclado, etiquetas en español.
 - **Tema claro/oscuro** — `next-themes` con persistencia en `localStorage`.
 - **CI/CD** — GitHub Actions: lint + typecheck + tests + build en cada push/PR.
-- **Tests (TDD)** — **181 tests Vitest** en 14 suites (ver Guía técnica).
+- **Tests (TDD)** — **213 tests Vitest** en 17 suites (ver Guía técnica).
 
 ## 📌 Archivos con TODOs
 
@@ -42,7 +42,7 @@ El trabajo pendiente vive **en el código** como comentarios `TODO(área)`. Índ
 | `components/schedule/LiveChatSheet.tsx` | `TODO(auth)` acceso de participantes (OAuth 1-click + caché cifrada, considerado) · `TODO(realtime)` canal Supabase Realtime |
 | `components/schedule/EventDetailContent.tsx` | `TODO(calendar)` exportar a calendario (ICS/Google) · `TODO(directions)` indicaciones en mapa · `TODO(auth)` habilitar Comentar con sesión |
 | `lib/schedule/hooks.ts` | `TODO(backlog)` mis sesiones · notificaciones · vista multi-día · perfiles de ponentes |
-| `lib/supabase/proxy.ts` | `TODO(auth)` lista de rutas públicas antes de producción |
+| `proxy.ts` | `TODO(auth)` lista de rutas públicas antes de producción (policy table) |
 | `lib/schedule/tags.ts` | `TODO(data)` excepciones de clasificación de etiquetas |
 
 Listarlos todos: `grep -rn 'TODO(' app components lib`
@@ -56,6 +56,7 @@ Listarlos todos: `grep -rn 'TODO(' app components lib`
 ```
 jidfics/
 ├── app/
+│   ├── api/oauth/token/route.ts  # POST RFC 8693 token exchange — seam entry (route.test.ts)
 │   ├── page.tsx                  # Server Component — runs normalize*() at build time
 │   ├── layout.tsx                # Root layout + providers
 │   └── globals.css               # Global styles + CSS variables
@@ -96,9 +97,16 @@ jidfics/
 │   │   ├── colors.ts             # Deterministic FNV-1a → Tailwind palette
 │   │   ├── calendario_vii_jidfics.json  # SSOT dataset (v2 updates consumed, 45 events)
 │   │   └── *.test.ts
+│   ├── auth/
+│   │   └── rbac.ts                # Role tiers (user/admin/super_admin) + ROLE_RANK
+│   ├── oauth/
+│   │   ├── policy.ts              # Zod boundary + narrowScope/intersectScopes/capTier
+│   │   ├── signer.ts              # EdDSA access tokens (jose), 300s TTL, issuer-checked
+│   │   ├── store.ts               # fail-closed client registry + denylist (Supabase)
+│   │   └── *.test.ts
 │   ├── supabase/
-│   │   ├── proxy.ts              # updateSession() for Next 16 proxy
 │   │   ├── server.ts             # createClient() for Server Components
+│   │   ├── service.ts            # createServiceClient() (service-role, server-only)
 │   │   └── client.ts             # createClient() for Browser
 │   └── utils.ts                  # cn(), hasEnvVars
 ├── proxy.ts                      # Next 16 proxy (replaces middleware.ts)
@@ -134,6 +142,9 @@ Open [http://localhost:3000](http://localhost:3000).
 |---|---|---|
 | `NEXT_PUBLIC_SUPABASE_URL` | Supabase project URL | Yes (auth/Realtime) |
 | `NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY` | Supabase publishable/anon key | Yes (auth/Realtime) |
+| `AUTH_TOKEN_PRIVATE_KEY` | Ed25519 PKCS#8 PEM — signs OAuth access tokens (server-only) | Yes (token exchange) |
+| `SUPABASE_SECRET_KEY` | Supabase service-role key (server-only) | Yes (token exchange) |
+| `AUTH_URL` | Public issuer URL for minted tokens | Prod: recommended |
 
 > The schedule works **without Supabase** (read-only mode). `proxy.ts` skips session checks via the `hasEnvVars` guard when credentials are missing.
 
@@ -148,7 +159,7 @@ bun run lint                        # biome check . && eslint .
 bun run format                      # biome autofix + format (write mode)
 ```
 
-**Suites — 181 tests total (179 + 2 integration skipped without credentials):**
+**Suites — 213 tests total (211 + 2 integration skipped without credentials):**
 
 | Suite | Tests | Covers |
 |---|---|---|
@@ -166,6 +177,9 @@ bun run format                      # biome autofix + format (write mode)
 | `components/schedule/EventTimeline.test.tsx` | 6 | single timeline (no building tabs), chronological order, unified location label per item, tag clicks, live badges |
 | `components/schedule/EventCard.test.tsx` | 2 | unified location label (building folded in, no suffix) |
 | `tests/integration/supabase.test.ts` | 3* | real connectivity (*2 skip without credentials) |
+| `app/api/oauth/token/route.test.ts` | 12 | RFC 8693 contract (200/400/401), no-escalation, actor `act`, denylist, foreign audience |
+| `lib/oauth/policy.test.ts` | 14 | Zod boundary (missing/unsupported fields), `narrowScope`/`intersectScopes`/`capTier` invariants |
+| `lib/oauth/store.test.ts` | 6 | fail-closed Supabase lookups (client registry, denylist) mocked at the DB seam |
 
 ### TDD workflow (failsafe branches)
 
@@ -202,9 +216,10 @@ Push to `main` auto-deploys to production (PRs get previews) via the Vercel GitH
 
 ## 🔐 Auth — current state
 
-- **Proxy SSR** (`proxy.ts` + `lib/supabase/proxy.ts`): refreshes the session per request, validates the JWT with `getClaims()`.
+- **Proxy** (`proxy.ts`, Next 16): Auth.js `auth()` wrapper runs per request; validates the session cookie and gates `/protected`.
 - **Renders**: `/` (schedule) is **public, no login**. Future protected routes (`/dashboard`, `/admin`) redirect to `/auth/login`.
-- **Pending**: replace the single `pathname !== "/"` check with an explicit public-paths list — tracked as `TODO(auth)` in `lib/supabase/proxy.ts`.
+- **Pending**: replace the hardcoded matcher with an explicit route-policy table (public / authed / role) — tracked as `TODO(auth)` in `proxy.ts`.
+- **Token exchange (feature seam)**: `POST /api/oauth/token` (RFC 8693, `urn:ietf:params:oauth:grant-type:token-exchange`) — Zod-validated form boundary, issues **300s EdDSA access tokens** carrying `act` (actor), `azp`, `aud`, `scope` and tier claim. Invariants: requested scope ⊆ subject ∩ client allow-list (delegation only narrows) · tier ≤ min(subject, client) · denylisted `jti` → `401 invalid_token` · foreign audience → `400 invalid_target`. Seams: entry `app/api/oauth/token/route.ts` → exits `lib/oauth/signer.ts` (jose) and `lib/oauth/store.ts` (Supabase, fail-closed). Tables (`oauth_clients`, `token_denylist`) land with Phase 1 migrations — the store denies everything until then.
 - **Chat auth (considered, NOT built)**: lightweight participant sign-in to comment; evolution path is one-click OAuth (Google / LinkedIn) with a **localStorage-encrypted profile cache** (WebCrypto AES-GCM, per-session key). That cache is a UX optimization only — **never an auth boundary**; the real session stays in the HttpOnly cookie handled by `proxy.ts`. Typing strategy: generated Supabase DB types. Design notes live in `TODO(auth)` at `components/schedule/LiveChatSheet.tsx`.
 
 ## 🧱 Architecture decisions
@@ -222,6 +237,7 @@ Push to `main` auto-deploys to production (PRs get previews) via the Vercel GitH
 | Colors | FNV-1a hash → 10 Tailwind colors (literal classes) | Deterministic, dark-mode safe, tree-shakeable |
 | Location keys | `slugify(roomName)` + `formatLocationLabel()` → `hall (Edificio X)` | Dedupe "Sala de Usos Múltiples" / "sala de usos multiples"; one display formatter for chips/cards/sheet/timeline |
 | Next 16 proxy | `export function proxy` in `proxy.ts` (not `middleware.ts`) | Official Next 16 convention |
+| **Token exchange** | In-app RFC 8693 AS (`POST /api/oauth/token`) — Zod boundary, EdDSA via `jose`, fail-closed store | Delegation only narrows (scope ⊆, tier ≤); no external AS infra |
 | Snapshot tests | Known Thursday room/time collisions fixed in a test | Catches data regressions without fighting editorial data |
 | Component taxonomy | primitive (Radix) → component (`Tag`, `FilterGroup`) → block (`FilterSidebar`, `EventDetailSheet`) → utility (`tags.ts`, `eventDetail.ts`) | building-components skill: composition, `data-slot`/`data-state` contracts, code = documentation |
 
