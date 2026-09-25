@@ -1,6 +1,11 @@
 import { createHash } from "node:crypto";
 import { beforeEach, describe, expect, it, vi } from "vitest";
-import { ACCESS_TOKEN_TYPE, TOKEN_EXCHANGE_GRANT } from "@/lib/oauth/policy";
+import {
+  ACCESS_TOKEN_TTL_SECONDS,
+  ACCESS_TOKEN_TYPE,
+  DELEGATION_TTL_SECONDS,
+  TOKEN_EXCHANGE_GRANT,
+} from "@/lib/oauth/policy";
 
 const { signAccessToken, verifyAccessToken, findClient, isJtiDenylisted } =
   vi.hoisted(() => ({
@@ -10,13 +15,20 @@ const { signAccessToken, verifyAccessToken, findClient, isJtiDenylisted } =
     isJtiDenylisted: vi.fn(),
   }));
 
+const { verifyPrimaryJwt } = vi.hoisted(() => ({
+  verifyPrimaryJwt: vi.fn(),
+}));
+
 vi.mock("@/lib/oauth/signer", () => ({ signAccessToken, verifyAccessToken }));
 vi.mock("@/lib/oauth/store", () => ({ findClient, isJtiDenylisted }));
+vi.mock("@/lib/oauth/primary", () => ({ verifyPrimaryJwt }));
 
 import { POST } from "@/app/api/oauth/token/route";
 
 const CLIENT_SECRET = "s3cret-value";
 const AUDIENCE = "https://jidfics.vercel.app/api";
+const PRIMARY_SUBJECT_TYPE = "urn:jidfics:token-type:primary";
+const DELEGATION_TOKEN_TYPE = "urn:jidfics:token-type:delegation";
 
 const client = {
   client_id: "schedule-agent",
@@ -89,6 +101,7 @@ describe("POST /api/oauth/token (token exchange)", () => {
         azp: client.client_id,
         jti: expect.any(String),
       }),
+      ACCESS_TOKEN_TTL_SECONDS,
     );
   });
 
@@ -181,6 +194,7 @@ describe("POST /api/oauth/token (token exchange)", () => {
     expect(res.status).toBe(200);
     expect(signAccessToken).toHaveBeenCalledWith(
       expect.objectContaining({ act: { sub: "agent-42" } }),
+      ACCESS_TOKEN_TTL_SECONDS,
     );
   });
 
@@ -190,6 +204,111 @@ describe("POST /api/oauth/token (token exchange)", () => {
       .mockRejectedValueOnce(new Error("bad signature"));
 
     const res = await POST(tokenRequest({ actor_token: "actor.jwt" }));
+
+    expect(res.status).toBe(401);
+    expect((await readError(res)).error).toBe("invalid_token");
+  });
+});
+
+describe("POST /api/oauth/token (primary JWT → delegation)", () => {
+  const primaryPayload = {
+    sub: "user-42",
+    app_metadata: { roles: ["user", "admin"] },
+    authorization: { scopes: ["schedule:read", "admin:moderate"] },
+    session_id: "session-1",
+  };
+
+  function primaryRequest(overrides: Record<string, string> = {}): Request {
+    return tokenRequest({
+      subject_token_type: PRIMARY_SUBJECT_TYPE,
+      requested_token_type: DELEGATION_TOKEN_TYPE,
+      ...overrides,
+    });
+  }
+
+  beforeEach(() => {
+    vi.resetAllMocks();
+    findClient.mockResolvedValue(client);
+    verifyAccessToken.mockResolvedValue(subjectClaims);
+    verifyPrimaryJwt.mockResolvedValue(primaryPayload);
+    isJtiDenylisted.mockResolvedValue(false);
+    signAccessToken.mockResolvedValue("delegated.access.token");
+  });
+
+  it("mints a 60s downscoped delegation token from primary claims", async () => {
+    const res = await POST(primaryRequest());
+
+    expect(res.status).toBe(200);
+    expect(await res.json()).toEqual({
+      access_token: "delegated.access.token",
+      issued_token_type: DELEGATION_TOKEN_TYPE,
+      token_type: "Bearer",
+      expires_in: 60,
+      // authorization.scopes ∩ client.allowed_scopes (admin:moderate dropped)
+      scope: "schedule:read",
+    });
+    expect(signAccessToken).toHaveBeenCalledWith(
+      expect.objectContaining({
+        sub: "user-42",
+        aud: AUDIENCE,
+        scope: "schedule:read",
+        role: "user", // highest(app_metadata.roles)=admin, capped by client tier user
+        azp: client.client_id,
+        use: "delegation",
+        jti: expect.any(String),
+      }),
+      DELEGATION_TTL_SECONDS,
+    );
+    expect(verifyAccessToken).not.toHaveBeenCalled();
+  });
+
+  it("rejects a primary token with unrecognized roles", async () => {
+    verifyPrimaryJwt.mockResolvedValueOnce({
+      ...primaryPayload,
+      app_metadata: { roles: ["root"] },
+    });
+
+    const res = await POST(primaryRequest());
+
+    expect(res.status).toBe(401);
+    expect((await readError(res)).error).toBe("invalid_token");
+  });
+
+  it("rejects a primary token missing app_metadata", async () => {
+    verifyPrimaryJwt.mockResolvedValueOnce({ sub: "user-42" });
+
+    const res = await POST(primaryRequest());
+
+    expect(res.status).toBe(401);
+    expect((await readError(res)).error).toBe("invalid_token");
+  });
+
+  it("rejects a denylisted primary session", async () => {
+    isJtiDenylisted.mockResolvedValueOnce(true);
+
+    const res = await POST(primaryRequest());
+
+    expect(res.status).toBe(401);
+    expect(isJtiDenylisted).toHaveBeenCalledWith("session-1");
+    expect((await readError(res)).error).toBe("invalid_token");
+  });
+
+  it("skips the denylist lookup when the primary has no jti/session_id", async () => {
+    verifyPrimaryJwt.mockResolvedValueOnce({
+      ...primaryPayload,
+      session_id: undefined,
+    });
+
+    const res = await POST(primaryRequest());
+
+    expect(res.status).toBe(200);
+    expect(isJtiDenylisted).not.toHaveBeenCalled();
+  });
+
+  it("rejects an unverifiable primary token", async () => {
+    verifyPrimaryJwt.mockRejectedValueOnce(new Error("bad signature"));
+
+    const res = await POST(primaryRequest());
 
     expect(res.status).toBe(401);
     expect((await readError(res)).error).toBe("invalid_token");
