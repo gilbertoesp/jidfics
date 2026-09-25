@@ -6,6 +6,11 @@ export const TOKEN_EXCHANGE_GRANT =
 export const ACCESS_TOKEN_TYPE =
   "urn:ietf:params:oauth:token-type:access_token";
 export const ACCESS_TOKEN_TTL_SECONDS = 300;
+export const PRIMARY_SUBJECT_TYPE = "urn:jidfics:token-type:primary";
+export const DELEGATION_TOKEN_TYPE = "urn:jidfics:token-type:delegation";
+export const DELEGATION_TTL_SECONDS = 60;
+export const DELEGATION_USE = "delegation";
+export const ACCESS_TOKEN_USE = "access";
 
 /** RFC 6749-style error carried to the HTTP boundary. */
 export class OAuthPolicyError extends Error {
@@ -24,8 +29,13 @@ export const tokenExchangeRequestSchema = z.object({
   client_id: z.string().min(1),
   client_secret: z.string().min(1),
   subject_token: z.string().min(1),
-  subject_token_type: z.literal(ACCESS_TOKEN_TYPE),
-  requested_token_type: z.literal(ACCESS_TOKEN_TYPE).optional(),
+  subject_token_type: z.union([
+    z.literal(ACCESS_TOKEN_TYPE),
+    z.literal(PRIMARY_SUBJECT_TYPE),
+  ]),
+  requested_token_type: z
+    .union([z.literal(ACCESS_TOKEN_TYPE), z.literal(DELEGATION_TOKEN_TYPE)])
+    .optional(),
   actor_token: z.string().min(1).optional(),
   scope: z.string().min(1).optional(),
   audience: z.string().min(1),

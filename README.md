@@ -31,7 +31,7 @@ Sitio web oficial de la **VII Jornadas Internacionales de Docencia e Investigaci
 - **Accesibilidad (a11y)** — ARIA roles, focus trap en diálogos, Escape para cerrar, foco devuelto al disparador, navegación por teclado, etiquetas en español.
 - **Tema claro/oscuro** — `next-themes` con persistencia en `localStorage`.
 - **CI/CD** — GitHub Actions: lint + typecheck + tests + build en cada push/PR.
-- **Tests (TDD)** — **213 tests Vitest** en 17 suites (ver Guía técnica).
+- **Tests (TDD)** — **229 tests Vitest** en 18 suites (ver Guía técnica).
 
 ## 📌 Archivos con TODOs
 
@@ -100,8 +100,10 @@ jidfics/
 │   ├── auth/
 │   │   └── rbac.ts                # Role tiers (user/admin/super_admin) + ROLE_RANK
 │   ├── oauth/
+│   │   ├── claims.ts              # Zod parse of primary JWT claims (app_metadata.roles, authorization.scopes)
 │   │   ├── policy.ts              # Zod boundary + narrowScope/intersectScopes/capTier
-│   │   ├── signer.ts              # EdDSA access tokens (jose), 300s TTL, issuer-checked
+│   │   ├── primary.ts             # primary Supabase JWT verify (jose HS256 + SUPABASE_JWT_SECRET)
+│   │   ├── signer.ts              # EdDSA access/delegation tokens (jose), 300s/60s TTL
 │   │   ├── store.ts               # fail-closed client registry + denylist (Supabase)
 │   │   └── *.test.ts
 │   ├── supabase/
@@ -144,6 +146,7 @@ Open [http://localhost:3000](http://localhost:3000).
 | `NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY` | Supabase publishable/anon key | Yes (auth/Realtime) |
 | `AUTH_TOKEN_PRIVATE_KEY` | Ed25519 PKCS#8 PEM — signs OAuth access tokens (server-only) | Yes (token exchange) |
 | `SUPABASE_SECRET_KEY` | Supabase service-role key (server-only) | Yes (token exchange) |
+| `SUPABASE_JWT_SECRET` | HS256 secret verifying primary Supabase JWTs (server-only) | Yes (primary subject) |
 | `AUTH_URL` | Public issuer URL for minted tokens | Prod: recommended |
 
 > The schedule works **without Supabase** (read-only mode). `proxy.ts` skips session checks via the `hasEnvVars` guard when credentials are missing.
@@ -159,7 +162,7 @@ bun run lint                        # biome check . && eslint .
 bun run format                      # biome autofix + format (write mode)
 ```
 
-**Suites — 213 tests total (211 + 2 integration skipped without credentials):**
+**Suites — 229 tests total (227 + 2 integration skipped without credentials):**
 
 | Suite | Tests | Covers |
 |---|---|---|
@@ -177,8 +180,9 @@ bun run format                      # biome autofix + format (write mode)
 | `components/schedule/EventTimeline.test.tsx` | 6 | single timeline (no building tabs), chronological order, unified location label per item, tag clicks, live badges |
 | `components/schedule/EventCard.test.tsx` | 2 | unified location label (building folded in, no suffix) |
 | `tests/integration/supabase.test.ts` | 3* | real connectivity (*2 skip without credentials) |
-| `app/api/oauth/token/route.test.ts` | 12 | RFC 8693 contract (200/400/401), no-escalation, actor `act`, denylist, foreign audience |
+| `app/api/oauth/token/route.test.ts` | 18 | RFC 8693 contract (200/400/401), no-escalation, actor `act`, denylist, foreign audience, primary JWT → 60s delegation |
 | `lib/oauth/policy.test.ts` | 14 | Zod boundary (missing/unsupported fields), `narrowScope`/`intersectScopes`/`capTier` invariants |
+| `lib/oauth/claims.test.ts` | 10 | primary claims Zod parse (unknown role rejected), `highestRole`/`primaryScope`/`denylistId` |
 | `lib/oauth/store.test.ts` | 6 | fail-closed Supabase lookups (client registry, denylist) mocked at the DB seam |
 
 ### TDD workflow (failsafe branches)
@@ -220,6 +224,7 @@ Push to `main` auto-deploys to production (PRs get previews) via the Vercel GitH
 - **Renders**: `/` (schedule) is **public, no login**. Future protected routes (`/dashboard`, `/admin`) redirect to `/auth/login`.
 - **Pending**: replace the hardcoded matcher with an explicit route-policy table (public / authed / role) — tracked as `TODO(auth)` in `proxy.ts`.
 - **Token exchange (feature seam)**: `POST /api/oauth/token` (RFC 8693, `urn:ietf:params:oauth:grant-type:token-exchange`) — Zod-validated form boundary, issues **300s EdDSA access tokens** carrying `act` (actor), `azp`, `aud`, `scope` and tier claim. Invariants: requested scope ⊆ subject ∩ client allow-list (delegation only narrows) · tier ≤ min(subject, client) · denylisted `jti` → `401 invalid_token` · foreign audience → `400 invalid_target`. Seams: entry `app/api/oauth/token/route.ts` → exits `lib/oauth/signer.ts` (jose) and `lib/oauth/store.ts` (Supabase, fail-closed). Tables (`oauth_clients`, `token_denylist`) land with Phase 1 migrations — the store denies everything until then.
+- **Primary JWT → Delegation Tokens**: `subject_token_type=urn:jidfics:token-type:primary` verifies a Supabase primary JWT (`lib/oauth/primary.ts`, jose HS256 + `SUPABASE_JWT_SECRET`), then Zod-parses `app_metadata.roles` (unknown role → `401 invalid_token`) and `authorization.scopes` (`lib/oauth/claims.ts`). With `requested_token_type=urn:jidfics:token-type:delegation` the exchange mints a **60s downscoped Delegation Token** (`use:"delegation"`, scope = `authorization.scopes ∩ client.allowed_scopes`, tier = `min(highest(roles), client)`) — the credential handed to the AI agent tool loop (next phase). Denylist id falls back `jti → session_id`; neither present → lookup skipped.
 - **Chat auth (considered, NOT built)**: lightweight participant sign-in to comment; evolution path is one-click OAuth (Google / LinkedIn) with a **localStorage-encrypted profile cache** (WebCrypto AES-GCM, per-session key). That cache is a UX optimization only — **never an auth boundary**; the real session stays in the HttpOnly cookie handled by `proxy.ts`. Typing strategy: generated Supabase DB types. Design notes live in `TODO(auth)` at `components/schedule/LiveChatSheet.tsx`.
 
 ## 🧱 Architecture decisions

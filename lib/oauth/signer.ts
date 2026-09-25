@@ -10,6 +10,7 @@ export type AccessTokenClaims = {
   aud: string;
   azp?: string;
   act?: { sub: string };
+  use?: string;
 };
 
 const ISSUER = process.env.AUTH_URL ?? "http://localhost:3000";
@@ -28,12 +29,14 @@ async function publicKey() {
 
 export async function signAccessToken(
   claims: AccessTokenClaims,
+  ttlSeconds: number = ACCESS_TOKEN_TTL_SECONDS,
 ): Promise<string> {
   return new SignJWT({
     scope: claims.scope,
     role: claims.role,
     azp: claims.azp,
     act: claims.act,
+    use: claims.use,
   })
     .setProtectedHeader({ alg: "EdDSA" })
     .setSubject(claims.sub)
@@ -41,7 +44,7 @@ export async function signAccessToken(
     .setIssuer(ISSUER)
     .setJti(claims.jti)
     .setIssuedAt()
-    .setExpirationTime(`${ACCESS_TOKEN_TTL_SECONDS}s`)
+    .setExpirationTime(`${ttlSeconds}s`)
     .sign(await privateKey());
 }
 
